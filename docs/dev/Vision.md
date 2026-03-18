@@ -146,3 +146,9 @@ Jot syncs via Git, identically to Joy:
 - **CLI users:** `git push` / `git pull`
 - **CalDAV users:** joyint.com maps `.jot/` items to VTODO resources (see [platform docs](https://github.com/joyint/platform/blob/main/docs/dev/Vision.md))
 - **WebUI users:** joyint.com provides a web interface for Jot alongside Joy
+
+---
+
+## Related
+
+For business context (pricing, licensing, competitive landscape) see [BusinessModel.md](https://github.com/joyint/project/blob/main/docs/BusinessModel.md) and [Competition.md](https://github.com/joyint/project/blob/main/docs/Competition.md) in the umbrella repository. These documents are part of the internal planning for the Joyint product ecosystem at Joydev GmbH.
