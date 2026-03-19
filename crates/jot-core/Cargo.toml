@@ -1,0 +1,17 @@
+[package]
+name = "jot-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Core library for Jot personal task manager -- extends joy-core with recurrence"
+
+[dependencies]
+joy-core = { workspace = true }
+serde = { workspace = true }
+serde_yml = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"

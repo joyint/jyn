@@ -4,6 +4,37 @@
 default:
     @just --list
 
+# Run all tests
+test:
+    cargo test --workspace
+
+# Format all code
+fmt:
+    cargo fmt --all
+
+# Check formatting
+fmt-check:
+    cargo fmt --all -- --check
+
+# Lint all code
+lint:
+    cargo clippy --workspace -- -D warnings
+
+# Run fmt-check, lint, test
+check:
+    just fmt-check && just lint && just test
+
+# Check tools and deps
+doctor:
+    @echo "=== Jot ==="
+    @command -v cargo >/dev/null && echo "  cargo: $(cargo --version)" || echo "  cargo: MISSING"
+    @command -v rustfmt >/dev/null && echo "  rustfmt: $(rustfmt --version)" || echo "  rustfmt: MISSING"
+    @command -v clippy-driver >/dev/null && echo "  clippy: $(clippy-driver --version)" || echo "  clippy: MISSING"
+
+# Install jot binary
+install:
+    cargo install --path crates/jot-cli
+
 # Release (auto patch bump from latest git tag)
 release version="":
     #!/usr/bin/env bash

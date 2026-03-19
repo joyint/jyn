@@ -1,0 +1,19 @@
+[package]
+name = "jot"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Personal task manager -- Git-native, CLI-first, CalDAV-ready"
+default-run = "jot"
+
+[[bin]]
+name = "jot"
+path = "src/main.rs"
+
+[dependencies]
+jot-core = { path = "../jot-core" }
+joy-core = { workspace = true }
+clap = { workspace = true }
+anyhow = { workspace = true }
+chrono = { workspace = true }
+serde_yml = { workspace = true }
