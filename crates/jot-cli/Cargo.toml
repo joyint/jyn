@@ -1,6 +1,6 @@
 [package]
 name = "jot"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 description = "Personal task manager -- Git-native, CLI-first, CalDAV-ready"
