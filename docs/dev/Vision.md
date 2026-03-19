@@ -1,6 +1,6 @@
 # Jot -- Vision
 
-Jot is a personal todo tool sharing [joy-core](https://github.com/joyint/joy) as its foundation. It provides a fast, Git-native CLI for managing personal tasks with recurring schedules, due dates, and reminders. Mobile access works through CalDAV (Apple Reminders, Google Calendar) without requiring a native app.
+Jot is a personal task manager sharing [joy-core](https://github.com/joyint/joy) as its foundation. It provides a fast, Git-native CLI for managing personal tasks with recurring schedules, due dates, and reminders. Mobile access works through CalDAV (Apple Reminders, Google Calendar) without requiring a native app.
 
 Jot is licensed under MIT. The CLI and data format are always free and open.
 
@@ -12,7 +12,7 @@ For the platform and sync layer see the [platform repository](https://github.com
 
 - Developers who want a terminal-native Todoist replacement
 - Anyone who prefers owning their data in a Git repo over trusting a SaaS database
-- Teams using Joy for PM who want personal todos on the same platform
+- Teams using Joy for PM who want personal task management on the same platform
 
 ---
 
@@ -118,7 +118,7 @@ All titles, descriptions, and comments are in the same YAML format as Joy items.
 
 ## Dispatch Integration
 
-Jot todos can be created by the joyint.com dispatch service when Joy items reach status gates. These dispatched todos carry a `source` field linking them back to their Joy origin:
+Jot tasks can be created by the joyint.com dispatch service when Joy items reach status gates. These dispatched tasks carry a `source` field linking them back to their Joy origin:
 
 ```yaml
 # .jot/items/TODO-000A-review-payment-integration.yaml
@@ -133,9 +133,9 @@ created: 2026-04-15T14:00:00Z
 updated: 2026-04-15T14:00:00Z
 ```
 
-When this todo is completed via `jot done`, joyint.com signals back to the Joy project that the review gate for JOY-002A is satisfied. See [Joy Vision](https://github.com/joyint/joy/blob/main/docs/dev/Vision.md#dispatch-bridging-joy-and-jot) for the full dispatch flow.
+When this task is completed via `jot done`, joyint.com signals back to the Joy project that the review gate for JOY-002A is satisfied. See [Joy Vision](https://github.com/joyint/joy/blob/main/docs/dev/Vision.md#dispatch-bridging-joy-and-jot) for the full dispatch flow.
 
-AI agents receive dispatched todos the same way. An agent configured as `agent:implementer@joy` picks up assigned todos via `jot ls --mine`, executes the work, and marks them done.
+AI agents receive dispatched todos the same way. An agent configured as `agent:implementer@joy` picks up assigned tasks via `jot ls --mine`, executes the work, and marks them done.
 
 ---
 
