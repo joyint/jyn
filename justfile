@@ -31,9 +31,9 @@ doctor:
     @command -v rustfmt >/dev/null && echo "  rustfmt: $(rustfmt --version)" || echo "  rustfmt: MISSING"
     @command -v clippy-driver >/dev/null && echo "  clippy: $(clippy-driver --version)" || echo "  clippy: MISSING"
 
-# Install jot binary
+# Install to ~/.local/bin/
 install:
-    cargo install --path crates/jot-cli
+    cargo build --release -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
 
 # Release (auto patch bump from latest git tag)
 release version="":
