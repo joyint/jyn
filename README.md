@@ -4,7 +4,7 @@ A fast, Git-native personal todo tool sharing `joy-core` as its foundation. Jot 
 
 ## Status
 
-Pre-development. See the [product vision](https://github.com/joyint/project/blob/main/docs/dev/vision/jot.md) for details.
+Pre-development. See [Vision.md](docs/dev/Vision.md) for details.
 
 ## License
 
