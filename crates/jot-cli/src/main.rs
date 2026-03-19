@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
+use std::io::IsTerminal;
+
 use clap::Parser;
 
 #[derive(Parser)]
@@ -35,6 +37,11 @@ struct DoneArgs {
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
+    let show_fortune = matches!(
+        &cli.command,
+        None | Some(Commands::Ls) | Some(Commands::Done(_))
+    );
+
     match cli.command {
         Some(Commands::Add(args)) => {
             println!("Would add task: {}", args.title);
@@ -48,6 +55,12 @@ fn main() -> anyhow::Result<()> {
         None => {
             println!("jot -- personal task manager");
             println!("Run 'jot --help' for usage");
+        }
+    }
+
+    if show_fortune && std::io::stdout().is_terminal() {
+        if let Some(text) = joy_core::fortune::fortune(None, 0.2) {
+            eprintln!("\n\x1b[2m{text}\x1b[0m");
         }
     }
 
