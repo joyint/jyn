@@ -73,7 +73,7 @@ release bump="patch" confirm="ask":
         cargo generate-lockfile 2>/dev/null || cargo check 2>/dev/null
     fi
     git add -A
-    git commit -q -m "bump to ${tag}"
+    git commit --quiet -m "bump to ${tag}"
     git tag "${tag}"
-    git push -q git push && git push origin "${tag}"git push && git push origin "${tag}" git push -q origin "${tag}"
+    git push --quiet && git push --quiet origin "${tag}"
     echo "Released ${tag}"
