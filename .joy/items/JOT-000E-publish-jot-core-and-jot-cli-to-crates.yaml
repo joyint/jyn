@@ -1,0 +1,10 @@
+id: JOT-000E
+title: Publish jot-core and jot-cli to crates.io
+type: task
+status: new
+priority: medium
+parent: JOT-0002
+milestone: JOT-MS-01
+size: 3
+created: '2026-03-20T11:09:40.774486565Z'
+updated: '2026-03-20T11:09:40.774486565Z'

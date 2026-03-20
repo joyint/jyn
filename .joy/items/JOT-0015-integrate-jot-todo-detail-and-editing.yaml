@@ -1,0 +1,12 @@
+id: JOT-0015
+title: Integrate Jot todo detail and editing into web
+type: task
+status: new
+priority: medium
+parent: JOT-0011
+deps:
+- JOT-0014
+milestone: JOT-MS-02
+size: 3
+created: '2026-03-20T11:09:52.674731420Z'
+updated: '2026-03-20T11:11:57.011198062Z'

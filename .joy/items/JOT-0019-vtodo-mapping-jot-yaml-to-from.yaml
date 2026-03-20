@@ -1,0 +1,10 @@
+id: JOT-0019
+title: 'VTODO mapping: Jot YAML to/from iCalendar VTODO'
+type: story
+status: new
+priority: medium
+parent: JOT-0018
+milestone: JOT-MS-03
+size: 3
+created: '2026-03-20T11:10:03.321813413Z'
+updated: '2026-03-20T11:12:00.482673248Z'

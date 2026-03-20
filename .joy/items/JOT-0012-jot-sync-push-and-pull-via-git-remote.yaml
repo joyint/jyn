@@ -1,0 +1,10 @@
+id: JOT-0012
+title: 'jot sync: push and pull via Git remote'
+type: task
+status: new
+priority: medium
+parent: JOT-0011
+milestone: JOT-MS-02
+size: 3
+created: '2026-03-20T11:09:52.670008287Z'
+updated: '2026-03-20T11:11:57.006221216Z'

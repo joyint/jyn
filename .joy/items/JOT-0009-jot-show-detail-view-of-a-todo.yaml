@@ -1,0 +1,12 @@
+id: JOT-0009
+title: 'jot show: detail view of a todo'
+type: story
+status: new
+priority: medium
+parent: JOT-0002
+deps:
+- JOT-0004
+milestone: JOT-MS-01
+size: 3
+created: '2026-03-20T11:09:32.095118124Z'
+updated: '2026-03-20T11:09:45.865963780Z'

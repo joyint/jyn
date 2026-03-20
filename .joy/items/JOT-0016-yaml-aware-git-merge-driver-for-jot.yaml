@@ -1,0 +1,12 @@
+id: JOT-0016
+title: YAML-aware Git merge driver for .jot files
+type: task
+status: new
+priority: medium
+parent: JOT-0011
+deps:
+- JOT-0012
+milestone: JOT-MS-02
+size: 3
+created: '2026-03-20T11:09:52.676217737Z'
+updated: '2026-03-20T11:11:57.012752588Z'

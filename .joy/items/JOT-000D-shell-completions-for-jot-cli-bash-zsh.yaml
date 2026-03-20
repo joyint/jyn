@@ -1,0 +1,10 @@
+id: JOT-000D
+title: Shell completions for jot CLI (bash, zsh, fish)
+type: task
+status: new
+priority: medium
+parent: JOT-0002
+milestone: JOT-MS-01
+size: 3
+created: '2026-03-20T11:09:40.772736250Z'
+updated: '2026-03-20T11:09:40.772736250Z'

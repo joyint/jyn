@@ -1,0 +1,8 @@
+output:
+  color: auto
+  emoji: true
+  fortune: true
+  short: false
+project:
+  prefix: JOT
+version: 1

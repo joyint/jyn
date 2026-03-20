@@ -1,0 +1,14 @@
+id: JOT-001E
+title: 'E2E test: roundtrip jot CLI to Apple Reminders'
+type: task
+status: new
+priority: medium
+parent: JOT-0018
+deps:
+- JOT-001A
+- JOT-001B
+- JOT-001C
+milestone: JOT-MS-03
+size: 3
+created: '2026-03-20T11:10:03.329889994Z'
+updated: '2026-03-20T11:12:00.490649102Z'

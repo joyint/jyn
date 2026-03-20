@@ -1,10 +1,8 @@
 # Jot -- Vision
 
-Jot is a personal task manager sharing [joy-core](https://github.com/joyint/joy) as its foundation. It provides a fast, Git-native CLI for managing personal tasks with recurring schedules, due dates, and reminders. Mobile access works through CalDAV (Apple Reminders, Google Calendar) without requiring a native app.
+Jot is a personal task manager built on [joy-core](https://github.com/joyint/joy). It provides a fast, Git-native CLI for managing personal tasks with recurring schedules, due dates, and reminders. Mobile access works through CalDAV (Apple Reminders, Google Calendar) without requiring a native app.
 
 Jot is licensed under MIT. The CLI and data format are always free and open.
-
-For the platform and sync layer see the [platform repository](https://github.com/joyint/platform). For Joy (product management) see the [Joy repository](https://github.com/joyint/joy).
 
 ---
 
@@ -12,7 +10,7 @@ For the platform and sync layer see the [platform repository](https://github.com
 
 - Developers who want a terminal-native Todoist replacement
 - Anyone who prefers owning their data in a Git repo over trusting a SaaS database
-- Teams using Joy for PM who want personal task management on the same platform
+- Teams using Joy for product management who want personal task management on the same foundation
 
 ---
 
@@ -43,11 +41,11 @@ pub struct Todo {
 }
 ```
 
-This means Jot items are valid Joy items with extra fields. The server transports YAML without needing to understand all fields -- unknown fields are accepted and passed through.
+This means Jot items are valid Joy items with extra fields. Any tool that reads Joy items can read Jot items -- unknown fields are accepted and passed through.
 
 ### Recurrence
 
-Recurring tasks use an RRULE-compatible model:
+Recurring tasks use an RRULE-compatible model (RFC 5545):
 
 ```yaml
 # .jot/items/TODO-0003-weekly-review.yaml
@@ -82,7 +80,7 @@ When a recurring todo is completed (`jot done`), the next occurrence is created 
 └── log/
 ```
 
-Jot uses the `TODO` prefix for item IDs (configurable via project acronym, like Joy).
+Jot uses the `TODO` prefix for item IDs (configurable via project acronym).
 
 ---
 
@@ -112,13 +110,11 @@ jot edit <ID> [OPTIONS]                 # Modify a todo
 jot rm <ID>                             # Delete a todo
 ```
 
-All titles, descriptions, and comments are in the same YAML format as Joy items.
-
 ---
 
 ## Dispatch Integration
 
-Jot tasks can be created by the joyint.com dispatch service when Joy items reach status gates. These dispatched tasks carry a `source` field linking them back to their Joy origin:
+Jot tasks can be created by external services when Joy items reach status gates. These dispatched tasks carry a `source` field linking them back to their origin:
 
 ```yaml
 # .jot/items/TODO-000A-review-payment-integration.yaml
@@ -127,15 +123,15 @@ title: "Review: Payment Integration"
 type: task
 status: new
 source: "joy:JOY-002A"          # created by dispatch from Joy
-assignee: orchidee@joyint.com
+assignee: orchidee@example.com
 due_date: 2026-04-16
 created: 2026-04-15T14:00:00Z
 updated: 2026-04-15T14:00:00Z
 ```
 
-When this task is completed via `jot done`, joyint.com signals back to the Joy project that the review gate for JOY-002A is satisfied. See [Joy Vision](https://github.com/joyint/joy/blob/main/docs/dev/Vision.md#dispatch-bridging-joy-and-jot) for the full dispatch flow.
+When a dispatched task is completed via `jot done`, the originating system is notified that the gate is satisfied.
 
-AI agents receive dispatched todos the same way. An agent configured as `agent:implementer@joy` picks up assigned tasks via `jot ls --mine`, executes the work, and marks them done.
+AI agents receive dispatched todos the same way. An agent configured as a responsible user picks up assigned tasks via `jot ls --mine`, executes the work, and marks them done.
 
 ---
 
@@ -144,11 +140,11 @@ AI agents receive dispatched todos the same way. An agent configured as `agent:i
 Jot syncs via Git, identically to Joy:
 
 - **CLI users:** `git push` / `git pull`
-- **CalDAV users:** joyint.com maps `.jot/` items to VTODO resources (see [platform docs](https://github.com/joyint/platform/blob/main/docs/dev/Vision.md))
-- **WebUI users:** joyint.com provides a web interface for Jot alongside Joy
+- **CalDAV users:** a compatible server maps `.jot/` items to VTODO resources
+- **Web users:** a web interface provides browser-based access
 
 ---
 
 ## Related
 
-For roadmap, milestones, and timeline see the [umbrella repository](https://github.com/joyint/project). For business context (pricing, licensing, competitive landscape) see [BusinessModel.md](https://github.com/joyint/project/blob/main/docs/biz/BusinessModel.md) and [Competition.md](https://github.com/joyint/project/blob/main/docs/biz/Competition.md). These documents are part of the internal planning for the Joyint product ecosystem at Joydev GmbH.
+Jot is part of the [Joyint ecosystem](https://github.com/joyint/project), which includes Joy (product management), a sync platform, and native apps. For the sync server and CalDAV bridge see the [platform repository](https://github.com/joyint/platform). For Joy (product management) see the [Joy repository](https://github.com/joyint/joy).

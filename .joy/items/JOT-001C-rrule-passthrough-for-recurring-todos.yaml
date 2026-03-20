@@ -1,0 +1,12 @@
+id: JOT-001C
+title: RRULE passthrough for recurring todos via CalDAV
+type: task
+status: new
+priority: medium
+parent: JOT-0018
+deps:
+- JOT-0019
+milestone: JOT-MS-03
+size: 3
+created: '2026-03-20T11:10:03.326607146Z'
+updated: '2026-03-20T11:12:00.487582098Z'

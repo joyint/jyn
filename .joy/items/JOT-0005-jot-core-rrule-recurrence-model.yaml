@@ -1,0 +1,12 @@
+id: JOT-0005
+title: 'jot-core: RRULE recurrence model'
+type: task
+status: new
+priority: medium
+parent: JOT-0002
+deps:
+- JOT-0004
+milestone: JOT-MS-01
+size: 3
+created: '2026-03-20T11:09:25.733718464Z'
+updated: '2026-03-20T11:09:45.859089675Z'

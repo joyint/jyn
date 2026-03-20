@@ -1,0 +1,12 @@
+id: JOT-0006
+title: 'jot-core: completion logic with next-occurrence'
+type: task
+status: new
+priority: medium
+parent: JOT-0002
+deps:
+- JOT-0005
+milestone: JOT-MS-01
+size: 3
+created: '2026-03-20T11:09:25.735248132Z'
+updated: '2026-03-20T11:09:45.860776152Z'

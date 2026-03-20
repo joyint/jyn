@@ -1,0 +1,12 @@
+id: JOT-001A
+title: Integrate VTODO mapping into CalDAV server
+type: task
+status: new
+priority: medium
+parent: JOT-0018
+deps:
+- JOT-0019
+milestone: JOT-MS-03
+size: 3
+created: '2026-03-20T11:10:03.323419828Z'
+updated: '2026-03-20T11:12:00.484457428Z'

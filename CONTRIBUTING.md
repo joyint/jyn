@@ -2,13 +2,15 @@
 
 This document covers the coding conventions, testing strategy, CI/CD pipeline, and commit message format for the Jot repository.
 
-For product vision and CLI design see [docs/dev/Vision.md](docs/dev/Vision.md). For technology choices and architecture see [docs/dev/Architecture.md](docs/dev/Architecture.md). For cross-project architecture and ADRs see the [umbrella repository](https://github.com/joyint/project).
+For product vision and CLI design see [docs/dev/Vision.md](docs/dev/Vision.md). For technology choices and architecture see [docs/dev/Architecture.md](docs/dev/Architecture.md).
+
+The product backlog lives in `.joy/` and is managed with the `joy` CLI. Run `joy` for a board overview, `joy ls` to list items, `joy show <ID>` for details.
 
 ---
 
 ## Documentation Rules
 
-**No emoji in technical documentation.** Emoji are a runtime feature of the CLI (configurable, deactivatable). They do not belong in technical docs (vision, architecture, ADRs, code comments) or commit messages. README.md and user-facing materials may use emoji sparingly for warmth.
+**No emoji in technical documentation.** Emoji are a runtime feature of the CLI (configurable, deactivatable). They do not belong in technical docs (vision, architecture, code comments) or commit messages. README.md and user-facing materials may use emoji sparingly for warmth.
 
 **No ASCII diagrams.** Always use Mermaid for diagrams. This applies to architecture diagrams, flowcharts, state machines, sequence diagrams, and any other visual representation.
 
@@ -61,7 +63,7 @@ The header goes on the first line of the file, before any `#![...]` attributes, 
 
 ## Testing Strategy
 
-**Test-Driven Development (TDD)** is the default workflow.
+**Test-Driven Development (TDD)** is the default workflow. Write the test first, watch it fail, implement the minimum to pass, refactor.
 
 ### Test Levels
 
@@ -93,7 +95,7 @@ just test-coverage     # With coverage report
 
 ### Coverage Target
 
-Aim for >80% line coverage on jot-core. No hard enforcement.
+Aim for >80% line coverage on jot-core. No hard enforcement -- coverage is a signal, not a goal.
 
 ---
 
@@ -106,7 +108,19 @@ Every push and pull request triggers:
 3. **Test** -- Full test suite
 4. **Build** -- Debug build
 
-Releases are triggered by Git tags.
+Releases are triggered by Git tags (`v0.1.0`, `v1.0.0`, etc.).
+
+**Build matrix:**
+
+| Target | OS | Arch |
+|--------|----|------|
+| CLI binary | Linux, macOS, Windows | x86_64, aarch64 |
+
+**Artifacts:**
+
+- Standalone binaries (tar.gz, zip)
+- Homebrew formula
+- Cargo install: `cargo install jot`
 
 ---
 
@@ -133,3 +147,35 @@ test(core): add roundtrip tests for todo serialization
 ```
 
 No emoji in commit messages.
+
+---
+
+## Versioning
+
+All crates in the workspace share the same version and are bumped together, following [Semantic Versioning](https://semver.org/).
+
+Before 1.0 (0.x releases), breaking changes to commands and flags are permitted. After 1.0:
+
+- **Patch** (1.0.0 to 1.0.1): bugfixes only, no CLI changes
+- **Minor** (1.0.x to 1.1.0): new commands/flags allowed, deprecated commands show a warning with a hint to the replacement
+- **Major** (1.x to 2.0): deprecated commands may be removed
+
+---
+
+## Backlog Workflow
+
+The product backlog is managed with Joy (the `joy` CLI). Key conventions:
+
+- **Item types:** epic, story, task, bug, rework, decision, idea
+- **Priority levels:** critical, high, medium, low
+- **ID scheme:** JOT-0001 to JOT-FFFF (items), JOT-MS-01 to JOT-MS-FF (milestones), hex-based
+- **Language:** All titles, descriptions, and comments in English
+- **Status tracking:** `joy start <ID>` before coding, `joy close <ID>` after committing -- never skip
+- **Implementation flow:** Comment planned solution into the item, confirm, implement, update todos
+- **Checklist items:** Use "todo" (not "task") to avoid confusion with the task item type
+
+---
+
+## Related
+
+Jot is part of the [Joyint ecosystem](https://github.com/joyint/project). Shared architectural decisions (ADRs) and cross-project conventions are maintained there.

@@ -1,0 +1,12 @@
+id: JOT-0014
+title: Integrate Jot todo list into web frontend
+type: task
+status: new
+priority: medium
+parent: JOT-0011
+deps:
+- JOT-0013
+milestone: JOT-MS-02
+size: 3
+created: '2026-03-20T11:09:52.673171165Z'
+updated: '2026-03-20T11:11:57.009663494Z'
