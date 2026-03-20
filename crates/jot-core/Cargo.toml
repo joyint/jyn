@@ -8,7 +8,7 @@ description = "Core library for Jot personal task manager -- extends joy-core wi
 [dependencies]
 joy-core = { workspace = true }
 serde = { workspace = true }
-serde_yml = { workspace = true }
+serde_yaml_ng = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 chrono = { workspace = true }

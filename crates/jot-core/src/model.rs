@@ -93,8 +93,8 @@ mod tests {
         task.due_date = Some(NaiveDate::from_ymd_opt(2026, 3, 24).unwrap());
         task.project = Some("JOT-P-01".into());
 
-        let yaml = serde_yml::to_string(&task).unwrap();
-        let parsed: Task = serde_yml::from_str(&yaml).unwrap();
+        let yaml = serde_yaml_ng::to_string(&task).unwrap();
+        let parsed: Task = serde_yaml_ng::from_str(&yaml).unwrap();
 
         assert_eq!(parsed.item.id, "JOT-0001");
         assert_eq!(parsed.recurrence, Some("FREQ=WEEKLY;BYDAY=MO".into()));

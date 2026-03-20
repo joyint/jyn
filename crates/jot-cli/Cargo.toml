@@ -16,4 +16,4 @@ joy-core = { workspace = true }
 clap = { workspace = true }
 anyhow = { workspace = true }
 chrono = { workspace = true }
-serde_yml = { workspace = true }
+serde_yaml_ng = { workspace = true }
