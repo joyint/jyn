@@ -1,8 +1,11 @@
+agents:
+  architect:
+    interaction-level: 5
+  default:
+    interaction-level: 3
 output:
   color: auto
   emoji: true
   fortune: true
   short: false
-project:
-  prefix: JOT
 version: 1
