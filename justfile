@@ -26,10 +26,17 @@ check:
 
 # Check tools and deps
 doctor:
-    @echo "=== Jot ==="
-    @command -v cargo >/dev/null && echo "  cargo: $(cargo --version)" || echo "  cargo: MISSING"
-    @command -v rustfmt >/dev/null && echo "  rustfmt: $(rustfmt --version)" || echo "  rustfmt: MISSING"
-    @command -v clippy-driver >/dev/null && echo "  clippy: $(clippy-driver --version)" || echo "  clippy: MISSING"
+    #!/usr/bin/env bash
+    red=$'\033[31m' reset=$'\033[0m'
+    ok()   { local v; v=$("$1" --version 2>/dev/null) && echo "  $2: $v" || echo "  $2: ok"; }
+    miss() { printf "  %s%s: MISSING%s\n" "$red" "$1" "$reset"; }
+    command -v cargo         >/dev/null && ok cargo cargo           || miss cargo
+    command -v rustfmt       >/dev/null && ok rustfmt rustfmt       || miss rustfmt
+    command -v clippy-driver >/dev/null && ok clippy-driver clippy  || miss clippy
+
+# Setup (nothing extra needed)
+setup:
+    @true
 
 # Install to ~/.local/bin/
 install:
