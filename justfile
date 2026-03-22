@@ -83,7 +83,7 @@ release bump="patch" confirm="ask":
     git commit --quiet -m "bump to ${tag}"
     # Annotated tag with release notes (shown as GitHub Release body)
     if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
-        joy release show "${tag}" | git tag -a "${tag}" -F -
+        joy release show --markdown "${tag}" | git tag -a "${tag}" -F -
     else
         git tag "${tag}"
     fi
@@ -101,7 +101,7 @@ release bump="patch" confirm="ask":
                 else
                     gh_title="${tag}"
                 fi
-                joy release show "${tag}" | gh release create "${tag}" --title "${gh_title}" --notes-file -
+                joy release show --markdown "${tag}" | gh release create "${tag}" --title "${gh_title}" --notes-file -
             else
                 gh release create "${tag}" --generate-notes
             fi
