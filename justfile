@@ -103,7 +103,7 @@ release bump="patch" confirm="ask":
         if [[ "$gh_confirm" == [yY] ]]; then
             if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
                 # Read title from release YAML if available
-                gh_title=$(grep '^title:' .joy/releases/*-"${tag}".yaml 2>/dev/null | head -1 | sed 's/^title:[[:space:]]*//' | tr -d "'"'")
+                gh_title=$(grep '^title:' .joy/releases/*-"${tag}".yaml 2>/dev/null | head -1 | sed 's/^title:[[:space:]]*//' | tr -d "'\"" || true)
                 if [ -n "$gh_title" ]; then
                     gh_title="${tag} -- ${gh_title}"
                 else
