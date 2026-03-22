@@ -89,3 +89,15 @@ release bump="patch" confirm="ask":
     fi
     git push --quiet && git push --quiet origin "${tag}"
     echo "Released ${tag}"
+    # Optional GitHub Release
+    if command -v gh >/dev/null 2>&1; then
+        read -rp "Create GitHub Release? [y/N] " gh_confirm
+        if [[ "$gh_confirm" == [yY] ]]; then
+            if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
+                joy release show "${tag}" | gh release create "${tag}" --title "${tag}" --notes-file -
+            else
+                gh release create "${tag}" --title "${tag}" --generate-notes
+            fi
+            echo "GitHub Release created."
+        fi
+    fi
