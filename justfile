@@ -51,6 +51,12 @@ release bump="patch" confirm="ask":
         exit 0
     fi
     if [ -n "$(git status --porcelain)" ]; then
+    # Auto-commit pending Joy data (items, logs) before release
+    if git status --porcelain .joy/ 2>/dev/null | grep -q .; then
+        git add .joy/
+        git commit --quiet -m "chore: update Joy items and logs [no-item]"
+        echo "Committed pending Joy data."
+    fi
         echo "Error: working tree is not clean."
         exit 1
     fi
