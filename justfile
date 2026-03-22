@@ -81,6 +81,11 @@ release bump="patch" confirm="ask":
     fi
     git add -A
     git commit --quiet -m "bump to ${tag}"
-    git tag "${tag}"
+    # Annotated tag with release notes (shown as GitHub Release body)
+    if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
+        joy release show "${tag}" | git tag -a "${tag}" -F -
+    else
+        git tag "${tag}"
+    fi
     git push --quiet && git push --quiet origin "${tag}"
     echo "Released ${tag}"
