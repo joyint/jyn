@@ -67,8 +67,8 @@ release bump="patch" confirm="ask":
     esac
     tag="v${semver}"
     if [ "{{confirm}}" = "ask" ]; then
-        read -rp "Release ${tag}? [Y/n] " c
-        if [[ "$c" == [nN] ]]; then echo "Aborted."; exit 0; fi
+        read -rp "Release ${tag}? [y/N] " c
+        if [[ "$c" != [yY] ]]; then echo "Aborted."; exit 0; fi
     fi
     for f in $(find . -name Cargo.toml -not -path '*/target/*'); do
         if grep -q '^version = ' "$f"; then
