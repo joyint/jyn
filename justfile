@@ -21,8 +21,7 @@ lint:
     cargo clippy --workspace -- -D warnings
 
 # Run fmt-check, lint, test
-check:
-    just fmt-check && just lint && just test
+check: fmt-check lint test
 
 # Check tools and deps
 doctor:
@@ -30,10 +29,10 @@ doctor:
     red=$'\033[31m' reset=$'\033[0m'
     ok()   { local v; v=$("$1" --version 2>/dev/null) && echo "  $2: $v" || echo "  $2: ok"; }
     miss() { printf "  %s%s: MISSING%s\n" "$red" "$1" "$reset"; }
+    opt()  { printf "  %s%s: MISSING (optional, %s)%s\n" "$red" "$1" "$2" "$reset"; }
     command -v cargo         >/dev/null && ok cargo cargo           || miss cargo
     command -v rustfmt       >/dev/null && ok rustfmt rustfmt       || miss rustfmt
     command -v clippy-driver >/dev/null && ok clippy-driver clippy  || miss clippy
-    opt()  { printf "  %s%s: MISSING (optional, %s)%s\n" "$red" "$1" "$2" "$reset"; }
     command -v gh            >/dev/null && ok gh "gh (GitHub CLI)" || opt "gh" "https://cli.github.com"
 
 # Setup (nothing extra needed)
@@ -45,50 +44,56 @@ install:
     cargo build --release -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
 
 # Release (bump: patch, minor, or major)
-release bump="patch" confirm="ask":
+release bump="patch":
     #!/usr/bin/env bash
     set -euo pipefail
     if git describe --tags --exact-match HEAD >/dev/null 2>&1; then
         echo "No changes since last tag, skipping."
         exit 0
     fi
-    if [ -n "$(git status --porcelain)" ]; then
     # Auto-commit pending Joy data (items, logs) before release
     if git status --porcelain .joy/ 2>/dev/null | grep -q .; then
         git add .joy/
         git commit --quiet -m "chore: update Joy items and logs [no-item]"
         echo "Committed pending Joy data."
     fi
+    if [ -n "$(git status --porcelain)" ]; then
         echo "Error: working tree is not clean."
         exit 1
     fi
-    current=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-    current="${current#v}"
-    major=$(echo "$current" | cut -d. -f1)
-    minor=$(echo "$current" | cut -d. -f2)
-    patch=$(echo "$current" | cut -d. -f3)
-    case "{{bump}}" in
-        major) semver="$((major + 1)).0.0" ;;
-        minor) semver="${major}.$((minor + 1)).0" ;;
-        patch) semver="${major}.${minor}.$((patch + 1))" ;;
-        *) echo "Error: bump must be patch, minor, or major"; exit 1 ;;
-    esac
-    tag="v${semver}"
-    if [ "{{confirm}}" = "ask" ]; then
-        read -rp "Release ${tag}? [y/N] " c
-        if [[ "$c" != [yY] ]]; then echo "Aborted."; exit 0; fi
+    # Joy release (if this is a Joy project)
+    if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
+        joy release create "{{bump}}" || exit 1
+        # Read version from the latest release YAML
+        tag=$(ls -1 .joy/releases/*.yaml 2>/dev/null | sort | tail -1 | sed 's/.*-\(v[0-9].*\)\.yaml/\1/')
+    else
+        current=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        current="${current#v}"
+        major=$(echo "$current" | cut -d. -f1)
+        minor=$(echo "$current" | cut -d. -f2)
+        patch=$(echo "$current" | cut -d. -f3)
+        case "{{bump}}" in
+            major) tag="v$((major + 1)).0.0" ;;
+            minor) tag="v${major}.$((minor + 1)).0" ;;
+            patch) tag="v${major}.${minor}.$((patch + 1))" ;;
+            *) echo "Error: bump must be patch, minor, or major"; exit 1 ;;
+        esac
     fi
-    for f in $(find . -name Cargo.toml -not -path '*/target/*'); do
-        if grep -q '^version = ' "$f"; then
-            sed -i "s/^version = \".*\"/version = \"${semver}\"/" "$f"
-            echo "  ${f} -> ${semver}"
-        fi
-    done
-    if [ -f Cargo.toml ]; then
+    # Run checks before proceeding with the release
+    just check
+    semver="${tag#v}"
+    # Cargo version bump (if crates exist)
+    if [ -d "crates" ]; then
+        for f in $(find crates -name Cargo.toml); do
+            if grep -q '^version = ' "$f"; then
+                sed -i "s/^version = \".*\"/version = \"${semver}\"/" "$f"
+                echo "  ${f} -> ${semver}"
+            fi
+        done
         cargo generate-lockfile 2>/dev/null || cargo check 2>/dev/null
     fi
     git add -A
-    git commit --quiet -m "bump to ${tag}"
+    git commit --quiet -m "bump to ${tag} [no-item]"
     # Annotated tag with release notes (shown as GitHub Release body)
     if [ -f ".joy/project.yaml" ] && command -v joy >/dev/null 2>&1; then
         joy release show --markdown "${tag}" | git tag -a "${tag}" -F -
