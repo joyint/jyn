@@ -1,4 +1,9 @@
 name: jot
 acronym: JOT
 language: en
+forge: github
 created: 2026-03-20T10:51:52.574885092Z
+release:
+  version-files:
+    - path: crates/*/Cargo.toml
+      key: package.version
