@@ -1,8 +1,8 @@
 agents:
   architect:
-    interaction-level: 5
+    mode: pairing
   default:
-    interaction-level: 3
+    mode: collaborative
 output:
   color: auto
   emoji: true
