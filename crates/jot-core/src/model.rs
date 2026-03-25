@@ -41,6 +41,7 @@ impl Task {
                 title,
                 joy_core::model::item::ItemType::Task,
                 joy_core::model::item::Priority::Medium,
+                vec![joy_core::model::item::Capability::Implement],
             ),
             due_date: None,
             reminder: None,
