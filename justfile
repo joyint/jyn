@@ -33,6 +33,7 @@ doctor:
     command -v cargo         >/dev/null && ok cargo cargo           || miss cargo
     command -v rustfmt       >/dev/null && ok rustfmt rustfmt       || miss rustfmt
     command -v clippy-driver >/dev/null && ok clippy-driver clippy  || miss clippy
+    command -v bats          >/dev/null && ok bats bats             || opt "bats" "pacman -S bats"
     command -v gh            >/dev/null && ok gh "gh (GitHub CLI)" || opt "gh" "https://cli.github.com"
 
 # Setup (nothing extra needed)
