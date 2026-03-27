@@ -6,7 +6,7 @@ default:
 
 # Run all tests
 test:
-    cargo test --workspace
+    cargo test --workspace --locked
 
 # Format all code
 fmt:
@@ -18,7 +18,7 @@ fmt-check:
 
 # Lint all code
 lint:
-    cargo clippy --workspace -- -D warnings
+    cargo clippy --workspace --locked -- -D warnings
 
 # Run fmt-check, lint, test
 check: fmt-check lint test
@@ -41,7 +41,7 @@ setup:
 
 # Install to ~/.local/bin/
 install:
-    cargo build --release -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
+    cargo build --release --locked -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
 
 # Auto-commit known generated files (.joy/, lockfiles)
 [private]
@@ -81,6 +81,9 @@ release bump="patch":
         echo "Error: working tree is not clean."
         exit 1
     fi
+    echo "Updating dependencies..."
+    cargo update
+    just auto-commit
     echo "Checking (format, lint, test)..."
     if ! just check > /dev/null 2>&1; then
         echo "Checks failed. Run 'just check' for details."
