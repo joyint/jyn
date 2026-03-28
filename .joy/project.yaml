@@ -16,4 +16,10 @@ members:
       assign: {}
   horst.schwarz@joydev.com:
     capabilities: all
+release:
+  version-files:
+  - path: crates/jot-core/Cargo.toml
+    key: package.version
+  - path: crates/jot-cli/Cargo.toml
+    key: package.version
 created: 2026-03-20T10:51:52.574885092Z
