@@ -6,7 +6,7 @@ default:
 
 # Run all tests
 test:
-    cargo test --workspace --locked
+    cargo test --workspace
 
 # Format all code
 fmt:
@@ -18,7 +18,7 @@ fmt-check:
 
 # Lint all code
 lint:
-    cargo clippy --workspace --locked -- -D warnings
+    cargo clippy --workspace -- -D warnings
 
 # Run fmt-check, lint, test
 check: fmt-check lint test
@@ -42,7 +42,7 @@ setup:
 
 # Install to ~/.local/bin/
 install:
-    cargo build --release --locked -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
+    cargo build --release -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
 
 # Auto-commit known generated files (.joy/, lockfiles)
 [private]
