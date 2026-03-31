@@ -1,0 +1,12 @@
+id: JOT-0020
+title: Publish jot-core, jot-cli to crates.io
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 2
+created_by: horst.schwarz@joydev.com
+created: 2026-03-31T17:31:05.516358038Z
+updated: 2026-03-31T17:31:05.516358038Z
+description: Publish jot crates to crates.io. Update Cargo.toml from path to crates.io dependency on joy-core (requires JOY-00A3). Coordinate with first public release. Migrated from JI-00A9.
