@@ -1,9 +1,11 @@
 [package]
-name = "jot"
+name = "jot-cli"
 version = "0.2.0"
 edition = "2021"
 license = "MIT"
-description = "Personal task manager -- Git-native, CLI-first, CalDAV-ready"
+description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
+repository = "https://github.com/joyint/jot"
+homepage = "https://joyint.com/en/jot"
 default-run = "jot"
 
 [[bin]]

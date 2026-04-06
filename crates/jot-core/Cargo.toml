@@ -3,7 +3,9 @@ name = "jot-core"
 version = "0.2.0"
 edition = "2021"
 license = "MIT"
-description = "Core library for Jot personal task manager -- extends joy-core with recurrence"
+description = "Core library for Jot personal task manager - extends joy-core with recurrence"
+repository = "https://github.com/joyint/jot"
+homepage = "https://joyint.com/en/jot"
 
 [dependencies]
 joy-core = { workspace = true }
