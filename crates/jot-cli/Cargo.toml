@@ -14,7 +14,7 @@ name = "jot"
 path = "src/main.rs"
 
 [dependencies]
-jot-core = { version = "0.2.0", path = "../jot-core" }
+jot-core = { version = "0.2.1", path = "../jot-core" }
 joy-core = { workspace = true }
 clap = { workspace = true }
 anyhow = { workspace = true }

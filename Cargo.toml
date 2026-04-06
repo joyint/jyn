@@ -6,7 +6,7 @@ members = [
 ]
 
 [workspace.dependencies]
-joy-core = { version = "0.8.0", path = "../joy/crates/joy-core" }
+joy-core = { version = "0.8.1", path = "../joy/crates/joy-core" }
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml_ng = "0.10"
 serde_json = "1.0"
