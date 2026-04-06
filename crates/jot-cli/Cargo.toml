@@ -6,6 +6,7 @@ license = "MIT"
 description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
 repository = "https://github.com/joyint/jot"
 homepage = "https://joyint.com/en/jot"
+readme = "README.md"
 default-run = "jot"
 
 [[bin]]

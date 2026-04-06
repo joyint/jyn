@@ -1,0 +1,12 @@
+id: JOT-0021-59
+title: Follow up on jot-cli crate name transfer
+type: task
+status: new
+priority: high
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-06T21:43:23.660810200Z
+updated: 2026-04-06T21:43:23.660810200Z
+description: Owner of jot-cli on crates.io (psychananaz) was contacted via psychananaz/oxidlog#4. crates.io team declined transfer without owner consent (rust-lang/crates.io#13363). Monitor for response and coordinate transfer once approved.
