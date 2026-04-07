@@ -470,7 +470,7 @@ dependencies = [
 
 [[package]]
 name = "jot-core"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "chrono",
  "joy-core",
@@ -483,7 +483,9 @@ dependencies = [
 
 [[package]]
 name = "joy-core"
-version = "0.8.0"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "911bf462c3df8e3b4179db9e693ba6c8628a8da8aac465366c659090436267d6"
 dependencies = [
  "argon2",
  "base64ct",
