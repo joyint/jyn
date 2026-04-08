@@ -1,0 +1,12 @@
+id: JOT-0023-A0
+title: Integrate joy-plugins into jot-cli
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-08T17:13:44.463863593Z
+updated: 2026-04-08T17:13:44.463863593Z
+description: Add joy-plugins dependency to jot-cli. Wire up plugin discovery and command forwarding for platform features (joyint-connect).
