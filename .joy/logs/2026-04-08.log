@@ -5,3 +5,4 @@
 2026-04-08T17:11:39.890Z JOT-0023-A0 guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
 2026-04-08T17:13:25.539Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-08T17:13:44.468Z JOT-0023-A0 item.created "Integrate joy-plugins into jot-cli" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-08T19:34:14.417Z JOT-0024-40 item.created "Add --app flag to launch native app plugin" [ai:claude@joy delegated-by:cx-test@example.com]

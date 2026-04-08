@@ -1,0 +1,12 @@
+id: JOT-0024-40
+title: Add --app flag to launch native app plugin
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-08T19:34:14.413106271Z
+updated: 2026-04-08T19:34:14.413106271Z
+description: jot --app launches the native Jot app via the plugin system. If joyint-jot-app is not installed, offer to download it.
