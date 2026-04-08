@@ -42,7 +42,7 @@ setup:
 
 # Install to ~/.local/bin/
 install:
-    cargo build --release -p jot && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
+    cargo build --release -p jot-cli && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
 
 # Auto-commit known generated files (.joy/, lockfiles)
 [private]
