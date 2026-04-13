@@ -1,0 +1,18 @@
+id: JOT-002A-08
+title: Restrict publish.yml trigger to stable release tags
+type: task
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T21:09:29.699577252Z
+updated: 2026-04-13T21:09:37.060752462Z
+description: 'Mirror of JOY-00D7-08: tighten publish.yml tag pattern so pre-release tags do not publish to crates.io.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T21:09:37.050545359Z
+  text: '[x] Same change as JOY-00D7-08 applied to jot publish.yml.'

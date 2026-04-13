@@ -25,3 +25,7 @@
 2026-04-13T21:01:59.310Z JOT-0029-DA item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:01:59.316Z JOT-0029-DA comment.added "[x] cargo-dist's auto-generated release.yml deleted. [x] Hand-maintained release.yml added: matrix build per target, dist build as subroutine, gh release upload --clobber on existing release or gh release create if missing. [x] just release-binaries recipe added for local equivalent (single-platform build by default; CI handles full matrix). [x] dist-workspace.toml: ci=[] disables dist generate's CI output. Joy untouched (its forge-release prompt stays as is)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:01:59.323Z JOT-0029-DA item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:09:29.701Z JOT-002A-08 item.created "Restrict publish.yml trigger to stable release tags" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:09:37.044Z JOT-002A-08 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:09:37.053Z JOT-002A-08 comment.added "[x] Same change as JOY-00D7-08 applied to jot publish.yml." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:09:37.062Z JOT-002A-08 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
