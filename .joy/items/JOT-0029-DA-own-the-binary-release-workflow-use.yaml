@@ -1,0 +1,20 @@
+id: JOT-0029-DA
+title: Own the binary release workflow, use cargo-dist only as build lib
+type: story
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T21:01:46.387144609Z
+updated: 2026-04-13T21:01:59.322098103Z
+description: 'Mirror of JOY-00D6-DA: stop letting cargo-dist auto-generate the release workflow. Replace it with a hand-maintained one that calls ''dist build'' for the binary matrix and uploads to an existing GitHub release (or creates one if missing). Add ''just release-binaries'' for local equivalent. dist-workspace.toml gets ci=[] so ''dist generate'' stays a no-op for CI.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T21:01:59.315352373Z
+  text: '[x] cargo-dist''s auto-generated release.yml deleted. [x] Hand-maintained release.yml added: matrix build per target, dist build as subroutine, gh release upload --clobber on existing release or gh release create if missing. [x] just release-binaries recipe added for local equivalent (single-platform build by default; CI handles full matrix). [x] dist-workspace.toml: ci=[] disables dist generate''s CI output. Joy untouched (its forge-release prompt stays as is).'

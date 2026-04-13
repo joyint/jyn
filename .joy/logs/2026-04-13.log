@@ -21,3 +21,7 @@
 2026-04-13T20:14:29.240Z JOT-0028-2A item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T20:14:29.246Z JOT-0028-2A comment.added "[x] Same fixes as JOY-00D5-2A applied to jot's just publish recipe." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T20:14:29.253Z JOT-0028-2A item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:01:46.388Z JOT-0029-DA item.created "Own the binary release workflow, use cargo-dist only as build lib" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:01:59.310Z JOT-0029-DA item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:01:59.316Z JOT-0029-DA comment.added "[x] cargo-dist's auto-generated release.yml deleted. [x] Hand-maintained release.yml added: matrix build per target, dist build as subroutine, gh release upload --clobber on existing release or gh release create if missing. [x] just release-binaries recipe added for local equivalent (single-platform build by default; CI handles full matrix). [x] dist-workspace.toml: ci=[] disables dist generate's CI output. Joy untouched (its forge-release prompt stays as is)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:01:59.323Z JOT-0029-DA item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
