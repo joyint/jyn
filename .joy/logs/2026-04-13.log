@@ -39,3 +39,7 @@
 2026-04-13T21:52:20.975Z JOT-002C-C8 comment.added "[x] Reverted ci to 'github' in dist-workspace.toml; comment now warns to never run 'dist generate' (would overwrite the patched create-or-upload step in release.yml)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:52:20.981Z JOT-002C-C8 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:59:01.919Z v0.2.3 release.created [horst.schwarz@joydev.com]
+2026-04-13T22:01:09.040Z JOT-002D-E1 item.created "cargo-dist host fails when release.yml is hand-patched" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:01:15.497Z JOT-002D-E1 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:01:15.503Z JOT-002D-E1 comment.added "[x] Same fix as JOY-00DA-E1 applied to jot." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:01:15.510Z JOT-002D-E1 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

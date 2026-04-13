@@ -1,0 +1,19 @@
+id: JOT-002D-E1
+title: cargo-dist host fails when release.yml is hand-patched
+type: bug
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T22:01:09.038691113Z
+updated: 2026-04-13T22:01:15.508986140Z
+description: 'Mirror of JOY-00DA-E1: add allow-dirty=[''ci''] to dist-workspace.toml so the hand-patched create-or-upload step in release.yml does not trip cargo-dist''s ''ci is out of date'' check.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T22:01:15.502402412Z
+  text: '[x] Same fix as JOY-00DA-E1 applied to jot.'
