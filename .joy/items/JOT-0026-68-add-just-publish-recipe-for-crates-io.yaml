@@ -1,0 +1,18 @@
+id: JOT-0026-68
+title: Add just publish recipe for crates.io
+type: task
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T19:20:33.949271477Z
+updated: 2026-04-13T19:20:42.964836512Z
+description: Wrap cargo publish for jot-core, jot-cli (in dependency order) in a 'just publish' recipe. Read CARGO_REGISTRY_TOKEN from the environment, skip crates already published. Implements the local-first release paradigm; see ADR-032 in the umbrella (JI-00D7-1B).
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T19:20:42.957429753Z
+  text: '[x] just publish recipe added; idempotent (skips already-published versions); env-driven token; smoke-tested locally.'
