@@ -1,12 +1,17 @@
 id: JOT-0008
 title: 'jot ls: list open todos with filters'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.093410634Z
-updated: 2026-03-20T11:09:45.864216847Z
+updated: 2026-04-13T23:41:34.956690015Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T23:41:34.956689420Z
+  text: '[x] implemented ''jot ls'' -- filters active tasks; ''jot'' without subcommand is aliased to ''jot ls''.'

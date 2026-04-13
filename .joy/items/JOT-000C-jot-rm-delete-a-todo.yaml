@@ -1,12 +1,17 @@
 id: JOT-000C
 title: 'jot rm: delete a todo'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.100085742Z
-updated: 2026-03-20T11:09:45.871518080Z
+updated: 2026-04-13T23:41:34.970834371Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T23:41:34.970834023Z
+  text: '[x] implemented ''jot rm <id>'' -- accepts full or short-form ID; errors on missing/ambiguous.'

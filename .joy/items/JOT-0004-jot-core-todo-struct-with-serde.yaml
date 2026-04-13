@@ -1,12 +1,17 @@
 id: JOT-0004
 title: 'jot-core: Todo struct with serde flatten on Item'
 type: task
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0003
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:25.732010330Z
-updated: 2026-03-20T11:09:45.857145255Z
+updated: 2026-04-13T23:41:34.986002899Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T23:41:34.986002219Z
+  text: '[x] Task extends Item via serde(flatten); storage uses joy-core generic write_yaml/read_yaml + item_filename + title_hash_suffix; no joy-core change required.'

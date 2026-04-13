@@ -4,9 +4,17 @@
 default:
     @just --list
 
-# Run all tests
-test:
+# Run all tests (unit + integration)
+test: test-unit test-int
+
+# Rust unit tests only
+test-unit:
     cargo test --workspace
+
+# Integration tests (bats)
+test-int:
+    cargo build -p jot-cli
+    bats tests/integration/*.bats
 
 # Format all code
 fmt:

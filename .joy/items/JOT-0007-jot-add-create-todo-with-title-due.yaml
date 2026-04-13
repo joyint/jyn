@@ -1,12 +1,20 @@
 id: JOT-0007
 title: 'jot add: create todo with title, due, priority, tags'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.091665662Z
-updated: 2026-03-20T11:09:45.862554706Z
+updated: 2026-04-13T23:41:34.941246853Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T23:38:06.566589090Z
+  text: 'Plan: implement add/rm/ls minimally. jot-core::storage reuses joy-core generic write_yaml/read_yaml + item_filename/title_hash_suffix; .jot/ path is jot-local. Due/reminder/recurrence not in scope for this iteration.'
+- author: ai:claude@joy
+  date: 2026-04-13T23:41:34.941246578Z
+  text: '[x] implemented ''jot add <title>'' -- writes .jot/items/<ID>-<slug>.yaml via jot-core::storage using joy-core generic primitives.'
