@@ -57,3 +57,4 @@
 2026-04-13T23:41:34.960Z JOT-0008 comment.added "[x] implemented 'jot ls' -- filters active tasks; 'jot' without subcommand is aliased to 'jot ls'." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T23:41:34.973Z JOT-000C comment.added "[x] implemented 'jot rm <id>' -- accepts full or short-form ID; errors on missing/ambiguous." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T23:41:34.989Z JOT-0004 comment.added "[x] Task extends Item via serde(flatten); storage uses joy-core generic write_yaml/read_yaml + item_filename + title_hash_suffix; no joy-core change required." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T23:44:26.612Z v0.2.4 release.created [horst.schwarz@joydev.com]

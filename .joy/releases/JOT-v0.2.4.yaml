@@ -1,0 +1,13 @@
+version: v0.2.4
+date: 2026-04-13
+previous: v0.2.3
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 8
+  items: 2
+items:
+  bugs:
+  - id: JOT-002D-E1
+    title: cargo-dist host fails when release.yml is hand-patched
+  - id: JOT-002E-B7
+    title: just publish misses cargo's pre-check 'already exists on crates.io index'
