@@ -1,0 +1,19 @@
+id: JOT-002C-C8
+title: ci=[] in dist-workspace.toml breaks cargo-dist runtime, not only generation
+type: bug
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T21:52:10.281540036Z
+updated: 2026-04-13T21:52:20.980210030Z
+description: 'Setting ''ci = []'' in dist-workspace.toml was meant to only disable ''dist generate'' from re-creating release.yml. But cargo-dist commands at runtime (''dist host --steps=create'' inside the workflow) also read this config and panic with ''couldn''t find the release!?'' when ci is empty. Result: every release.yml run since the change failed in the plan step, leaving GitHub releases without binary assets and breaking get.joyint.com/jot. Fix: revert ci to ''github'' and rely on a strong comment plus team discipline to never run ''dist generate'' (which would overwrite the patched ''Create or update GitHub Release'' step).'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T21:52:20.973307345Z
+  text: '[x] Reverted ci to ''github'' in dist-workspace.toml; comment now warns to never run ''dist generate'' (would overwrite the patched create-or-upload step in release.yml).'

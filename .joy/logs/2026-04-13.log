@@ -34,3 +34,7 @@
 2026-04-13T21:27:19.481Z JOT-002B-49 comment.added "[x] Same correction as JOY-00D8-49 applied to jot." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:27:19.488Z JOT-002B-49 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:42:14.635Z v0.2.2 release.created [horst.schwarz@joydev.com]
+2026-04-13T21:52:10.283Z JOT-002C-C8 item.created "ci=[] in dist-workspace.toml breaks cargo-dist runtime, not only generation" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:52:20.968Z JOT-002C-C8 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:52:20.975Z JOT-002C-C8 comment.added "[x] Reverted ci to 'github' in dist-workspace.toml; comment now warns to never run 'dist generate' (would overwrite the patched create-or-upload step in release.yml)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:52:20.981Z JOT-002C-C8 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
