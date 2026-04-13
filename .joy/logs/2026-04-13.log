@@ -43,3 +43,7 @@
 2026-04-13T22:01:15.497Z JOT-002D-E1 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T22:01:15.503Z JOT-002D-E1 comment.added "[x] Same fix as JOY-00DA-E1 applied to jot." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T22:01:15.510Z JOT-002D-E1 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:02:23.359Z JOT-002E-B7 item.created "just publish misses cargo's pre-check 'already exists on crates.io index'" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:02:29.752Z JOT-002E-B7 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:02:29.763Z JOT-002E-B7 comment.added "[x] Same regex fix as JOY-00DB-C5 applied to jot's publish recipe." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T22:02:29.773Z JOT-002E-B7 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
