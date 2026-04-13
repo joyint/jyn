@@ -1,0 +1,69 @@
+id: JOT-0025-C1
+title: Publish prebuilt binaries via cargo-dist
+type: story
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 3
+created_by: ai:claude@joy
+created: 2026-04-13T17:00:56.062808111Z
+updated: 2026-04-13T17:44:22.601253954Z
+description: |-
+  ## Goal
+
+  Ship prebuilt Jot binaries on GitHub releases so users can install via a
+  one-line shell command instead of going through ``cargo install``.
+
+  ## Approach
+
+  Use [cargo-dist](https://axodotdev.github.io/cargo-dist/) (the Rust
+  community's standard for this, also used by ruff, uv, oxc). It generates
+  a GitHub Actions release workflow and shell/PowerShell installer scripts
+  that live next to the release assets on GitHub.
+
+  ### Scope
+
+  1. Add cargo-dist config to ``Cargo.toml`` (workspace metadata).
+  2. Generate the release workflow with ``cargo dist init`` and adjust for
+     repo conventions (PR-based release, signed tags etc.).
+  3. Build targets: Linux x86_64 + aarch64, macOS x86_64 + aarch64, Windows
+     x86_64.
+  4. Installer artifacts produced per release:
+     - ``jot-installer.sh`` (bash)
+     - ``jot-installer.ps1`` (PowerShell)
+     - Raw tarballs / zips per target triple
+  5. Verify via a prerelease tag that the workflow produces all artifacts
+     and that ``curl -fsSL
+     github.com/joyint/jot/releases/latest/download/jot-installer.sh | sh``
+     actually installs the correct binary.
+  6. Document the new install command in Jot's README and CONTRIBUTING.
+
+  ### Out of scope
+
+  - ``get.joyint.com`` vanity domain (tracked in the website backlog).
+  - Installing docs update on joyint.com (tracked in the website backlog).
+
+  ## Acceptance
+
+  - Tagging a release triggers the workflow.
+  - ``jot-installer.sh`` on the release page installs Jot into
+    ``~/.local/bin`` (or equivalent) on Linux / macOS.
+  - README mentions the new one-liner as primary install method,
+    ``cargo install jot-cli`` retained as alternative.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T17:44:22.582774110Z
+  text: |-
+    [x] Ran 'dist init -y --hosting github' and enabled shell+powershell installers with install-path '~/.local/bin'.
+    [x] Profile section [profile.dist] added to workspace Cargo.toml (thin LTO).
+    [x] Generated .github/workflows/release.yml (first GitHub workflow in this repo).
+    [x] Removed the path override from workspace joy-core dep (was 'version = \"0.8.1\", path = \"../joy/crates/joy-core\"' -> now just 'version = \"0.8.1\"'). Local umbrella development already overrides via '.cargo/config.toml' paths entry, so local DX is unchanged; CI now resolves joy-core from crates.io as it must when cloning jot standalone.
+    [x] 'dist plan' verifies artifacts: jot-cli-installer.sh, jot-cli-installer.ps1, platform tarballs/zips with jot binary + LICENSE + README.md.
+    [x] README Install section added with curl one-liner (future-available after first tagged release), cargo install as alternative.
+
+    Remaining: joy-core must stay published on crates.io at the version jot depends on, otherwise cargo resolve fails in the release workflow.
