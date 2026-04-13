@@ -1,0 +1,11 @@
+version: v0.2.3
+date: 2026-04-13
+previous: v0.2.2
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  bugs:
+  - id: JOT-002C-C8
+    title: ci=[] in dist-workspace.toml breaks cargo-dist runtime, not only generation

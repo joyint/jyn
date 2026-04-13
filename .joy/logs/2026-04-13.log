@@ -38,3 +38,4 @@
 2026-04-13T21:52:20.968Z JOT-002C-C8 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:52:20.975Z JOT-002C-C8 comment.added "[x] Reverted ci to 'github' in dist-workspace.toml; comment now warns to never run 'dist generate' (would overwrite the patched create-or-upload step in release.yml)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:52:20.981Z JOT-002C-C8 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:59:01.919Z v0.2.3 release.created [horst.schwarz@joydev.com]
