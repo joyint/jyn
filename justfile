@@ -120,7 +120,7 @@ publish:
             continue
         fi
         echo "Publishing $crate $version..."
-        cargo publish -p "$crate" --token "$CARGO_REGISTRY_TOKEN"
+        cargo publish -p "$crate"
         sleep 5
     done
     echo "Publish complete."

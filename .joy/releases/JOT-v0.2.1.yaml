@@ -1,0 +1,16 @@
+version: v0.2.1
+date: 2026-04-13
+previous: v0.2.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 12
+  items: 3
+items:
+  stories:
+  - id: JOT-0025-C1
+    title: Publish prebuilt binaries via cargo-dist
+  tasks:
+  - id: JOT-0026-68
+    title: Add just publish recipe for crates.io
+  - id: JOT-0027-A5
+    title: Add CI workflow + GH Actions wrapper for just publish
