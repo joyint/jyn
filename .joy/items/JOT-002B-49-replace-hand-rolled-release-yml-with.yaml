@@ -1,0 +1,18 @@
+id: JOT-002B-49
+title: Replace hand-rolled release.yml with patched cargo-dist output
+type: task
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T21:27:12.861401252Z
+updated: 2026-04-13T21:27:19.486454506Z
+description: 'Mirror of JOY-00D8-49: restore cargo-dist''s auto-generated workflow and patch only the create-release step into create-or-upload. Drop the broken just release-binaries recipe.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T21:27:19.479955495Z
+  text: '[x] Same correction as JOY-00D8-49 applied to jot.'

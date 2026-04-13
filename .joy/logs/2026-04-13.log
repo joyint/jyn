@@ -29,3 +29,7 @@
 2026-04-13T21:09:37.044Z JOT-002A-08 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:09:37.053Z JOT-002A-08 comment.added "[x] Same change as JOY-00D7-08 applied to jot publish.yml." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:09:37.062Z JOT-002A-08 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:27:12.863Z JOT-002B-49 item.created "Replace hand-rolled release.yml with patched cargo-dist output" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:27:19.475Z JOT-002B-49 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:27:19.481Z JOT-002B-49 comment.added "[x] Same correction as JOY-00D8-49 applied to jot." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:27:19.488Z JOT-002B-49 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
