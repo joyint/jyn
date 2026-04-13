@@ -33,3 +33,4 @@
 2026-04-13T21:27:19.475Z JOT-002B-49 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:27:19.481Z JOT-002B-49 comment.added "[x] Same correction as JOY-00D8-49 applied to jot." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T21:27:19.488Z JOT-002B-49 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T21:42:14.635Z v0.2.2 release.created [horst.schwarz@joydev.com]

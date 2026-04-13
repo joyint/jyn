@@ -1,0 +1,18 @@
+version: v0.2.2
+date: 2026-04-13
+previous: v0.2.1
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 16
+  items: 4
+items:
+  stories:
+  - id: JOT-0029-DA
+    title: Own the binary release workflow, use cargo-dist only as build lib
+  tasks:
+  - id: JOT-0028-2A
+    title: Make just publish idempotent against duplicate publishes
+  - id: JOT-002A-08
+    title: Restrict publish.yml trigger to stable release tags
+  - id: JOT-002B-49
+    title: Replace hand-rolled release.yml with patched cargo-dist output
