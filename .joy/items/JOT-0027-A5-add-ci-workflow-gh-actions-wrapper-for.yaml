@@ -1,0 +1,18 @@
+id: JOT-0027-A5
+title: Add CI workflow + GH Actions wrapper for just publish
+type: task
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T19:43:16.417973946Z
+updated: 2026-04-13T19:43:27.239798059Z
+description: 'Two related additions: (1) .github/workflows/ci.yaml mirrors joy''s CI (Format/Lint/Test/Build on push/PR to main) so branch protection on main has teeth. (2) .github/workflows/publish.yml: thin wrapper around ''just publish'' on tag push (per ADR-032 in the umbrella, JI-00D7-1B). Repo secret CARGO_REGISTRY_TOKEN already configured.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T19:43:27.232747912Z
+  text: '[x] ci.yaml mirrors joy: Format / Lint / Test / Build on push and PR to main. cargo check, fmt, clippy, test all pass locally before commit. [x] publish.yml triggers on tag push, runs ''just publish'' with CARGO_REGISTRY_TOKEN injected from repo secret. Recipes own the logic.'

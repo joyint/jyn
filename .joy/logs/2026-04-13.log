@@ -11,3 +11,7 @@
 2026-04-13T19:20:42.951Z JOT-0026-68 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T19:20:42.959Z JOT-0026-68 comment.added "[x] just publish recipe added; idempotent (skips already-published versions); env-driven token; smoke-tested locally." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-13T19:20:42.966Z JOT-0026-68 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T19:43:16.419Z JOT-0027-A5 item.created "Add CI workflow + GH Actions wrapper for just publish" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T19:43:27.228Z JOT-0027-A5 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T19:43:27.234Z JOT-0027-A5 comment.added "[x] ci.yaml mirrors joy: Format / Lint / Test / Build on push and PR to main. cargo check, fmt, clippy, test all pass locally before commit. [x] publish.yml triggers on tag push, runs 'just publish' with CARGO_REGISTRY_TOKEN injected from repo secret. Recipes own the logic." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-13T19:43:27.242Z JOT-0027-A5 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
