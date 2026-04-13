@@ -115,12 +115,23 @@ publish:
             echo "Warning: could not resolve version for $crate, skipping."
             continue
         fi
+        # cargo search lags the registry by minutes, so we also catch
+        # "already uploaded" from the actual publish call below.
         if cargo search "$crate" --limit 1 2>/dev/null | grep -qE "^$crate = \"$version\""; then
             echo "$crate $version already on crates.io, skipping."
             continue
         fi
         echo "Publishing $crate $version..."
-        cargo publish -p "$crate"
+        if ! out=$(cargo publish -p "$crate" 2>&1); then
+            if echo "$out" | grep -q "is already uploaded"; then
+                echo "$crate $version already on crates.io (registry confirmed), skipping."
+            else
+                echo "$out" >&2
+                exit 1
+            fi
+        else
+            echo "$out"
+        fi
         sleep 5
     done
     echo "Publish complete."

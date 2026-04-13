@@ -1,0 +1,18 @@
+id: JOT-0028-2A
+title: Make just publish idempotent against duplicate publishes
+type: task
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-13T20:14:22.643984877Z
+updated: 2026-04-13T20:14:29.251884272Z
+description: 'Mirror of JOY-00D5-2A: drop deprecated cargo publish --token flag, treat ''is already uploaded'' from cargo as a quiet success so a tag triggering both local and CI publish does not fail.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-13T20:14:29.244764475Z
+  text: '[x] Same fixes as JOY-00D5-2A applied to jot''s just publish recipe.'
