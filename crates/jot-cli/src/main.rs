@@ -24,12 +24,11 @@ use jot_core::storage;
     infer_subcommands = true
 )]
 struct Cli {
-    /// Colorize output (auto by default: on when stdout is a TTY and NO_COLOR is unset)
+    /// Colorize output.
     #[arg(long, value_enum, global = true, default_value_t = color::ColorChoice::Auto)]
     color: color::ColorChoice,
 
-    /// Use compact labels ('ext', 'tod', 'tmw', '-2d') instead of the
-    /// full spelling. Also triggered by the JOT_SHORT environment variable.
+    /// Use compact labels. Also via JOT_SHORT.
     #[arg(long, global = true)]
     short: bool,
 
