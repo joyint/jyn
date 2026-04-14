@@ -620,13 +620,15 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
 
     // ---- Bottom band: record timestamps ----
     println!("{}", color::separator(width));
+    // Whole footer line in label color -- timestamps are record
+    // metadata, not content, and should recede visually.
     println!(
-        "{} {}{}{} {}",
-        color::label("Created:"),
-        task.item.created.format("%Y-%m-%d %H:%M"),
-        color::label(","),
-        color::label(" Updated:"),
-        task.item.updated.format("%Y-%m-%d %H:%M")
+        "{}",
+        color::label(&format!(
+            "Created: {}, Updated: {}",
+            task.item.created.format("%Y-%m-%d %H:%M"),
+            task.item.updated.format("%Y-%m-%d %H:%M"),
+        ))
     );
     println!("{}", color::separator(width));
     Ok(())
