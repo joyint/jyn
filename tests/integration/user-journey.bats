@@ -165,12 +165,70 @@ load setup
     [[ "$output" == *"#work"* ]]
 }
 
-@test "ls without dues/tags stays a two-column table" {
+@test "ls without dues/tags/priority stays a two-column table" {
     jot add Plain task >/dev/null
     run jot
     [[ "$output" == *"ID"*"TITLE"* ]]
-    [[ "$output" != *"DUE"* ]]
+    [[ "$output" != *"DUE"*  ]]
     [[ "$output" != *"TAGS"* ]]
+    [[ "$output" != *"PRIORITY"* ]]
+    [[ "$output" != *"PRIO"* ]]
+}
+
+@test "priority column: long by default, short with --short" {
+    jot add Plain task >/dev/null
+    run jot
+    [[ "$output" != *"PRIORITY"* ]]
+    [[ "$output" != *"PRIO"* ]]
+
+    # Long default: full spelling, header 'PRIORITY'.
+    jot add -p extreme ohohooo >/dev/null
+    run jot
+    [[ "$output" == *"PRIORITY"* ]]
+    [[ "$output" == *"extreme"*  ]]
+
+    # --short: three-letter labels, header 'PRIO'.
+    run jot --short
+    [[ "$output" == *"PRIO"* ]]
+    [[ "$output" != *"PRIORITY"* ]]
+    [[ "$output" == *"ext"* ]]
+    [[ "$output" != *"extreme"* ]]
+
+    # Status lines mirror the mode.
+    run jot add -p high fix a bug
+    [[ "$output" == *"fix a bug"*"high"* ]]
+    run jot --short add -p critical urgent cleanup
+    [[ "$output" == *"urgent cleanup"*"crt"* ]]
+
+    # Medium stays silent either way.
+    run jot add plain task
+    [[ "$output" != *"medium"* ]]
+    run jot --short add plain task
+    [[ "$output" != *"med"* ]]
+}
+
+@test "due labels: long by default, short with --short or JOT_SHORT" {
+    jot add --due today      Must now     >/dev/null
+    jot add --due tomorrow   Can wait     >/dev/null
+    jot add --due 2020-01-01 Long overdue >/dev/null
+
+    # Long default
+    run jot
+    [[ "$output" == *"today"*    ]]
+    [[ "$output" == *"tomorrow"* ]]
+    [[ "$output" == *"overdue"*  ]]
+
+    # --short flag
+    run jot --short
+    [[ "$output" == *"tod"* ]]
+    [[ "$output" == *"tmw"* ]]
+    [[ "$output" != *"today"* ]]
+    [[ "$output" != *"tomorrow"* ]]
+
+    # JOT_SHORT env var
+    JOT_SHORT=1 run jot
+    [[ "$output" == *"tod"* ]]
+    [[ "$output" != *"today"* ]]
 }
 
 @test "ls --tag filters tasks by tag (AND semantics for multiple flags)" {

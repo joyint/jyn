@@ -44,15 +44,29 @@ pub enum DueSeverity {
     Later,
 }
 
-/// Render a due date as a short label. Returns `(label, severity)` so
-/// the CLI can apply colors consistently.
-pub fn render_due(due: NaiveDate, today: NaiveDate) -> (String, DueSeverity) {
+/// Label length mode. `Long` is the default reader-friendly form
+/// (`today`, `tomorrow`, `overdue 2d`); `Short` compresses to the
+/// terminal-friendly abbreviations matching joy-cli short mode
+/// (`tod`, `tmw`, `-2d`). Weekday and month-day renderings are the
+/// same in both modes because `%a` and `%b %-d` are already compact.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LabelMode {
+    Long,
+    Short,
+}
+
+/// Render a due date as a label. Returns `(label, severity)` so the
+/// CLI can apply colors consistently.
+pub fn render_due(due: NaiveDate, today: NaiveDate, mode: LabelMode) -> (String, DueSeverity) {
     let delta = (due - today).num_days();
-    match delta {
-        d if d < 0 => (format!("overdue {}d", d.abs()), DueSeverity::Overdue),
-        0 => ("today".into(), DueSeverity::Today),
-        1 => ("tomorrow".into(), DueSeverity::Soon),
-        d if (2..=6).contains(&d) => (due.format("%a").to_string(), DueSeverity::Soon),
+    match (delta, mode) {
+        (d, LabelMode::Long) if d < 0 => (format!("overdue {}d", d.abs()), DueSeverity::Overdue),
+        (d, LabelMode::Short) if d < 0 => (format!("-{}d", d.abs()), DueSeverity::Overdue),
+        (0, LabelMode::Long) => ("today".into(), DueSeverity::Today),
+        (0, LabelMode::Short) => ("tod".into(), DueSeverity::Today),
+        (1, LabelMode::Long) => ("tomorrow".into(), DueSeverity::Soon),
+        (1, LabelMode::Short) => ("tmw".into(), DueSeverity::Soon),
+        (d, _) if (2..=6).contains(&d) => (due.format("%a").to_string(), DueSeverity::Soon),
         _ => (due.format("%b %-d").to_string(), DueSeverity::Later),
     }
 }
@@ -82,21 +96,42 @@ mod tests {
     }
 
     #[test]
-    fn renders_relative_labels() {
+    fn renders_relative_labels_long() {
         let today = d(2026, 4, 14); // Tuesday
-        assert_eq!(render_due(today, today).0, "today");
-        assert_eq!(render_due(d(2026, 4, 15), today).0, "tomorrow");
-        assert_eq!(render_due(d(2026, 4, 17), today).0, "Fri");
-        assert_eq!(render_due(d(2026, 4, 25), today).0, "Apr 25");
-        assert_eq!(render_due(d(2026, 4, 13), today).0, "overdue 1d");
+        let long = LabelMode::Long;
+        assert_eq!(render_due(today, today, long).0, "today");
+        assert_eq!(render_due(d(2026, 4, 15), today, long).0, "tomorrow");
+        assert_eq!(render_due(d(2026, 4, 17), today, long).0, "Fri");
+        assert_eq!(render_due(d(2026, 4, 25), today, long).0, "Apr 25");
+        assert_eq!(render_due(d(2026, 4, 13), today, long).0, "overdue 1d");
     }
 
     #[test]
-    fn renders_severity() {
+    fn renders_relative_labels_short() {
         let today = d(2026, 4, 14);
-        assert_eq!(render_due(today, today).1, DueSeverity::Today);
-        assert_eq!(render_due(d(2026, 4, 15), today).1, DueSeverity::Soon);
-        assert_eq!(render_due(d(2026, 4, 13), today).1, DueSeverity::Overdue);
-        assert_eq!(render_due(d(2026, 5, 30), today).1, DueSeverity::Later);
+        let short = LabelMode::Short;
+        assert_eq!(render_due(today, today, short).0, "tod");
+        assert_eq!(render_due(d(2026, 4, 15), today, short).0, "tmw");
+        assert_eq!(render_due(d(2026, 4, 17), today, short).0, "Fri");
+        assert_eq!(render_due(d(2026, 4, 25), today, short).0, "Apr 25");
+        assert_eq!(render_due(d(2026, 4, 13), today, short).0, "-1d");
+        assert_eq!(render_due(d(2026, 4, 1), today, short).0, "-13d");
+    }
+
+    #[test]
+    fn renders_severity_independent_of_mode() {
+        let today = d(2026, 4, 14);
+        for mode in [LabelMode::Long, LabelMode::Short] {
+            assert_eq!(render_due(today, today, mode).1, DueSeverity::Today);
+            assert_eq!(render_due(d(2026, 4, 15), today, mode).1, DueSeverity::Soon);
+            assert_eq!(
+                render_due(d(2026, 4, 13), today, mode).1,
+                DueSeverity::Overdue
+            );
+            assert_eq!(
+                render_due(d(2026, 5, 30), today, mode).1,
+                DueSeverity::Later
+            );
+        }
     }
 }

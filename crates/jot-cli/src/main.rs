@@ -12,7 +12,7 @@ use clap::Parser;
 use joy_core::model::item::Priority;
 
 use jot_core::display;
-use jot_core::due::{self, DueSeverity};
+use jot_core::due::{self, DueSeverity, LabelMode};
 use jot_core::model::Task;
 use jot_core::storage;
 
@@ -22,6 +22,11 @@ struct Cli {
     /// Colorize output (auto by default: on when stdout is a TTY and NO_COLOR is unset)
     #[arg(long, value_enum, global = true, default_value_t = color::ColorChoice::Auto)]
     color: color::ColorChoice,
+
+    /// Use compact labels ('ext', 'tod', 'tmw', '-2d') instead of the
+    /// full spelling. Also triggered by the JOT_SHORT environment variable.
+    #[arg(short = 's', long, global = true)]
+    short: bool,
 
     #[command(subcommand)]
     command: Option<Commands>,
@@ -105,12 +110,18 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     color::init(cli.color);
 
+    let mode = if cli.short || std::env::var_os("JOT_SHORT").is_some() {
+        LabelMode::Short
+    } else {
+        LabelMode::Long
+    };
+
     let root = std::env::current_dir().context("cannot read current directory")?;
 
     match cli.command {
-        Some(Commands::Add(args)) => run_add(&root, args)?,
-        Some(Commands::Ls(args)) => run_ls(&root, &args)?,
-        None => run_ls(&root, &LsArgs::default())?,
+        Some(Commands::Add(args)) => run_add(&root, args, mode)?,
+        Some(Commands::Ls(args)) => run_ls(&root, &args, mode)?,
+        None => run_ls(&root, &LsArgs::default(), mode)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
     }
 
@@ -123,7 +134,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn run_add(root: &Path, args: AddArgs) -> Result<()> {
+fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
     let title = args.title.join(" ");
     if title.trim().is_empty() {
         anyhow::bail!("title must not be empty");
@@ -162,8 +173,14 @@ fn run_add(root: &Path, args: AddArgs) -> Result<()> {
         color::id(label),
         title
     );
+    if let Some(p_label) = priority_label(&task.item.priority, mode) {
+        line.push_str(&format!(
+            "  {}",
+            colored_priority(&task.item.priority, p_label)
+        ));
+    }
     if let Some(d) = due_date {
-        let (label_due, sev) = due::render_due(d, today);
+        let (label_due, sev) = due::render_due(d, today, mode);
         line.push_str(&format!("  {}", colored_due(&label_due, sev)));
     }
     if !args.tags.is_empty() {
@@ -173,7 +190,7 @@ fn run_add(root: &Path, args: AddArgs) -> Result<()> {
     Ok(())
 }
 
-fn run_ls(root: &Path, args: &LsArgs) -> Result<()> {
+fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     let today = Local::now().date_naive();
     let due_filter = match args.due.as_deref() {
         Some(s) => Some(due::parse_due(s, today).map_err(anyhow::Error::msg)?),
@@ -205,13 +222,21 @@ fn run_ls(root: &Path, args: &LsArgs) -> Result<()> {
     let full_ids: Vec<&str> = filtered.iter().map(|t| t.item.id.as_str()).collect();
     let labels = display::format_ids(&full_ids);
 
+    let show_prio = filtered
+        .iter()
+        .any(|t| priority_label(&t.item.priority, mode).is_some());
     let show_due = filtered.iter().any(|t| t.due_date.is_some());
     let show_tags = filtered.iter().any(|t| !t.item.tags.is_empty());
+
+    let prio_labels: Vec<&'static str> = filtered
+        .iter()
+        .map(|t| priority_label(&t.item.priority, mode).unwrap_or(""))
+        .collect();
 
     let due_labels: Vec<(String, DueSeverity)> = filtered
         .iter()
         .map(|t| match t.due_date {
-            Some(d) => due::render_due(d, today),
+            Some(d) => due::render_due(d, today, mode),
             None => (String::new(), DueSeverity::Later),
         })
         .collect();
@@ -243,6 +268,20 @@ fn run_ls(root: &Path, args: &LsArgs) -> Result<()> {
         .collect();
 
     let id_width = labels.iter().map(|s| s.len()).max().unwrap_or(2).max(2);
+    let prio_header = match mode {
+        LabelMode::Long => "PRIORITY",
+        LabelMode::Short => "PRIO",
+    };
+    let prio_width = if show_prio {
+        prio_labels
+            .iter()
+            .map(|s| s.len())
+            .max()
+            .unwrap_or(0)
+            .max(prio_header.len())
+    } else {
+        0
+    };
     let due_width = if show_due {
         due_labels
             .iter()
@@ -262,30 +301,45 @@ fn run_ls(root: &Path, args: &LsArgs) -> Result<()> {
     let term_w = color::terminal_width();
     let fixed = id_width
         + 1
+        + if show_prio { prio_width + 1 } else { 0 }
         + if show_due { due_width + 1 } else { 0 }
         + if show_tags { tags_width + 1 } else { 0 };
     let min_title = 20;
     let title_col = (term_w.saturating_sub(fixed)).max(min_title);
     let frame_w = (fixed + title_col).min(term_w.max(1));
 
-    let mut headers: Vec<(&str, usize)> = vec![("ID", id_width), ("TITLE", title_col)];
+    let mut headers: Vec<(&str, usize)> = vec![("ID", id_width)];
+    if show_prio {
+        headers.push((prio_header, prio_width));
+    }
     if show_due {
         headers.push(("DUE", due_width));
     }
     if show_tags {
         headers.push(("TAGS", tags_width));
     }
+    headers.push(("TITLE", title_col));
     println!("{}", color::header(&headers, frame_w));
 
-    for (((task, label), (due_str, due_sev)), plain_tags) in filtered
+    for ((((task, label), prio_str), (due_str, due_sev)), plain_tags) in filtered
         .iter()
         .zip(labels.iter())
+        .zip(prio_labels.iter())
         .zip(due_labels.iter())
         .zip(tag_labels.iter())
     {
         let id_cell = color::id(&format!("{label:<id_width$}"));
-        let title_cell = format!("{:<w$}", task.item.title, w = title_col);
-        let mut line = format!("{id_cell} {title_cell}");
+        let mut line = id_cell.clone();
+        if show_prio {
+            let cell = if prio_str.is_empty() {
+                format!("{:<w$}", "", w = prio_width)
+            } else {
+                let colored = colored_priority(&task.item.priority, prio_str);
+                let pad = prio_width.saturating_sub(prio_str.len());
+                format!("{colored}{}", " ".repeat(pad))
+            };
+            line.push_str(&format!(" {cell}"));
+        }
         if show_due {
             let cell = if due_str.is_empty() {
                 format!("{:<w$}", "", w = due_width)
@@ -304,6 +358,7 @@ fn run_ls(root: &Path, args: &LsArgs) -> Result<()> {
             };
             line.push_str(&format!(" {cell}"));
         }
+        line.push_str(&format!(" {}", task.item.title));
         println!("{line}");
     }
 
@@ -335,6 +390,32 @@ fn colored_due(label: &str, severity: DueSeverity) -> String {
         DueSeverity::Overdue => color::danger(label),
         DueSeverity::Today => color::warning(label),
         DueSeverity::Soon | DueSeverity::Later => label.to_string(),
+    }
+}
+
+/// Priority label for display. Returns `None` for the default Medium
+/// so callers can hide the column and status cell when nothing is
+/// out-of-band. `Long` spells names out ('extreme'), `Short` uses the
+/// three-letter abbreviations from joy-cli ('ext').
+fn priority_label(p: &Priority, mode: LabelMode) -> Option<&'static str> {
+    match (p, mode) {
+        (Priority::Low, _) => Some("low"),
+        (Priority::Medium, _) => None,
+        (Priority::High, LabelMode::Long) => Some("high"),
+        (Priority::High, LabelMode::Short) => Some("hig"),
+        (Priority::Critical, LabelMode::Long) => Some("critical"),
+        (Priority::Critical, LabelMode::Short) => Some("crt"),
+        (Priority::Extreme, LabelMode::Long) => Some("extreme"),
+        (Priority::Extreme, LabelMode::Short) => Some("ext"),
+    }
+}
+
+fn colored_priority(p: &Priority, label: &str) -> String {
+    match p {
+        Priority::Low => color::inactive(label),
+        Priority::Medium => label.to_string(),
+        Priority::High => color::danger(label),
+        Priority::Critical | Priority::Extreme => color::danger_bold(label),
     }
 }
 

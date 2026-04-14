@@ -1,0 +1,19 @@
+id: JOT-0036-64
+title: Consistent long/short label mode via --short flag
+type: task
+status: in-progress
+priority: medium
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T01:10:09.547897284Z
+updated: 2026-04-14T01:17:33.205326209Z
+description: Default labels are long ('extreme', 'today', 'tomorrow', 'overdue 2d', 'critical'). Optional --short/-s flag plus JOT_SHORT env var switch to compact abbreviations ('ext', 'tod', 'tmw', '-2d', 'crt'), matching joy-cli's short-mode pattern. Applies to priority labels and due-date labels in both the ls column and the add status line.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T01:17:33.205326047Z
+  text: '[x] Implemented: --short/-s flag plus JOT_SHORT env var. LabelMode::Long by default (extreme/critical/high/low, today/tomorrow/''overdue Nd'', header ''PRIORITY''), LabelMode::Short on demand (ext/crt/hig/low, tod/tmw/-Nd, header ''PRIO''). Weekday and ''MMM d'' rendering unchanged (already compact). Applies to both ls and add status lines. bats covers both modes for priority and due labels plus JOT_SHORT env var.'

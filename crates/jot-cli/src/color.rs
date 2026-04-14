@@ -59,6 +59,27 @@ fn wrap(code: &str, text: &str) -> String {
     }
 }
 
+fn wrap2(code1: &str, code2: &str, text: &str) -> String {
+    if is_enabled() {
+        format!("{code1}{code2}{text}{RESET}")
+    } else {
+        text.to_string()
+    }
+}
+
+const BOLD: &str = "\x1b[1m";
+const INACTIVE: &str = "\x1b[38;5;8m";
+
+/// Inactive (dim grey) -- for low priority and other de-emphasised bits.
+pub fn inactive(text: &str) -> String {
+    wrap(INACTIVE, text)
+}
+
+/// Bold danger red -- critical and extreme priority.
+pub fn danger_bold(text: &str) -> String {
+    wrap2(BOLD, DANGER, text)
+}
+
 /// Secondary color -- used for IDs and structural chrome (header,
 /// separators, footer).
 pub fn label(text: &str) -> String {
