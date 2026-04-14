@@ -15,18 +15,19 @@ load setup
     # Capture
     run jot add "Buy milk"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"#1"* ]]
-    [[ "$output" == *"Buy milk"* ]]
+    [[ "$output" == *"added"*"#1"*"Buy milk"* ]]
 
     # YAML on disk uses full ADR-027 ID
     [ -d ".jot/items" ]
     ls .jot/items/*.yaml | grep -q "TODO-0001-.*-buy-milk"
 
-    # List (explicit) shows short form
+    # List (explicit) shows short form and table frame
     run jot ls
     [ "$status" -eq 0 ]
+    [[ "$output" == *"ID"*"TITLE"* ]]
     [[ "$output" == *"#1"* ]]
     [[ "$output" == *"Buy milk"* ]]
+    [[ "$output" == *"1 task"* ]]
     [[ "$output" != *"TODO-"* ]]
 
     # Default (no subcommand) matches ls
@@ -37,7 +38,7 @@ load setup
     # Remove by short form
     run jot rm "#1"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Removed"* ]]
+    [[ "$output" == *"removed"*"#1"*"Buy milk"* ]]
 
     # Empty again
     run jot
@@ -52,10 +53,15 @@ load setup
 
     run jot ls
     [ "$status" -eq 0 ]
-    first_line=$(echo "$output" | sed -n '1p')
-    last_line=$(echo "$output"  | sed -n '3p')
-    [[ "$first_line" == "#1"*"First"*   ]]
-    [[ "$last_line"  == "#3"*"Third"*   ]]
+    # Extract just the task rows (skip separators + header + footer).
+    rows=$(echo "$output" | grep -E "^#")
+    first_row=$(echo "$rows" | sed -n '1p')
+    last_row=$(echo  "$rows" | sed -n '3p')
+    [[ "$first_row" == "#1"*"First"* ]]
+    [[ "$last_row"  == "#3"*"Third"* ]]
+
+    # Footer reports the count.
+    [[ "$output" == *"3 tasks"* ]]
 }
 
 @test "rm accepts multiple input forms" {
@@ -100,6 +106,29 @@ load setup
     [ "$status" -eq 0 ]
     # Highest existing counter is 2, so next is 3 (never reuses 1).
     [[ "$output" == *"#3"* ]]
+}
+
+@test "--color=never produces no ANSI escape codes" {
+    jot add "Buy milk" >/dev/null
+    run jot --color=never
+    [ "$status" -eq 0 ]
+    # No ESC (0x1b) bytes anywhere in the output.
+    [[ "$output" != *$'\x1b'* ]]
+}
+
+@test "--color=always emits ANSI codes even when piped" {
+    jot add "Buy milk" >/dev/null
+    run jot --color=always
+    [ "$status" -eq 0 ]
+    # At least one ESC byte present.
+    [[ "$output" == *$'\x1b'* ]]
+}
+
+@test "NO_COLOR env var disables colors without --color flag" {
+    jot add "Buy milk" >/dev/null
+    NO_COLOR=1 run jot
+    [ "$status" -eq 0 ]
+    [[ "$output" != *$'\x1b'* ]]
 }
 
 @test "collision: same counter from two sources shows expanded form" {
@@ -147,7 +176,7 @@ YAML
     # Disambiguated input works.
     run jot rm "#1-EA"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"Removed"* ]]
+    [[ "$output" == *"removed"* ]]
 
     # After removal the remaining #1 is unique again and displays short.
     run jot ls

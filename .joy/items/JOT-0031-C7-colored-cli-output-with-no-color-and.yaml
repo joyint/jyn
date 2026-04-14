@@ -1,0 +1,19 @@
+id: JOT-0031-C7
+title: Colored CLI output with NO_COLOR and --color flag
+type: task
+status: in-progress
+priority: medium
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-14T00:38:16.914681580Z
+updated: 2026-04-14T00:41:17.692835620Z
+description: 'Color ID columns, headers, footers, and success messages across add/ls/rm. Auto-detect: disabled when stdout is not a TTY or NO_COLOR is set. Explicit --color=always|never|auto flag on the root command overrides. Semantic color helpers in jot-cli::color (mirrors joy-cli structure but minimal scope).'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T00:41:17.692835245Z
+  text: '[x] Implemented: --color=auto|always|never global flag, NO_COLOR env respected, stdout TTY detection. Semantic helpers in jot-cli::color (label, id, success, danger) using the same SECONDARY/SUCCESS/DANGER ANSI palette as joy-cli. Auto disables when piped. Three new bats cases: --color=never strips escapes, --color=always keeps them when piped, NO_COLOR=1 disables without the flag.'
