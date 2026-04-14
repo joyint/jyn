@@ -1,12 +1,17 @@
 id: JOT-0009
 title: 'jot show: detail view of a todo'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.095118124Z
-updated: 2026-03-20T11:09:45.865963780Z
+updated: 2026-04-14T01:25:18.131078529Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T01:25:18.131078353Z
+  text: '[x] Implemented: jot show <ID> renders full detail page -- separator, short-ID+title+full-ADR-027-ID banner, aligned Priority/Due/Tags/Assignees/Source/Created/Updated key-value block (only non-empty rows), and a Description paragraph at the bottom. Respects --short label mode.'

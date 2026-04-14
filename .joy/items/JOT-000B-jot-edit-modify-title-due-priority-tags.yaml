@@ -1,12 +1,17 @@
 id: JOT-000B
 title: 'jot edit: modify title, due, priority, tags'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.098436871Z
-updated: 2026-03-20T11:09:45.869797820Z
+updated: 2026-04-14T01:25:18.138340540Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T01:25:18.138340409Z
+  text: '[x] Implemented: jot edit <ID> with --title/--due/--no-due/--priority/--add-tag/--remove-tag/--description/--no-description/--assign/--unassign. Uses new storage::update_task that renames the file when the title changes. Status line mirrors the add/show label set.'

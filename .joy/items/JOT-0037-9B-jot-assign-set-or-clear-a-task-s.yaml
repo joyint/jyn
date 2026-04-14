@@ -1,0 +1,19 @@
+id: JOT-0037-9B
+title: 'jot assign: set or clear a task''s assignee'
+type: task
+status: in-progress
+priority: medium
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T01:22:09.716145818Z
+updated: 2026-04-14T01:25:18.145420985Z
+description: Quick command 'jot assign <ID> <MEMBER>' plus a '--assign <MEMBER>' / '--unassign <MEMBER>' pair on 'jot edit'. Writes joy-core Item.assignees. Rendered in 'jot show' and optionally in 'jot ls' (future). Member strings are free-form e-mail addresses matching the joy identity format.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T01:25:18.145420763Z
+  text: '[x] Implemented: jot assign <ID> <MEMBER> plus --assign/--unassign on jot edit. Writes joy-core Item.assignees (idempotent -- duplicate adds are ignored). Rendered in ''jot show''.'

@@ -102,6 +102,24 @@ pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JotError> {
     }
 }
 
+/// Load a single task by its full or short ID.
+pub fn load_task(root: &Path, id: &str) -> Result<Task, JotError> {
+    let path = find_task_file(root, id)?;
+    Ok(read_yaml(&path)?)
+}
+
+/// Overwrite a task on disk. If the title changed and produced a new
+/// filename (slug-derived), the old file is removed.
+pub fn update_task(root: &Path, task: &Task) -> Result<(), JotError> {
+    let old_path = find_task_file(root, &task.item.id)?;
+    save_task(root, task)?;
+    let new_path = items_dir(root).join(item_filename(&task.item.id, &task.item.title));
+    if old_path != new_path {
+        let _ = std::fs::remove_file(&old_path);
+    }
+    Ok(())
+}
+
 /// Delete a task by ID. Returns the deleted task.
 pub fn delete_task(root: &Path, id: &str) -> Result<Task, JotError> {
     let path = find_task_file(root, id)?;

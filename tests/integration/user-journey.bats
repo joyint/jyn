@@ -289,6 +289,111 @@ load setup
     [[ "$output" != *$'\x1b'* ]]
 }
 
+@test "show: detail view renders all fields" {
+    jot add -p high --due today --tag shopping \
+        --description "Organic veggies and fresh bread" \
+        Buy groceries >/dev/null
+
+    run jot show 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"#1"*"Buy groceries"*"TODO-0001-"* ]]
+    [[ "$output" == *"Priority:"*"high"*       ]]
+    [[ "$output" == *"Due:"*"today"*           ]]
+    [[ "$output" == *"Tags:"*"#shopping"*      ]]
+    [[ "$output" == *"Description:"*"Organic"* ]]
+    [[ "$output" == *"Created:"*  ]]
+    [[ "$output" == *"Updated:"*  ]]
+}
+
+@test "show: minimal task omits empty sections" {
+    jot add Plain task >/dev/null
+    run jot show 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"Plain task"* ]]
+    [[ "$output" != *"Priority:"*    ]]
+    [[ "$output" != *"Due:"*         ]]
+    [[ "$output" != *"Tags:"*        ]]
+    [[ "$output" != *"Description:"* ]]
+    [[ "$output" != *"Assignees:"*   ]]
+}
+
+@test "show: missing ID errors" {
+    run jot show 999
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"task not found"* ]]
+}
+
+@test "edit: changes title, priority, due, tags, description" {
+    jot add --tag initial Buy stuff >/dev/null
+
+    run jot edit 1 \
+        --title "Buy organic stuff" \
+        --priority critical \
+        --due tomorrow \
+        --add-tag urgent \
+        --remove-tag initial \
+        --description "Re-scoped for quality"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"updated"*"#1"*"Buy organic stuff"*"critical"*"tomorrow"* ]]
+
+    run jot show 1
+    [[ "$output" == *"Buy organic stuff"*        ]]
+    [[ "$output" == *"Priority:"*"critical"*     ]]
+    [[ "$output" == *"Due:"*"tomorrow"*          ]]
+    [[ "$output" == *"#urgent"*                  ]]
+    [[ "$output" != *"#initial"*                 ]]
+    [[ "$output" == *"Description:"*"Re-scoped"* ]]
+
+    # Filename follows the new title slug, not the old one.
+    ls .jot/items/TODO-0001-*organic-stuff*.yaml >/dev/null
+    ! ls .jot/items/TODO-0001-*-buy-stuff*.yaml 2>/dev/null
+}
+
+@test "edit: --no-due and --no-description clear fields" {
+    jot add --due today --description "some text" Buy milk >/dev/null
+
+    run jot edit 1 --no-due --no-description
+    [ "$status" -eq 0 ]
+
+    run jot show 1
+    [[ "$output" != *"Due:"*         ]]
+    [[ "$output" != *"Description:"* ]]
+}
+
+@test "assign: adds and removes assignees" {
+    jot add Buy milk >/dev/null
+
+    run jot assign 1 horst@example.com
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"assigned"*"#1"*"horst@example.com"* ]]
+
+    run jot show 1
+    [[ "$output" == *"Assignees:"*"horst@example.com"* ]]
+
+    # Edit adds a second assignee.
+    run jot edit 1 --assign claude@joy
+    [ "$status" -eq 0 ]
+    run jot show 1
+    [[ "$output" == *"horst@example.com"* ]]
+    [[ "$output" == *"claude@joy"*        ]]
+
+    # Unassign removes one but keeps the other.
+    run jot edit 1 --unassign horst@example.com
+    run jot show 1
+    [[ "$output" != *"horst@example.com"* ]]
+    [[ "$output" == *"claude@joy"*        ]]
+}
+
+@test "add --description persists to YAML and renders in show" {
+    run jot add --description "Multi word desc" Buy milk
+    [ "$status" -eq 0 ]
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    grep -qF "description: Multi word desc" "$yaml"
+
+    run jot show 1
+    [[ "$output" == *"Description:"*"Multi word desc"* ]]
+}
+
 @test "collision: same counter from two sources shows expanded form" {
     # Simulate a post-sync state: two YAML files with the same counter
     # but different title-hash suffixes (what would happen if two

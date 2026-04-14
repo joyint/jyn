@@ -38,6 +38,12 @@ enum Commands {
     Add(AddArgs),
     /// List open tasks
     Ls(LsArgs),
+    /// Show the full details of a task
+    Show(ShowArgs),
+    /// Modify a task (title, due, priority, tags, description, assignee)
+    Edit(EditArgs),
+    /// Assign a task to a member (shorthand for 'jot edit --assign')
+    Assign(AssignArgs),
     /// Remove a task
     Rm(RmArgs),
 }
@@ -77,11 +83,79 @@ struct AddArgs {
     #[arg(short, long = "tag")]
     tags: Vec<String>,
 
+    /// Long-form description. Multi-line input requires shell quoting.
+    #[arg(long)]
+    description: Option<String>,
+
+    /// Assignee (free-form, typically an e-mail address).
+    #[arg(long)]
+    assign: Option<String>,
+
     /// Task title. Words are joined with spaces, so quoting is only needed
     /// when the shell would otherwise eat characters (e.g. `!`, `*`, `?`).
     /// Flags may appear before or after the title words.
     #[arg(num_args = 1..)]
     title: Vec<String>,
+}
+
+#[derive(clap::Args)]
+struct ShowArgs {
+    /// Task ID (short `#A1` or full `TODO-00A1-EA`).
+    id: String,
+}
+
+#[derive(clap::Args)]
+struct EditArgs {
+    /// Task ID.
+    id: String,
+
+    /// Replace the title.
+    #[arg(long)]
+    title: Option<String>,
+
+    /// Set due date: `today`, `tomorrow`, or `YYYY-MM-DD`.
+    #[arg(short, long)]
+    due: Option<String>,
+
+    /// Clear the due date.
+    #[arg(long, conflicts_with = "due")]
+    no_due: bool,
+
+    /// Set priority.
+    #[arg(short, long, value_enum)]
+    priority: Option<PriorityArg>,
+
+    /// Add a tag (repeatable).
+    #[arg(long = "add-tag")]
+    add_tags: Vec<String>,
+
+    /// Remove a tag (repeatable).
+    #[arg(long = "remove-tag")]
+    remove_tags: Vec<String>,
+
+    /// Replace the description text.
+    #[arg(long)]
+    description: Option<String>,
+
+    /// Clear the description.
+    #[arg(long, conflicts_with = "description")]
+    no_description: bool,
+
+    /// Add an assignee (repeatable).
+    #[arg(long)]
+    assign: Vec<String>,
+
+    /// Remove an assignee (repeatable).
+    #[arg(long)]
+    unassign: Vec<String>,
+}
+
+#[derive(clap::Args)]
+struct AssignArgs {
+    /// Task ID.
+    id: String,
+    /// Member identifier (e.g. e-mail address).
+    member: String,
 }
 
 #[derive(clap::Args, Default)]
@@ -122,6 +196,9 @@ fn main() -> Result<()> {
         Some(Commands::Add(args)) => run_add(&root, args, mode)?,
         Some(Commands::Ls(args)) => run_ls(&root, &args, mode)?,
         None => run_ls(&root, &LsArgs::default(), mode)?,
+        Some(Commands::Show(args)) => run_show(&root, &args.id, mode)?,
+        Some(Commands::Edit(args)) => run_edit(&root, args, mode)?,
+        Some(Commands::Assign(args)) => run_assign(&root, &args.id, &args.member)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
     }
 
@@ -153,6 +230,13 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
     }
     if !args.tags.is_empty() {
         task.item.tags = args.tags.clone();
+    }
+    task.item.description = args.description.clone();
+    if let Some(member) = args.assign.clone() {
+        task.item.assignees.push(joy_core::model::item::Assignee {
+            member,
+            capabilities: Vec::new(),
+        });
     }
     task.due_date = due_date;
 
@@ -365,6 +449,182 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     println!(
         "{}",
         color::footer(&color::plural(filtered.len(), "task"), frame_w)
+    );
+    Ok(())
+}
+
+fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
+    let task = storage::load_task(root, id).context("loading task")?;
+    let short = display::short_id(&task.item.id);
+    let today = Local::now().date_naive();
+    let width = color::terminal_width();
+
+    println!("{}", color::separator(width));
+    println!(
+        "{}  {}  {}",
+        color::id(&short),
+        task.item.title,
+        color::label(&task.item.id)
+    );
+    println!("{}", color::separator(width));
+
+    if let Some(p_label) = priority_label(&task.item.priority, mode) {
+        println!(
+            "{:<10} {}",
+            color::label("Priority:"),
+            colored_priority(&task.item.priority, p_label)
+        );
+    }
+    if let Some(d) = task.due_date {
+        let (label, sev) = due::render_due(d, today, mode);
+        println!(
+            "{:<10} {} ({})",
+            color::label("Due:"),
+            colored_due(&label, sev),
+            d
+        );
+    }
+    if !task.item.tags.is_empty() {
+        println!(
+            "{:<10} {}",
+            color::label("Tags:"),
+            render_tags(&task.item.tags)
+        );
+    }
+    if !task.item.assignees.is_empty() {
+        let members: Vec<&str> = task
+            .item
+            .assignees
+            .iter()
+            .map(|a| a.member.as_str())
+            .collect();
+        println!("{:<10} {}", color::label("Assignees:"), members.join(", "));
+    }
+    if let Some(src) = &task.source {
+        println!("{:<10} {}", color::label("Source:"), src);
+    }
+    println!(
+        "{:<10} {}",
+        color::label("Created:"),
+        task.item.created.format("%Y-%m-%d %H:%M")
+    );
+    println!(
+        "{:<10} {}",
+        color::label("Updated:"),
+        task.item.updated.format("%Y-%m-%d %H:%M")
+    );
+
+    if let Some(desc) = &task.item.description {
+        if !desc.is_empty() {
+            println!();
+            println!("{}", color::label("Description:"));
+            for line in desc.lines() {
+                println!("  {line}");
+            }
+        }
+    }
+
+    println!("{}", color::separator(width));
+    Ok(())
+}
+
+fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
+    let mut task = storage::load_task(root, &args.id).context("loading task")?;
+    let today = Local::now().date_naive();
+
+    if let Some(t) = args.title {
+        if t.trim().is_empty() {
+            anyhow::bail!("title must not be empty");
+        }
+        task.item.title = t;
+    }
+    if args.no_due {
+        task.due_date = None;
+    }
+    if let Some(s) = args.due.as_deref() {
+        task.due_date = Some(due::parse_due(s, today).map_err(anyhow::Error::msg)?);
+    }
+    if let Some(p) = args.priority {
+        task.item.priority = p.into_core();
+    }
+    for tag in &args.add_tags {
+        if !task.item.tags.iter().any(|t| t == tag) {
+            task.item.tags.push(tag.clone());
+        }
+    }
+    if !args.remove_tags.is_empty() {
+        task.item.tags.retain(|t| !args.remove_tags.contains(t));
+    }
+    if args.no_description {
+        task.item.description = None;
+    }
+    if let Some(desc) = args.description {
+        task.item.description = Some(desc);
+    }
+    for member in &args.assign {
+        if !task.item.assignees.iter().any(|a| &a.member == member) {
+            task.item.assignees.push(joy_core::model::item::Assignee {
+                member: member.clone(),
+                capabilities: Vec::new(),
+            });
+        }
+    }
+    if !args.unassign.is_empty() {
+        task.item
+            .assignees
+            .retain(|a| !args.unassign.contains(&a.member));
+    }
+
+    task.item.updated = chrono::Utc::now();
+    storage::update_task(root, &task).context("saving task")?;
+
+    let all = storage::load_tasks(root).unwrap_or_default();
+    let full_ids: Vec<&str> = all.iter().map(|t| t.item.id.as_str()).collect();
+    let labels = display::format_ids(&full_ids);
+    let label = all
+        .iter()
+        .zip(labels.iter())
+        .find_map(|(t, l)| (t.item.id == task.item.id).then_some(l.as_str()))
+        .unwrap_or("");
+    let mut line = format!(
+        "{} {}  {}",
+        color::success("updated"),
+        color::id(label),
+        task.item.title
+    );
+    if let Some(p_label) = priority_label(&task.item.priority, mode) {
+        line.push_str(&format!(
+            "  {}",
+            colored_priority(&task.item.priority, p_label)
+        ));
+    }
+    if let Some(d) = task.due_date {
+        let (lbl, sev) = due::render_due(d, today, mode);
+        line.push_str(&format!("  {}", colored_due(&lbl, sev)));
+    }
+    if !task.item.tags.is_empty() {
+        line.push_str(&format!("  {}", render_tags(&task.item.tags)));
+    }
+    println!("{line}");
+    Ok(())
+}
+
+fn run_assign(root: &Path, id: &str, member: &str) -> Result<()> {
+    let mut task = storage::load_task(root, id).context("loading task")?;
+    if !task.item.assignees.iter().any(|a| a.member == member) {
+        task.item.assignees.push(joy_core::model::item::Assignee {
+            member: member.to_string(),
+            capabilities: Vec::new(),
+        });
+    }
+    task.item.updated = chrono::Utc::now();
+    storage::update_task(root, &task).context("saving task")?;
+    let short = display::short_id(&task.item.id);
+    println!(
+        "{} {} to {}",
+        color::success("assigned"),
+        color::id(&short),
+        member
     );
     Ok(())
 }
