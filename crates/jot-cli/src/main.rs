@@ -25,7 +25,13 @@ use jot_core::storage;
 )]
 struct Cli {
     /// Colorize output.
-    #[arg(long, value_enum, global = true, default_value_t = color::ColorChoice::Auto)]
+    #[arg(
+        long,
+        value_enum,
+        global = true,
+        default_value_t = color::ColorChoice::Auto,
+        hide_possible_values = true
+    )]
     color: color::ColorChoice,
 
     /// Use compact labels. Also via JOT_SHORT.
@@ -49,19 +55,18 @@ enum Commands {
     Ls(LsArgs),
     /// Show the full details of a task
     Show(ShowArgs),
-    /// Modify a task (title, due, priority, tags, description, assignee)
+    /// Modify a task
     Edit(EditArgs),
-    /// Assign a task to a member (shorthand for 'jot edit --assign')
+    /// Assign a task to a member
     Assign(AssignArgs),
     /// Mark a task as done
     #[command(alias = "done")]
     Close(IdArgs),
-    /// Reopen a previously closed task
+    /// Reopen a closed task
     Reopen(IdArgs),
-    /// Archive a task: hides it locally and removes it from the
-    /// sync surfaces (CalDAV, Graph).
+    /// Archive a task (local only)
     Archive(IdArgs),
-    /// Restore an archived task to the active list
+    /// Restore an archived task
     Unarchive(IdArgs),
     /// Remove a task
     Rm(RmArgs),
@@ -95,7 +100,7 @@ struct AddArgs {
     due: Option<String>,
 
     /// Priority.
-    #[arg(short, long, value_enum)]
+    #[arg(short, long, value_enum, hide_possible_values = true)]
     priority: Option<PriorityArg>,
 
     /// Tag (repeatable).
@@ -139,7 +144,7 @@ struct EditArgs {
     no_due: bool,
 
     /// Set priority.
-    #[arg(short, long, value_enum)]
+    #[arg(short, long, value_enum, hide_possible_values = true)]
     priority: Option<PriorityArg>,
 
     /// Add a tag (repeatable).
@@ -225,7 +230,12 @@ struct LsArgs {
     tags: Vec<String>,
 
     /// Sort order.
-    #[arg(long, value_enum, default_value_t = SortMode::Smart)]
+    #[arg(
+        long,
+        value_enum,
+        default_value_t = SortMode::Smart,
+        hide_possible_values = true
+    )]
     sort: SortMode,
 
     /// Reverse the sort direction.
