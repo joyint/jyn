@@ -95,3 +95,4 @@
 2026-04-14T17:09:47.819Z JOT-0043-8C item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T17:14:52.483Z JOT-0043-8C comment.added "Done. Welcome block prints when no tasks exist (truly first-time user), showing version in jot brand color plus copy-paste examples (add, add with due, ls, done, help) and docs link. Filter-empty case keeps the terse one-liner." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T17:14:52.490Z JOT-0043-8C item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T17:57:31.769Z v0.4.0 release.created [horst.schwarz@joydev.com]

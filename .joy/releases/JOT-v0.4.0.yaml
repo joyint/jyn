@@ -1,0 +1,11 @@
+version: v0.4.0
+date: 2026-04-14
+previous: v0.3.1
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 5
+  items: 1
+items:
+  stories:
+  - id: JOT-0043-8C
+    title: jot without args shows welcome and quickstart examples
