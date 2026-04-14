@@ -80,6 +80,21 @@ pub fn danger_bold(text: &str) -> String {
     wrap2(BOLD, DANGER, text)
 }
 
+const STRIKETHROUGH: &str = "\x1b[9m";
+const FAINT: &str = "\x1b[2m";
+
+/// Strikethrough + secondary -- for closed task rows (still readable,
+/// but clearly out of the active flow).
+pub fn strikethrough_dim(text: &str) -> String {
+    wrap2(STRIKETHROUGH, INACTIVE, text)
+}
+
+/// Strikethrough + faint -- for archived task rows (visible only with
+/// --all, deliberately harder to read so the eye skips them).
+pub fn strikethrough_faint(text: &str) -> String {
+    wrap2(STRIKETHROUGH, FAINT, text)
+}
+
 /// Secondary color -- used for IDs and structural chrome (header,
 /// separators, footer).
 pub fn label(text: &str) -> String {

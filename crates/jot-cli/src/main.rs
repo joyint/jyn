@@ -44,6 +44,16 @@ enum Commands {
     Edit(EditArgs),
     /// Assign a task to a member (shorthand for 'jot edit --assign')
     Assign(AssignArgs),
+    /// Mark a task as done
+    #[command(alias = "done")]
+    Close(IdArgs),
+    /// Reopen a previously closed task
+    Reopen(IdArgs),
+    /// Archive a task -- hides it locally and removes it from the
+    /// sync surfaces (CalDAV, Graph). See JOT-003C-22.
+    Archive(IdArgs),
+    /// Restore an archived task to the active list
+    Unarchive(IdArgs),
     /// Remove a task
     Rm(RmArgs),
 }
@@ -162,15 +172,29 @@ struct AssignArgs {
     member: String,
 }
 
+#[derive(clap::Args)]
+struct IdArgs {
+    /// Task ID (short `#A1` or full `TODO-00A1-EA`).
+    id: String,
+}
+
 #[derive(clap::Args, Default)]
 struct LsArgs {
-    /// Include closed tasks as well.
+    /// Include closed and archived tasks.
     #[arg(short, long)]
     all: bool,
 
+    /// Show only closed tasks.
+    #[arg(long)]
+    closed: bool,
+
+    /// Show only archived tasks (normally hidden).
+    #[arg(long)]
+    archived: bool,
+
     /// Filter by due date (`today`, `tomorrow`, `YYYY-MM-DD`). Includes
     /// overdue tasks when `today` is used.
-    #[arg(short, long)]
+    #[arg(long)]
     due: Option<String>,
 
     /// Filter by tag. Repeat to require multiple tags.
@@ -203,6 +227,10 @@ fn main() -> Result<()> {
         Some(Commands::Show(args)) => run_show(&root, &args.id, mode)?,
         Some(Commands::Edit(args)) => run_edit(&root, args, mode)?,
         Some(Commands::Assign(args)) => run_assign(&root, &args.id, &args.member)?,
+        Some(Commands::Close(args)) => run_close(&root, &args.id)?,
+        Some(Commands::Reopen(args)) => run_reopen(&root, &args.id)?,
+        Some(Commands::Archive(args)) => run_archive(&root, &args.id)?,
+        Some(Commands::Unarchive(args)) => run_unarchive(&root, &args.id)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
     }
 
@@ -288,7 +316,24 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     let tasks = storage::load_tasks(root).context("loading tasks")?;
     let filtered: Vec<&Task> = tasks
         .iter()
-        .filter(|t| args.all || t.item.is_active())
+        .filter(|t| {
+            // Visibility rules for status/archive:
+            //   default:      active + closed, archived hidden
+            //   --all:        everything
+            //   --closed:     only closed (and not archived)
+            //   --archived:   only archived
+            if args.archived {
+                return t.archived;
+            }
+            if args.closed {
+                return matches!(t.item.status, joy_core::model::item::Status::Closed)
+                    && !t.archived;
+            }
+            if args.all {
+                return true;
+            }
+            !t.archived
+        })
         .filter(|t| match due_filter {
             None => true,
             // 'today' includes overdue, anything else is exact-match.
@@ -473,7 +518,16 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             };
             line.push_str(&format!(" {cell}"));
         }
-        line.push_str(&format!(" {:<w$}", task.item.title, w = title_col));
+        // Strikethrough + dim for closed; stronger fade for archived.
+        let title_padded = format!("{:<w$}", task.item.title, w = title_col);
+        let title_cell = if task.archived {
+            color::strikethrough_faint(&title_padded)
+        } else if matches!(task.item.status, joy_core::model::item::Status::Closed) {
+            color::strikethrough_dim(&title_padded)
+        } else {
+            title_padded
+        };
+        line.push_str(&format!(" {title_cell}"));
         if show_desc {
             // Right-align the count so the digits line up cleanly.
             let cell = if desc_str.is_empty() {
@@ -622,14 +676,17 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
     println!("{}", color::separator(width));
     // Whole footer line in label color -- timestamps are record
     // metadata, not content, and should recede visually.
-    println!(
-        "{}",
-        color::label(&format!(
-            "Created: {}, Updated: {}",
-            task.item.created.format("%Y-%m-%d %H:%M"),
-            task.item.updated.format("%Y-%m-%d %H:%M"),
-        ))
-    );
+    let mut footer_parts = vec![
+        format!("Created: {}", task.item.created.format("%Y-%m-%d %H:%M")),
+        format!("Updated: {}", task.item.updated.format("%Y-%m-%d %H:%M")),
+    ];
+    if let Some(ts) = task.closed_at {
+        footer_parts.push(format!("Closed: {}", ts.format("%Y-%m-%d %H:%M")));
+    }
+    if let Some(ts) = task.archived_at {
+        footer_parts.push(format!("Archived: {}", ts.format("%Y-%m-%d %H:%M")));
+    }
+    println!("{}", color::label(&footer_parts.join(", ")));
     println!("{}", color::separator(width));
     Ok(())
 }
@@ -712,6 +769,72 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
         line.push_str(&format!("  {}", render_tags(&task.item.tags)));
     }
     println!("{line}");
+    Ok(())
+}
+
+fn run_close(root: &Path, id: &str) -> Result<()> {
+    let mut task = storage::load_task(root, id).context("loading task")?;
+    let now = chrono::Utc::now();
+    task.item.status = joy_core::model::item::Status::Closed;
+    task.closed_at = Some(now);
+    task.item.updated = now;
+    storage::update_task(root, &task).context("saving task")?;
+    let short = display::short_id(&task.item.id);
+    println!(
+        "{} {}  {}",
+        color::success("closed"),
+        color::id(&short),
+        task.item.title
+    );
+    Ok(())
+}
+
+fn run_reopen(root: &Path, id: &str) -> Result<()> {
+    let mut task = storage::load_task(root, id).context("loading task")?;
+    task.item.status = joy_core::model::item::Status::New;
+    task.closed_at = None;
+    task.item.updated = chrono::Utc::now();
+    storage::update_task(root, &task).context("saving task")?;
+    let short = display::short_id(&task.item.id);
+    println!(
+        "{} {}  {}",
+        color::success("reopened"),
+        color::id(&short),
+        task.item.title
+    );
+    Ok(())
+}
+
+fn run_archive(root: &Path, id: &str) -> Result<()> {
+    let mut task = storage::load_task(root, id).context("loading task")?;
+    let now = chrono::Utc::now();
+    task.archived = true;
+    task.archived_at = Some(now);
+    task.item.updated = now;
+    storage::update_task(root, &task).context("saving task")?;
+    let short = display::short_id(&task.item.id);
+    println!(
+        "{} {}  {}",
+        color::success("archived"),
+        color::id(&short),
+        task.item.title
+    );
+    Ok(())
+}
+
+fn run_unarchive(root: &Path, id: &str) -> Result<()> {
+    let mut task = storage::load_task(root, id).context("loading task")?;
+    task.archived = false;
+    task.archived_at = None;
+    task.item.updated = chrono::Utc::now();
+    storage::update_task(root, &task).context("saving task")?;
+    let short = display::short_id(&task.item.id);
+    println!(
+        "{} {}  {}",
+        color::success("unarchived"),
+        color::id(&short),
+        task.item.title
+    );
     Ok(())
 }
 

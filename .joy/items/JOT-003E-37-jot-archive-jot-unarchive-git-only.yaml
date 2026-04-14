@@ -1,0 +1,19 @@
+id: JOT-003E-37
+title: 'jot archive / jot unarchive: Git-only hide from daily view'
+type: task
+status: in-progress
+priority: high
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T02:05:54.314646713Z
+updated: 2026-04-14T02:10:13.723731077Z
+description: '''jot archive <ID>'' sets Task.archived = true plus Task.archived_at. ''jot unarchive <ID>'' reverses both. Archived tasks are filtered from ls by default; --all includes them, stronger dim + strikethrough. Never synced (JOT-003C decision).'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T02:10:13.723730520Z
+  text: '[x] Implemented: jot archive / jot unarchive. Flip Task.archived + archived_at. Archived hidden from default ls; --all surfaces them; --archived isolates; --closed narrows to closed-only.'

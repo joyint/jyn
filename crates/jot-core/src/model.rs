@@ -31,6 +31,22 @@ pub struct Task {
     /// Source reference for dispatched tasks (e.g. "joy:acme/product:JOY-002A")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+
+    /// Timestamp the task was closed. Mirrors VTODO's `COMPLETED` and
+    /// MS Graph's `completedDateTime`. Written by `jot close`, cleared
+    /// by `jot reopen`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub closed_at: Option<DateTime<Utc>>,
+
+    /// Whether the task has been archived. Git-only concept per ADR
+    /// JOT-003C -- never propagated to CalDAV or MS Graph.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub archived: bool,
+
+    /// Timestamp the task was archived. Written by `jot archive`,
+    /// cleared by `jot unarchive`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub archived_at: Option<DateTime<Utc>>,
 }
 
 impl Task {
@@ -48,6 +64,9 @@ impl Task {
             recurrence: None,
             project: None,
             source: None,
+            closed_at: None,
+            archived: false,
+            archived_at: None,
         }
     }
 

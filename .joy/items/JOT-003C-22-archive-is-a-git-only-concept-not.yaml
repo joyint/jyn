@@ -1,0 +1,95 @@
+id: JOT-003C-22
+title: Archive is a Git-only concept, not pushed to sync backends
+type: decision
+status: in-progress
+priority: high
+parent: JOT-0018
+assignees:
+- member: ai:claude@joy
+capabilities:
+- conceive
+created_by: ai:claude@joy
+created: 2026-04-14T02:05:54.289533563Z
+updated: 2026-04-14T02:10:13.696442312Z
+description: |-
+  ## Context
+
+  Jot is designed to sync via CalDAV (Apple Reminders, Google Calendar,
+  Thunderbird) and the Microsoft Graph API (Microsoft To Do, Outlook
+  Tasks). Neither protocol has a native 'archive' concept for todo items:
+  VTODO offers only STATUS values (NEEDS-ACTION, IN-PROCESS, COMPLETED,
+  CANCELLED) and MS Graph tasks expose an equivalent status enum plus a
+  completedDateTime. Custom X-properties and Microsoft singleValue
+  extended properties would allow smuggling an 'archived' flag through,
+  but each adds fragility and surface area.
+
+  At the same time, Joyint's architecture already places Git at the
+  centre (ADR-004: Git as sync backend). The user's personal workspace
+  is versioned locally and Git IS the source of truth.
+
+  ## Decision
+
+  The 'archived' state is a Git-repo-only concept. It is NEVER propagated
+  to CalDAV servers, the Microsoft Graph API, or any other external sync
+  surface.
+
+  Concretely:
+
+  1. Task.archived and Task.archived_at live only in the YAML file on
+     disk and in Git history. They round-trip through jot CLI and through
+     Git merges; they do not exist in the VTODO or Graph Task payloads.
+
+  2. The sync layer filters push operations by 'archived == false'. Only
+     non-archived tasks are mirrored to CalDAV / Graph.
+
+  3. Transition to archived emits a DELETE on the remote so the task
+     disappears from the user's phone and other CalDAV/Graph clients.
+     The local YAML is retained.
+
+  4. Transition from archived to unarchived re-publishes the task to the
+     remote, reusing the stable ADR-027 ID as the CalDAV UID / Graph
+     identifier. The remote treats this as a new resource with a known
+     ID.
+
+  5. Git merges on the 'archived' field follow an ours/theirs policy
+     that prefers 'archived == true' when either side has it, because
+     archive is intent-bearing and recovery is cheap (unarchive is a
+     single CLI call).
+
+  ## Consequences
+
+  Positive:
+
+  - Zero protocol-specific hackery. No X-JOT-ARCHIVED custom property,
+    no singleValueExtendedProperties, no parallel 'Archive' list on MS
+    To Do.
+  - Archiving has a clear, predictable UX: it removes the task from
+    every cloud-reachable surface while preserving the full Git
+    history of the item.
+  - The sync layer stays simple: one filter on push, one delete on
+    transition, one create on reverse transition.
+  - Only the jot CLI (operating on a Git clone) can archive or
+    unarchive. That makes archive an explicit workstation move, not
+    something the user can do accidentally from a phone.
+
+  Negative:
+
+  - Users who only work through CalDAV or MS To Do (no Git clone)
+    cannot archive items at all. They can close them, which is usually
+    enough.
+  - After archive + sync, the task is gone from the remote. If the
+    user's Git clone is lost, archived tasks exist only in git history
+    on the remote (Git forge). Recovery is standard Git recovery.
+  - Cross-device concurrency: if two Git clones disagree on archive
+    state, the ours/theirs merge rule resolves it deterministically
+    but may surprise users occasionally. Documented behaviour.
+
+  ## Related
+
+  - JOT-0018 (CalDAV + notifications epic) inherits this rule.
+  - JOT-0019 (VTODO mapping) must document the filter.
+  - A future Graph API mapping task will inherit it unchanged.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T02:10:13.696442157Z
+  text: '[x] Decision ratified and committed.'

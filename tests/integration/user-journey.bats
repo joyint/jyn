@@ -478,6 +478,99 @@ load setup
     [[ "$output" != *"DESC"* ]]
 }
 
+@test "close: marks task Closed and records timestamp; done is an alias" {
+    jot add first >/dev/null
+    jot add second >/dev/null
+
+    run jot close 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"closed"*"#1"*"first"* ]]
+
+    # 'done' alias reaches the same handler.
+    run jot done 2
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"closed"*"#2"*"second"* ]]
+
+    # Status and timestamp land on disk.
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    grep -q "status: closed" "$yaml"
+    grep -q "closed_at:"     "$yaml"
+
+    # show footer carries Closed:
+    run jot show 1
+    [[ "$output" == *"Closed:"* ]]
+}
+
+@test "reopen: clears Closed status and closed_at" {
+    jot add task >/dev/null
+    jot close 1 >/dev/null
+
+    run jot reopen 1
+    [ "$status" -eq 0 ]
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    grep -q "status: new" "$yaml"
+    ! grep -q "closed_at:" "$yaml"
+
+    run jot show 1
+    [[ "$output" != *"Closed:"* ]]
+}
+
+@test "archive: hides by default, --all reveals, --archived isolates" {
+    jot add active one >/dev/null
+    jot add to hide >/dev/null
+    jot archive 2 >/dev/null
+
+    # Default ls hides archived.
+    run jot
+    [[ "$output" == *"active one"* ]]
+    [[ "$output" != *"to hide"*    ]]
+    [[ "$output" == *"1 task"*     ]]
+
+    # --all surfaces archived with strikethrough styling (in color mode).
+    run jot ls --all
+    [[ "$output" == *"active one"* ]]
+    [[ "$output" == *"to hide"*    ]]
+
+    # --archived shows only archived.
+    run jot ls --archived
+    [[ "$output" != *"active one"* ]]
+    [[ "$output" == *"to hide"*    ]]
+
+    # show footer carries Archived:
+    run jot show 2
+    [[ "$output" == *"Archived:"* ]]
+}
+
+@test "unarchive: restores a task to the default list" {
+    jot add revived item >/dev/null
+    jot archive 1 >/dev/null
+    run jot
+    [[ "$output" != *"revived item"* ]]
+    [[ "$output" == *"No open tasks"* ]]
+
+    run jot unarchive 1
+    [ "$status" -eq 0 ]
+    run jot
+    [[ "$output" == *"revived item"* ]]
+
+    # archived_at cleared on disk.
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    ! grep -q "archived_at:" "$yaml"
+    ! grep -q "^archived: true" "$yaml"
+}
+
+@test "closed/archived render with ANSI strikethrough when colors on" {
+    jot add active >/dev/null
+    jot add close this >/dev/null
+    jot add archive this >/dev/null
+    jot close 2 >/dev/null
+    jot archive 3 >/dev/null
+
+    # ESC[9m is the strikethrough code.
+    run jot --color=always ls --all
+    [[ "$output" == *$'\x1b[9m'* ]]
+}
+
 @test "collision: same counter from two sources shows expanded form" {
     # Simulate a post-sync state: two YAML files with the same counter
     # but different title-hash suffixes (what would happen if two
