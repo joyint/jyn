@@ -1,0 +1,55 @@
+version: v0.3.0
+date: 2026-04-14
+previous: v0.2.4
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 89
+  items: 22
+items:
+  stories:
+  - id: JOT-0007
+    title: 'jot add: create todo with title, due, priority, tags'
+  - id: JOT-0008
+    title: 'jot ls: list open todos with filters'
+  - id: JOT-0009
+    title: 'jot show: detail view of a todo'
+  - id: JOT-000B
+    title: 'jot edit: modify title, due, priority, tags'
+  - id: JOT-000C
+    title: 'jot rm: delete a todo'
+  tasks:
+  - id: JOT-0004
+    title: 'jot-core: Todo struct with serde flatten on Item'
+  - id: JOT-0030-F9
+    title: 'jot ls layout: header, columns, footer like Joy'
+  - id: JOT-0031-C7
+    title: Colored CLI output with NO_COLOR and --color flag
+  - id: JOT-0035-D5
+    title: Show priority in jot ls and add output when non-default
+  - id: JOT-0036-64
+    title: Consistent long/short label mode via --short flag
+  - id: JOT-0037-9B
+    title: 'jot assign: set or clear a task''s assignee'
+  - id: JOT-0038-E8
+    title: Description field support on add, edit, and show
+  - id: JOT-0039-9A
+    title: 'CLI polish: full-year dates, tags right, assignee column, -a shortcut'
+  - id: JOT-003A-D0
+    title: 'CLI polish: --desc/-d flag and DESC column in ls'
+  - id: JOT-003B-C9
+    title: 'Redesign jot show layout: three-band card'
+  - id: JOT-003D-7B
+    title: 'jot close / jot reopen: mark tasks done (with ''done'' alias)'
+  - id: JOT-003E-37
+    title: 'jot archive / jot unarchive: Git-only hide from daily view'
+  - id: JOT-003F-08
+    title: Strikethrough and dim rendering for closed and archived tasks
+  - id: JOT-0040-3E
+    title: Enable clap infer_subcommands for jot CLI
+  - id: JOT-0041-F0
+    title: 'jot ls default sort: active first, then by urgency and priority'
+  decisions:
+  - id: JOT-002F-4D
+    title: 'Jot ID display: short #NNNN with adaptive suffix'
+  - id: JOT-003C-22
+    title: Archive is a Git-only concept, not pushed to sync backends
