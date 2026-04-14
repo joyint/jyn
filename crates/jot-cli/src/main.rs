@@ -71,8 +71,8 @@ impl PriorityArg {
 
 #[derive(clap::Args)]
 struct AddArgs {
-    /// Due date: `today`, `tomorrow`, or `YYYY-MM-DD`.
-    #[arg(short, long)]
+    /// Due date: `today`, `tomorrow`, YYYY-MM-DD, MM-DD, DD.MM, DD.MM.YYYY.
+    #[arg(long)]
     due: Option<String>,
 
     /// Priority: low, medium (default), high, critical, extreme.
@@ -84,7 +84,7 @@ struct AddArgs {
     tags: Vec<String>,
 
     /// Long-form description. Multi-line input requires shell quoting.
-    #[arg(long)]
+    #[arg(short = 'd', long = "desc", alias = "description")]
     description: Option<String>,
 
     /// Assignee (free-form, typically an e-mail address).
@@ -113,8 +113,8 @@ struct EditArgs {
     #[arg(long)]
     title: Option<String>,
 
-    /// Set due date: `today`, `tomorrow`, or `YYYY-MM-DD`.
-    #[arg(short, long)]
+    /// Set due date: `today`, `tomorrow`, YYYY-MM-DD, MM-DD, DD.MM, DD.MM.YYYY.
+    #[arg(long)]
     due: Option<String>,
 
     /// Clear the due date.
@@ -134,11 +134,15 @@ struct EditArgs {
     remove_tags: Vec<String>,
 
     /// Replace the description text.
-    #[arg(long)]
+    #[arg(short = 'd', long = "desc", alias = "description")]
     description: Option<String>,
 
     /// Clear the description.
-    #[arg(long, conflicts_with = "description")]
+    #[arg(
+        long = "no-desc",
+        alias = "no-description",
+        conflicts_with = "description"
+    )]
     no_description: bool,
 
     /// Add an assignee (repeatable).
@@ -310,6 +314,9 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         .iter()
         .any(|t| priority_label(&t.item.priority, mode).is_some());
     let show_due = filtered.iter().any(|t| t.due_date.is_some());
+    let show_desc = filtered
+        .iter()
+        .any(|t| t.item.description.as_deref().is_some_and(|s| !s.is_empty()));
     let show_assignee = filtered.iter().any(|t| !t.item.assignees.is_empty());
     let show_tags = filtered.iter().any(|t| !t.item.tags.is_empty());
 
@@ -334,6 +341,13 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
                 .map(|a| a.member.as_str())
                 .collect::<Vec<_>>()
                 .join(", ")
+        })
+        .collect();
+    let desc_labels: Vec<String> = filtered
+        .iter()
+        .map(|t| match t.item.description.as_deref() {
+            Some(s) if !s.is_empty() => s.chars().count().to_string(),
+            _ => String::new(),
         })
         .collect();
     // Tags: plain space-separated, no '#' -- TAGS column sits rightmost.
@@ -364,6 +378,16 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     } else {
         0
     };
+    let desc_width = if show_desc {
+        desc_labels
+            .iter()
+            .map(|s| s.len())
+            .max()
+            .unwrap_or(0)
+            .max("DESC".len())
+    } else {
+        0
+    };
     let assignee_width = if show_assignee {
         assignee_labels
             .iter()
@@ -390,6 +414,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         + 1
         + if show_prio { prio_width + 1 } else { 0 }
         + if show_due { due_width + 1 } else { 0 }
+        + if show_desc { desc_width + 1 } else { 0 }
         + if show_assignee { assignee_width + 1 } else { 0 }
         + if show_tags { tags_width + 1 } else { 0 };
     let min_title = 20;
@@ -406,6 +431,9 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         headers.push(("DUE", due_width));
     }
     headers.push(("TITLE", title_col));
+    if show_desc {
+        headers.push(("DESC", desc_width));
+    }
     if show_assignee {
         headers.push(("ASSIGNEE", assignee_width));
     }
@@ -414,13 +442,15 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     }
     println!("{}", color::header(&headers, frame_w));
 
-    for (((((task, label), prio_str), (due_str, due_sev)), assignee_str), tag_str) in filtered
-        .iter()
-        .zip(labels.iter())
-        .zip(prio_labels.iter())
-        .zip(due_labels.iter())
-        .zip(assignee_labels.iter())
-        .zip(tag_labels.iter())
+    for ((((((task, label), prio_str), (due_str, due_sev)), desc_str), assignee_str), tag_str) in
+        filtered
+            .iter()
+            .zip(labels.iter())
+            .zip(prio_labels.iter())
+            .zip(due_labels.iter())
+            .zip(desc_labels.iter())
+            .zip(assignee_labels.iter())
+            .zip(tag_labels.iter())
     {
         let id_cell = color::id(&format!("{label:<id_width$}"));
         let mut line = id_cell.clone();
@@ -444,6 +474,16 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             line.push_str(&format!(" {cell}"));
         }
         line.push_str(&format!(" {:<w$}", task.item.title, w = title_col));
+        if show_desc {
+            // Right-align the count so the digits line up cleanly.
+            let cell = if desc_str.is_empty() {
+                format!("{:<w$}", "", w = desc_width)
+            } else {
+                let padded = format!("{desc_str:>desc_width$}");
+                color::inactive(&padded)
+            };
+            line.push_str(&format!(" {cell}"));
+        }
         if show_assignee {
             let cell = format!("{assignee_str:<assignee_width$}");
             line.push_str(&format!(" {cell}"));

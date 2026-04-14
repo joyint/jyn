@@ -126,23 +126,23 @@ load setup
 
 @test "add: flags may follow the title words" {
     # Flag after bare multi-word title.
-    run jot add this is cool -d today
+    run jot add this is cool --due today
     [ "$status" -eq 0 ]
     [[ "$output" == *"this is cool"*"today"* ]]
-    [[ "$output" != *"-d today"*              ]]
+    [[ "$output" != *"--due today"*              ]]
 
     # Flag after quoted title plus another flag.
-    run jot add "this is also cool" -d today --tag work
+    run jot add "this is also cool" --due today --tag work
     [ "$status" -eq 0 ]
     [[ "$output" == *"this is also cool"*"today"*"#work"* ]]
 
     # Flag, title, flag.
-    run jot add -d today my chore --tag home
+    run jot add --due today my chore --tag home
     [ "$status" -eq 0 ]
     [[ "$output" == *"my chore"*"today"*"#home"* ]]
 
     # Titles land in YAML without the flag tokens.
-    ! grep -RlF -- "-d today" .jot/items
+    ! grep -RlF -- "--due today" .jot/items
 }
 
 @test "add with --due, --priority, --tag shows in ls and on disk" {
@@ -434,14 +434,43 @@ load setup
     [[ "$output" == *"claude@joy"*        ]]
 }
 
-@test "add --description persists to YAML and renders in show" {
-    run jot add --description "Multi word desc" Buy milk
+@test "description flag: --desc, -d, and --description alias all accepted" {
+    run jot add -d "short form" first
     [ "$status" -eq 0 ]
-    yaml=$(ls .jot/items/TODO-0001-*.yaml)
-    grep -qF "description: Multi word desc" "$yaml"
-
     run jot show 1
-    [[ "$output" == *"Description:"*"Multi word desc"* ]]
+    [[ "$output" == *"short form"* ]]
+
+    run jot add --desc "long form" second
+    [ "$status" -eq 0 ]
+    run jot show 2
+    [[ "$output" == *"long form"* ]]
+
+    run jot add --description "alias form" third
+    [ "$status" -eq 0 ]
+    run jot show 3
+    [[ "$output" == *"alias form"* ]]
+
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    grep -qF "description: short form" "$yaml"
+}
+
+@test "ls: DESC column shows character count left of ASSIGNEE" {
+    jot add -d "abcde" five >/dev/null
+    jot add -d "0123456789012345" sixteen >/dev/null
+    jot add plain >/dev/null
+    run jot
+    [ "$status" -eq 0 ]
+    header=$(echo "$output" | grep -E "^ID")
+    [[ "$header" == *"TITLE"*"DESC"* ]]
+    # Counts appear (chars, not including the quotes).
+    [[ "$output" == *"5"*  ]]
+    [[ "$output" == *"16"* ]]
+}
+
+@test "ls: DESC column hidden when no task has a description" {
+    jot add just a plain task >/dev/null
+    run jot
+    [[ "$output" != *"DESC"* ]]
 }
 
 @test "collision: same counter from two sources shows expanded form" {
