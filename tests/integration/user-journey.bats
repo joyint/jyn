@@ -571,6 +571,33 @@ load setup
     [[ "$output" == *$'\x1b[9m'* ]]
 }
 
+@test "prefix shortcuts: any unambiguous subcommand prefix is accepted" {
+    jot ad "prefix add" >/dev/null
+    run jot l
+    [[ "$output" == *"prefix add"* ]]
+
+    run jot c 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"closed"* ]]
+
+    run jot re 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"reopened"* ]]
+
+    run jot ar 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"archived"* ]]
+
+    # 'u' is unambiguous (only 'unarchive' starts with it).
+    run jot u 1
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"unarchived"* ]]
+
+    # 'r' is ambiguous (reopen vs rm) -- clap errors cleanly.
+    run jot r 1
+    [ "$status" -ne 0 ]
+}
+
 @test "collision: same counter from two sources shows expanded form" {
     # Simulate a post-sync state: two YAML files with the same counter
     # but different title-hash suffixes (what would happen if two

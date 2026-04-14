@@ -17,7 +17,12 @@ use jot_core::model::Task;
 use jot_core::storage;
 
 #[derive(Parser)]
-#[command(name = "jot", version, about = "Personal task manager")]
+#[command(
+    name = "jot",
+    version,
+    about = "Personal task manager",
+    infer_subcommands = true
+)]
 struct Cli {
     /// Colorize output (auto by default: on when stdout is a TTY and NO_COLOR is unset)
     #[arg(long, value_enum, global = true, default_value_t = color::ColorChoice::Auto)]
