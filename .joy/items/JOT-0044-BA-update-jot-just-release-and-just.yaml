@@ -1,11 +1,15 @@
 id: JOT-0044-BA
 title: Update jot just release and just publish to use joy bump/record/publish
 type: task
-status: new
+status: closed
 priority: medium
 capabilities:
 - implement
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T18:28:35.829914804Z
-updated: 2026-04-14T18:28:35.829914804Z
+updated: 2026-04-14T18:45:43.487900476Z
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T18:45:43.480395253Z
+  text: Done. justfile release and publish recipes use joy release bump/record/publish. project.yaml version-files simplified to list of paths.
