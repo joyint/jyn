@@ -59,8 +59,8 @@ enum Commands {
     Close(IdArgs),
     /// Reopen a previously closed task
     Reopen(IdArgs),
-    /// Archive a task -- hides it locally and removes it from the
-    /// sync surfaces (CalDAV, Graph). See JOT-003C-22.
+    /// Archive a task: hides it locally and removes it from the
+    /// sync surfaces (CalDAV, Graph).
     Archive(IdArgs),
     /// Restore an archived task to the active list
     Unarchive(IdArgs),
@@ -435,7 +435,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             _ => String::new(),
         })
         .collect();
-    // Tags: plain space-separated, no '#' -- TAGS column sits rightmost.
+    // Tags: plain space-separated, no '#' - TAGS column sits rightmost.
     let tag_labels: Vec<String> = filtered.iter().map(|t| t.item.tags.join(" ")).collect();
 
     let id_width = labels.iter().map(|s| s.len()).max().unwrap_or(2).max(2);
@@ -718,7 +718,7 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
 
     // ---- Bottom band: record timestamps ----
     println!("{}", color::separator(width));
-    // Whole footer line in label color -- timestamps are record
+    // Whole footer line in label color - timestamps are record
     // metadata, not content, and should recede visually.
     let mut footer_parts = vec![
         format!("Created: {}", task.item.created.format("%Y-%m-%d %H:%M")),
@@ -993,11 +993,11 @@ fn priority_rank(p: &joy_core::model::item::Priority) -> u8 {
 /// Ordering key for the default ls sort.
 ///
 /// The tuple sorts lexicographically; lower values float to the top.
-///   0. archived (false < true)       -- active + closed before archived
-///   1. closed   (false < true)       -- active before closed
-///   2. urgency  (u8)                 -- overdue, today, soon, later, none
-///   3. priority (u8)                 -- extreme, critical, high, medium, low
-///   4. created  (DateTime<Utc>)      -- older first as a stable tiebreak
+///   0. archived (false < true)       - active + closed before archived
+///   1. closed   (false < true)       - active before closed
+///   2. urgency  (u8)                 - overdue, today, soon, later, none
+///   3. priority (u8)                 - extreme, critical, high, medium, low
+///   4. created  (DateTime<Utc>)      - older first as a stable tiebreak
 fn sort_key(
     task: &Task,
     today: chrono::NaiveDate,

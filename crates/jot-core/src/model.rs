@@ -38,8 +38,8 @@ pub struct Task {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub closed_at: Option<DateTime<Utc>>,
 
-    /// Whether the task has been archived. Git-only concept per ADR
-    /// JOT-003C -- never propagated to CalDAV or MS Graph.
+    /// Whether the task has been archived. Git-only concept, never
+    /// propagated to CalDAV or MS Graph.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub archived: bool,
 

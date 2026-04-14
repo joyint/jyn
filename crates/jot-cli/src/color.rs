@@ -70,12 +70,12 @@ fn wrap2(code1: &str, code2: &str, text: &str) -> String {
 const BOLD: &str = "\x1b[1m";
 const INACTIVE: &str = "\x1b[38;5;8m";
 
-/// Inactive (dim grey) -- for low priority and other de-emphasised bits.
+/// Inactive (dim grey) - for low priority and other de-emphasised bits.
 pub fn inactive(text: &str) -> String {
     wrap(INACTIVE, text)
 }
 
-/// Bold danger red -- critical and extreme priority.
+/// Bold danger red - critical and extreme priority.
 pub fn danger_bold(text: &str) -> String {
     wrap2(BOLD, DANGER, text)
 }
@@ -83,19 +83,19 @@ pub fn danger_bold(text: &str) -> String {
 const STRIKETHROUGH: &str = "\x1b[9m";
 const FAINT: &str = "\x1b[2m";
 
-/// Strikethrough + secondary -- for closed task rows (still readable,
+/// Strikethrough + secondary - for closed task rows (still readable,
 /// but clearly out of the active flow).
 pub fn strikethrough_dim(text: &str) -> String {
     wrap2(STRIKETHROUGH, INACTIVE, text)
 }
 
-/// Strikethrough + faint -- for archived task rows (visible only with
+/// Strikethrough + faint - for archived task rows (visible only with
 /// --all, deliberately harder to read so the eye skips them).
 pub fn strikethrough_faint(text: &str) -> String {
     wrap2(STRIKETHROUGH, FAINT, text)
 }
 
-/// Secondary color -- used for IDs and structural chrome (header,
+/// Secondary color - used for IDs and structural chrome (header,
 /// separators, footer).
 pub fn label(text: &str) -> String {
     wrap(SECONDARY, text)
@@ -106,22 +106,22 @@ pub fn id(text: &str) -> String {
     wrap(SECONDARY, text)
 }
 
-/// Success green -- for "added", "removed" status words.
+/// Success green - for "added", "removed" status words.
 pub fn success(text: &str) -> String {
     wrap(SUCCESS, text)
 }
 
-/// Danger red -- reserved for error contexts and overdue due dates.
+/// Danger red - reserved for error contexts and overdue due dates.
 pub fn danger(text: &str) -> String {
     wrap(DANGER, text)
 }
 
-/// Warning yellow -- for due-today highlights.
+/// Warning yellow - for due-today highlights.
 pub fn warning(text: &str) -> String {
     wrap("\x1b[33m", text)
 }
 
-/// Info cyan -- for tag chips.
+/// Info cyan - for tag chips.
 pub fn info(text: &str) -> String {
     wrap("\x1b[36m", text)
 }
@@ -143,7 +143,7 @@ pub fn separator(width: usize) -> String {
     label(&"-".repeat(width))
 }
 
-/// Top frame: separator, header row, separator -- matches joy's table shape.
+/// Top frame: separator, header row, separator - matches joy's table shape.
 pub fn header(columns: &[(&str, usize)], width: usize) -> String {
     let sep = separator(width);
     let row = columns
