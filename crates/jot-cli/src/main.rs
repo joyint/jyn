@@ -249,6 +249,27 @@ struct RmArgs {
     id: String,
 }
 
+/// Welcome block shown when no tasks exist yet. Keeps the jot flavour
+/// (personal, minimal) - no wizard, just version plus a handful of
+/// example commands so a fresh user has something to copy.
+fn print_welcome() {
+    println!();
+    println!(
+        "  {}",
+        color::label(&format!("jot {}", env!("CARGO_PKG_VERSION")))
+    );
+    println!();
+    println!("  No tasks yet. Try:");
+    println!("    jot add \"Buy groceries\"");
+    println!("    jot add \"Call mum\" --due friday");
+    println!("    jot ls");
+    println!("    jot done 1");
+    println!("    jot --help");
+    println!();
+    println!("  Docs: https://joyint.com/en/jot/docs");
+    println!();
+}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
     color::init(cli.color);
@@ -355,6 +376,15 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     };
 
     let tasks = storage::load_tasks(root).context("loading tasks")?;
+
+    // First-time user: no tasks at all. Print a welcome block instead of
+    // the terse "No open tasks" line, so the user sees version and a
+    // handful of useful next commands.
+    if tasks.is_empty() {
+        print_welcome();
+        return Ok(());
+    }
+
     let mut filtered: Vec<&Task> = tasks
         .iter()
         .filter(|t| {
