@@ -510,71 +510,124 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
     let today = Local::now().date_naive();
     let width = color::terminal_width();
 
-    println!("{}", color::separator(width));
-    println!(
-        "{}  {}  {}",
+    // ---- Top band: identity + classification ----
+    // Plain-text chunks power the width math; colored chunks power the
+    // print. They must stay in sync.
+    let mut left_plain: Vec<String> = vec![format!("{}  {}", short, task.item.id)];
+    let mut left_colored: Vec<String> = vec![format!(
+        "{}  {}",
         color::id(&short),
-        task.item.title,
         color::label(&task.item.id)
-    );
-    println!("{}", color::separator(width));
+    )];
 
-    if let Some(p_label) = priority_label(&task.item.priority, mode) {
-        println!(
-            "{:<10} {}",
-            color::label("Priority:"),
-            colored_priority(&task.item.priority, p_label)
-        );
-    }
-    if let Some(d) = task.due_date {
-        let (label, sev) = due::render_due(d, today, mode);
-        println!(
-            "{:<10} {} ({})",
-            color::label("Due:"),
-            colored_due(&label, sev),
-            d
-        );
-    }
-    if !task.item.tags.is_empty() {
-        println!(
-            "{:<10} {}",
-            color::label("Tags:"),
-            render_tags(&task.item.tags)
-        );
-    }
     if !task.item.assignees.is_empty() {
-        let members: Vec<&str> = task
+        let members = task
             .item
             .assignees
             .iter()
             .map(|a| a.member.as_str())
-            .collect();
-        println!("{:<10} {}", color::label("Assignees:"), members.join(", "));
+            .collect::<Vec<_>>()
+            .join(", ");
+        left_plain.push(format!("Assignee: {members}"));
+        left_colored.push(format!("{} {members}", color::label("Assignee:")));
+    }
+    if let Some(p_label) = priority_label(&task.item.priority, mode) {
+        left_plain.push(format!("Prio: {p_label}"));
+        left_colored.push(format!(
+            "{} {}",
+            color::label("Prio:"),
+            colored_priority(&task.item.priority, p_label)
+        ));
     }
     if let Some(src) = &task.source {
-        println!("{:<10} {}", color::label("Source:"), src);
+        left_plain.push(format!("Source: {src}"));
+        left_colored.push(format!("{} {src}", color::label("Source:")));
     }
-    println!(
-        "{:<10} {}",
-        color::label("Created:"),
-        task.item.created.format("%Y-%m-%d %H:%M")
-    );
-    println!(
-        "{:<10} {}",
-        color::label("Updated:"),
-        task.item.updated.format("%Y-%m-%d %H:%M")
-    );
 
+    let (right_plain, right_colored) = if task.item.tags.is_empty() {
+        (String::new(), String::new())
+    } else {
+        let joined = task.item.tags.join(" ");
+        (
+            format!("Tags: {joined}"),
+            format!("{} {}", color::label("Tags:"), color::info(&joined)),
+        )
+    };
+
+    let left_joined_plain = left_plain.join(", ");
+    let left_joined_colored = left_colored.join(&color::label(", "));
+
+    println!("{}", color::separator(width));
+    if right_plain.is_empty() {
+        println!("{left_joined_colored}");
+    } else {
+        let pad = width
+            .saturating_sub(left_joined_plain.len() + right_plain.len())
+            .max(1);
+        println!(
+            "{}{}{}",
+            left_joined_colored,
+            " ".repeat(pad),
+            right_colored
+        );
+    }
+
+    // ---- Middle band: the actual content ----
+    println!("{}", color::separator(width));
+    let label_w = "Description:".len();
+    println!(
+        "{:<w$} {}",
+        color::label("Title:"),
+        task.item.title,
+        w = label_w
+    );
+    if let Some(d) = task.due_date {
+        let (label, sev) = due::render_due(d, today, mode);
+        let iso = d.format("%Y-%m-%d").to_string();
+        let value = if label == iso {
+            colored_due(&label, sev)
+        } else {
+            format!("{} ({})", colored_due(&label, sev), color::label(&iso))
+        };
+        println!("{:<w$} {value}", color::label("Due:"), w = label_w);
+    }
     if let Some(desc) = &task.item.description {
         if !desc.is_empty() {
-            println!();
-            println!("{}", color::label("Description:"));
-            for line in desc.lines() {
-                println!("  {line}");
+            let indent = " ".repeat(label_w + 1);
+            let wrap_w = width.saturating_sub(label_w + 1).max(20);
+            let mut first_line_label_printed = false;
+            for para in desc.lines() {
+                let wrapped = wrap_text(para, wrap_w);
+                let mut wrapped_iter = wrapped.into_iter();
+                if let Some(first) = wrapped_iter.next() {
+                    if !first_line_label_printed {
+                        println!("{:<w$} {first}", color::label("Description:"), w = label_w);
+                        first_line_label_printed = true;
+                    } else {
+                        println!("{indent}{first}");
+                    }
+                }
+                for rest in wrapped_iter {
+                    println!("{indent}{rest}");
+                }
+            }
+            // Handle the rare case of a fully empty paragraph array
+            if !first_line_label_printed {
+                println!("{:<w$}", color::label("Description:"), w = label_w);
             }
         }
     }
 
+    // ---- Bottom band: record timestamps ----
+    println!("{}", color::separator(width));
+    println!(
+        "{} {}{}{} {}",
+        color::label("Created:"),
+        task.item.created.format("%Y-%m-%d %H:%M"),
+        color::label(","),
+        color::label(" Updated:"),
+        task.item.updated.format("%Y-%m-%d %H:%M")
+    );
     println!("{}", color::separator(width));
     Ok(())
 }
@@ -732,6 +785,29 @@ fn colored_priority(p: &Priority, label: &str) -> String {
         Priority::High => color::danger(label),
         Priority::Critical | Priority::Extreme => color::danger_bold(label),
     }
+}
+
+/// Word-wrap text to the given width. Whitespace-only input returns empty.
+/// Words longer than the width are emitted on their own line uncut (so the
+/// terminal decides how to visually break them).
+fn wrap_text(text: &str, width: usize) -> Vec<String> {
+    let mut lines: Vec<String> = Vec::new();
+    let mut current = String::new();
+    for word in text.split_whitespace() {
+        if current.is_empty() {
+            current.push_str(word);
+        } else if current.len() + 1 + word.len() <= width {
+            current.push(' ');
+            current.push_str(word);
+        } else {
+            lines.push(std::mem::take(&mut current));
+            current.push_str(word);
+        }
+    }
+    if !current.is_empty() {
+        lines.push(current);
+    }
+    lines
 }
 
 fn render_tags(tags: &[String]) -> String {

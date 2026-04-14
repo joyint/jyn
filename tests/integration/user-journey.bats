@@ -346,13 +346,18 @@ load setup
 
     run jot show 1
     [ "$status" -eq 0 ]
-    [[ "$output" == *"#1"*"Buy groceries"*"TODO-0001-"* ]]
-    [[ "$output" == *"Priority:"*"high"*       ]]
+    # Top band carries both IDs.
+    [[ "$output" == *"#1"*"TODO-0001-"* ]]
+    # Top band carries classification + tags.
+    [[ "$output" == *"Prio:"*"high"*       ]]
+    [[ "$output" == *"Tags:"*"shopping"*   ]]
+    # Middle band carries title + due + description.
+    [[ "$output" == *"Title:"*"Buy groceries"* ]]
     [[ "$output" == *"Due:"*"today"*           ]]
-    [[ "$output" == *"Tags:"*"#shopping"*      ]]
     [[ "$output" == *"Description:"*"Organic"* ]]
-    [[ "$output" == *"Created:"*  ]]
-    [[ "$output" == *"Updated:"*  ]]
+    # Bottom band carries timestamps.
+    [[ "$output" == *"Created:"* ]]
+    [[ "$output" == *"Updated:"* ]]
 }
 
 @test "show: minimal task omits empty sections" {
@@ -387,12 +392,12 @@ load setup
     [[ "$output" == *"updated"*"#1"*"Buy organic stuff"*"critical"*"tomorrow"* ]]
 
     run jot show 1
-    [[ "$output" == *"Buy organic stuff"*        ]]
-    [[ "$output" == *"Priority:"*"critical"*     ]]
-    [[ "$output" == *"Due:"*"tomorrow"*          ]]
-    [[ "$output" == *"#urgent"*                  ]]
-    [[ "$output" != *"#initial"*                 ]]
-    [[ "$output" == *"Description:"*"Re-scoped"* ]]
+    [[ "$output" == *"Title:"*"Buy organic stuff"* ]]
+    [[ "$output" == *"Prio:"*"critical"*           ]]
+    [[ "$output" == *"Due:"*"tomorrow"*            ]]
+    [[ "$output" == *"Tags:"*"urgent"*             ]]
+    [[ "$output" != *"initial"*                    ]]
+    [[ "$output" == *"Description:"*"Re-scoped"*   ]]
 
     # Filename follows the new title slug, not the old one.
     ls .jot/items/TODO-0001-*organic-stuff*.yaml >/dev/null
@@ -418,7 +423,7 @@ load setup
     [[ "$output" == *"assigned"*"#1"*"horst@example.com"* ]]
 
     run jot show 1
-    [[ "$output" == *"Assignees:"*"horst@example.com"* ]]
+    [[ "$output" == *"Assignee:"*"horst@example.com"* ]]
 
     # Edit adds a second assignee.
     run jot edit 1 --assign claude@joy
