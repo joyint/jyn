@@ -157,22 +157,72 @@ load setup
     grep -q "^tags:"         "$yaml"
     grep -qF -- "- work"     "$yaml"
 
-    # ls grows DUE and TAGS columns only when data is present.
+    # ls grows DUE and TAGS columns only when data is present. Tags are
+    # rendered without '#' in the table.
     run jot
-    [[ "$output" == *"DUE"* ]]
-    [[ "$output" == *"TAGS"* ]]
+    [[ "$output" == *"DUE"*   ]]
+    [[ "$output" == *"TAGS"*  ]]
     [[ "$output" == *"today"* ]]
-    [[ "$output" == *"#work"* ]]
+    [[ "$output" == *"work"*  ]]
+    [[ "$output" != *"#work"* ]]
 }
 
-@test "ls without dues/tags/priority stays a two-column table" {
+@test "ls without extras stays a two-column table" {
     jot add Plain task >/dev/null
     run jot
     [[ "$output" == *"ID"*"TITLE"* ]]
     [[ "$output" != *"DUE"*  ]]
     [[ "$output" != *"TAGS"* ]]
+    [[ "$output" != *"ASSIGNEE"* ]]
     [[ "$output" != *"PRIORITY"* ]]
     [[ "$output" != *"PRIO"* ]]
+}
+
+@test "ls columns: TAGS rightmost, ASSIGNEE to its left, no '#' prefix" {
+    jot add --tag work --tag urgent -a claude@joy Review PR >/dev/null
+    run jot
+    [ "$status" -eq 0 ]
+    # Header lists TITLE before ASSIGNEE before TAGS.
+    header=$(echo "$output" | grep -E "^ID")
+    [[ "$header" == *"TITLE"*"ASSIGNEE"*"TAGS"* ]]
+    # Tags rendered without '#'.
+    row=$(echo "$output" | grep "Review PR")
+    [[ "$row" == *"claude@joy"*"work urgent"* ]]
+    [[ "$row" != *"#work"* ]]
+}
+
+@test "due rendering: full year on ISO dates so 2026 and 2027 differ" {
+    jot add --due 2026-04-24 same month 2026 >/dev/null
+    jot add --due 2027-04-24 same month 2027 >/dev/null
+    run jot
+    [[ "$output" == *"2026-04-24"* ]]
+    [[ "$output" == *"2027-04-24"* ]]
+}
+
+@test "due input: MM-DD and DD.MM shortcuts are accepted" {
+    run jot add --due 04-30 near a
+    [ "$status" -eq 0 ]
+    run jot add --due 25.04 deutsch b
+    [ "$status" -eq 0 ]
+    run jot add --due 25.04.2027 deutsch c
+    [ "$status" -eq 0 ]
+    run jot
+    [[ "$output" == *"near a"*    ]]
+    [[ "$output" == *"deutsch b"* ]]
+    [[ "$output" == *"deutsch c"* ]]
+}
+
+@test "short flag: -a works as --assign on add and edit" {
+    run jot add -a horst@example.com Buy milk
+    [ "$status" -eq 0 ]
+    run jot show 1
+    [[ "$output" == *"horst@example.com"* ]]
+
+    run jot edit 1 -a claude@joy
+    [ "$status" -eq 0 ]
+    run jot show 1
+    [[ "$output" == *"horst@example.com"* ]]
+    [[ "$output" == *"claude@joy"* ]]
 }
 
 @test "priority column: long by default, short with --short" {

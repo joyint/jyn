@@ -88,7 +88,7 @@ struct AddArgs {
     description: Option<String>,
 
     /// Assignee (free-form, typically an e-mail address).
-    #[arg(long)]
+    #[arg(short = 'a', long, alias = "assignee")]
     assign: Option<String>,
 
     /// Task title. Words are joined with spaces, so quoting is only needed
@@ -142,11 +142,11 @@ struct EditArgs {
     no_description: bool,
 
     /// Add an assignee (repeatable).
-    #[arg(long)]
+    #[arg(short = 'a', long, alias = "assignee")]
     assign: Vec<String>,
 
     /// Remove an assignee (repeatable).
-    #[arg(long)]
+    #[arg(long, alias = "unassignee")]
     unassign: Vec<String>,
 }
 
@@ -310,6 +310,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         .iter()
         .any(|t| priority_label(&t.item.priority, mode).is_some());
     let show_due = filtered.iter().any(|t| t.due_date.is_some());
+    let show_assignee = filtered.iter().any(|t| !t.item.assignees.is_empty());
     let show_tags = filtered.iter().any(|t| !t.item.tags.is_empty());
 
     let prio_labels: Vec<&'static str> = filtered
@@ -324,32 +325,19 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             None => (String::new(), DueSeverity::Later),
         })
         .collect();
-    let tag_labels: Vec<String> = filtered
-        .iter()
-        .map(|t| {
-            if t.item.tags.is_empty() {
-                String::new()
-            } else {
-                render_tags(&t.item.tags)
-            }
-        })
-        .collect();
-    let tag_widths: Vec<usize> = filtered
+    let assignee_labels: Vec<String> = filtered
         .iter()
         .map(|t| {
             t.item
-                .tags
+                .assignees
                 .iter()
-                .map(|s| s.len() + 1)
-                .sum::<usize>()
-                .saturating_sub(1)
-                .saturating_add(if t.item.tags.is_empty() {
-                    0
-                } else {
-                    t.item.tags.len()
-                })
+                .map(|a| a.member.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
         })
         .collect();
+    // Tags: plain space-separated, no '#' -- TAGS column sits rightmost.
+    let tag_labels: Vec<String> = filtered.iter().map(|t| t.item.tags.join(" ")).collect();
 
     let id_width = labels.iter().map(|s| s.len()).max().unwrap_or(2).max(2);
     let prio_header = match mode {
@@ -376,8 +364,23 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     } else {
         0
     };
+    let assignee_width = if show_assignee {
+        assignee_labels
+            .iter()
+            .map(|s| s.len())
+            .max()
+            .unwrap_or(0)
+            .max("ASSIGNEE".len())
+    } else {
+        0
+    };
     let tags_width = if show_tags {
-        tag_widths.iter().copied().max().unwrap_or(4).max(4)
+        tag_labels
+            .iter()
+            .map(|s| s.len())
+            .max()
+            .unwrap_or(0)
+            .max("TAGS".len())
     } else {
         0
     };
@@ -387,11 +390,14 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         + 1
         + if show_prio { prio_width + 1 } else { 0 }
         + if show_due { due_width + 1 } else { 0 }
+        + if show_assignee { assignee_width + 1 } else { 0 }
         + if show_tags { tags_width + 1 } else { 0 };
     let min_title = 20;
     let title_col = (term_w.saturating_sub(fixed)).max(min_title);
     let frame_w = (fixed + title_col).min(term_w.max(1));
 
+    // Column order: ID [PRIO] [DUE] TITLE [ASSIGNEE] [TAGS]. Tags sit
+    // rightmost; assignee is the column immediately to the left of tags.
     let mut headers: Vec<(&str, usize)> = vec![("ID", id_width)];
     if show_prio {
         headers.push((prio_header, prio_width));
@@ -399,17 +405,21 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     if show_due {
         headers.push(("DUE", due_width));
     }
+    headers.push(("TITLE", title_col));
+    if show_assignee {
+        headers.push(("ASSIGNEE", assignee_width));
+    }
     if show_tags {
         headers.push(("TAGS", tags_width));
     }
-    headers.push(("TITLE", title_col));
     println!("{}", color::header(&headers, frame_w));
 
-    for ((((task, label), prio_str), (due_str, due_sev)), plain_tags) in filtered
+    for (((((task, label), prio_str), (due_str, due_sev)), assignee_str), tag_str) in filtered
         .iter()
         .zip(labels.iter())
         .zip(prio_labels.iter())
         .zip(due_labels.iter())
+        .zip(assignee_labels.iter())
         .zip(tag_labels.iter())
     {
         let id_cell = color::id(&format!("{label:<id_width$}"));
@@ -433,17 +443,18 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             };
             line.push_str(&format!(" {cell}"));
         }
-        if show_tags {
-            let padding = tags_width.saturating_sub(tag_plain_width(task));
-            let cell = if plain_tags.is_empty() {
-                format!("{:<w$}", "", w = tags_width)
-            } else {
-                format!("{plain_tags}{}", " ".repeat(padding))
-            };
+        line.push_str(&format!(" {:<w$}", task.item.title, w = title_col));
+        if show_assignee {
+            let cell = format!("{assignee_str:<assignee_width$}");
             line.push_str(&format!(" {cell}"));
         }
-        line.push_str(&format!(" {}", task.item.title));
-        println!("{line}");
+        if show_tags {
+            let cell = format!("{tag_str:<tags_width$}");
+            line.push_str(&format!(" {}", color::info(&cell)));
+        }
+        // Trim trailing whitespace so the row doesn't paint past the
+        // visible content in color mode.
+        println!("{}", line.trim_end());
     }
 
     println!(
@@ -684,15 +695,4 @@ fn render_tags(tags: &[String]) -> String {
         .map(|t| color::info(&format!("#{t}")))
         .collect::<Vec<_>>()
         .join(" ")
-}
-
-/// Visible width of the tag column for a given task: '#' + tag per tag,
-/// joined by single spaces.
-fn tag_plain_width(task: &Task) -> usize {
-    if task.item.tags.is_empty() {
-        0
-    } else {
-        task.item.tags.iter().map(|t| t.len() + 1).sum::<usize>()
-            + task.item.tags.len().saturating_sub(1)
-    }
 }
