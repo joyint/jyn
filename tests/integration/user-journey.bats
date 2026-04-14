@@ -5,10 +5,11 @@
 
 load setup
 
-@test "fresh workspace: 'jot' with no args greets empty list" {
+@test "fresh workspace: 'jot' with no args shows welcome block" {
     run jot
     [ "$status" -eq 0 ]
-    [[ "$output" == *"No open tasks"* ]]
+    [[ "$output" == *"No tasks yet"* ]]
+    [[ "$output" == *"jot add"* ]]
 }
 
 @test "user journey: add, list, remove one task" {
@@ -40,10 +41,10 @@ load setup
     [ "$status" -eq 0 ]
     [[ "$output" == *"removed"*"#1"*"Buy milk"* ]]
 
-    # Empty again
+    # Empty again -- last task removed, welcome block returns
     run jot
     [ "$status" -eq 0 ]
-    [[ "$output" == *"No open tasks"* ]]
+    [[ "$output" == *"No tasks yet"* ]]
 }
 
 @test "multiple tasks: counters increment, leading zeros stripped" {
