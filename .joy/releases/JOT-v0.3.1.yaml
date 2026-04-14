@@ -1,0 +1,11 @@
+version: v0.3.1
+date: 2026-04-14
+previous: v0.3.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  tasks:
+  - id: JOT-0042-1A
+    title: 'jot ls: hug content width, truncate only when wider than terminal'

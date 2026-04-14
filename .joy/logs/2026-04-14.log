@@ -87,3 +87,4 @@
 2026-04-14T03:27:46.518Z JOT-0042-1A item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T03:31:12.249Z JOT-0042-1A comment.added "[x] Implemented: ls now hugs content width by default. TITLE column = max(longest title, 'TITLE') + 5 trailing spaces; DESC/ASSIGNEE/TAGS lay flush to its right. Separators and frame shrink with the table so wide terminals don't show a wall of whitespace. If the natural table exceeds the terminal, the layout falls back to filling the full width and truncates the title with '...' plus a 2-space buffer before the next column (Joy-style). bats scenario confirms both directions." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T03:36:02.712Z JOT-0042-1A item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T03:49:21.239Z v0.3.1 release.created [horst.schwarz@joydev.com]
