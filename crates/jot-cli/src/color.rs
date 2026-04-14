@@ -126,16 +126,22 @@ pub fn info(text: &str) -> String {
     wrap("\x1b[36m", text)
 }
 
-/// Detect terminal width, falling back to 80 columns when the stream
-/// is not a TTY or the OS does not report a size.
+/// Detect terminal width. Checks the COLUMNS environment variable
+/// first (standard override; respected by git and friends, and makes
+/// tests deterministic) before falling back to the OS-reported size
+/// of the current terminal and finally to 80 columns.
 pub fn terminal_width() -> usize {
+    if let Some(w) = std::env::var("COLUMNS")
+        .ok()
+        .and_then(|v| v.parse::<usize>().ok())
+        .filter(|&w| w > 0)
+    {
+        return w;
+    }
     if let Some((terminal_size::Width(w), _)) = terminal_size::terminal_size() {
         return w as usize;
     }
-    std::env::var("COLUMNS")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(80)
+    80
 }
 
 /// Separator line spanning `width` columns, secondary-colored.
