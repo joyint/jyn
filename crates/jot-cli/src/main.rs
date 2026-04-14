@@ -518,16 +518,20 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
             };
             line.push_str(&format!(" {cell}"));
         }
-        // Strikethrough + dim for closed; stronger fade for archived.
-        let title_padded = format!("{:<w$}", task.item.title, w = title_col);
-        let title_cell = if task.archived {
-            color::strikethrough_faint(&title_padded)
+        // Strikethrough + dim for closed, fainter for archived. The
+        // styling wraps only the title text; trailing column padding
+        // stays plain so the line isn't struck through across empty
+        // space.
+        let title_text = &task.item.title;
+        let styled = if task.archived {
+            color::strikethrough_faint(title_text)
         } else if matches!(task.item.status, joy_core::model::item::Status::Closed) {
-            color::strikethrough_dim(&title_padded)
+            color::strikethrough_dim(title_text)
         } else {
-            title_padded
+            title_text.to_string()
         };
-        line.push_str(&format!(" {title_cell}"));
+        let pad = title_col.saturating_sub(title_text.len());
+        line.push_str(&format!(" {styled}{}", " ".repeat(pad)));
         if show_desc {
             // Right-align the count so the digits line up cleanly.
             let cell = if desc_str.is_empty() {
