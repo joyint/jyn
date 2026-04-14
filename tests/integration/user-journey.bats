@@ -606,6 +606,58 @@ load setup
     [ "$ex_pos" -lt "$lo_pos" ]
 }
 
+@test "ls flags work at top level: jot -a / jot --sort / jot --tag" {
+    jot add -p low    zebra     >/dev/null
+    jot add           alpha     >/dev/null
+    jot add --tag x   beta      >/dev/null
+    jot add to-hide             >/dev/null
+    jot archive 4               >/dev/null
+
+    # jot -a: archived surfaces.
+    run jot -a
+    [[ "$output" == *"to-hide"* ]]
+
+    # jot --sort title: alphabetical.
+    run jot --sort title
+    rows=$(echo "$output" | grep -E "^#")
+    [[ $(echo "$rows" | sed -n '1p') == *"alpha"* ]]
+    [[ $(echo "$rows" | sed -n '3p') == *"zebra"* ]]
+
+    # jot --tag x: tag filter.
+    run jot --tag x
+    [[ "$output" == *"beta"*  ]]
+    [[ "$output" != *"alpha"* ]]
+}
+
+@test "--sort: created / priority / due / title / --reverse" {
+    jot add -p low    zebra     >/dev/null
+    jot add           alpha     >/dev/null
+    jot add --due 2026-06-01 beta >/dev/null
+    jot add -p extreme charlie  >/dev/null
+
+    # priority: extreme first, low last
+    run jot --sort priority
+    rows=$(echo "$output" | grep -E "^#")
+    [[ $(echo "$rows" | sed -n '1p') == *"charlie"* ]]
+    [[ $(echo "$rows" | sed -n '4p') == *"zebra"*   ]]
+
+    # title + reverse: z first
+    run jot --sort title -r
+    rows=$(echo "$output" | grep -E "^#")
+    [[ $(echo "$rows" | sed -n '1p') == *"zebra"* ]]
+
+    # created: insertion order
+    run jot --sort created
+    rows=$(echo "$output" | grep -E "^#")
+    [[ $(echo "$rows" | sed -n '1p') == *"zebra"*  ]]
+    [[ $(echo "$rows" | sed -n '4p') == *"charlie"* ]]
+
+    # due: beta has a date, others fall to the end
+    run jot --sort due
+    rows=$(echo "$output" | grep -E "^#")
+    [[ $(echo "$rows" | sed -n '1p') == *"beta"* ]]
+}
+
 @test "prefix shortcuts: any unambiguous subcommand prefix is accepted" {
     jot ad "prefix add" >/dev/null
     run jot l

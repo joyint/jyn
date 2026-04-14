@@ -30,8 +30,13 @@ struct Cli {
 
     /// Use compact labels ('ext', 'tod', 'tmw', '-2d') instead of the
     /// full spelling. Also triggered by the JOT_SHORT environment variable.
-    #[arg(short = 's', long, global = true)]
+    #[arg(long, global = true)]
     short: bool,
+
+    /// Ls-style flags usable without typing 'ls': `jot -a`, `jot --sort
+    /// title`, `jot --tag work`, and so on.
+    #[command(flatten)]
+    ls: LsArgs,
 
     #[command(subcommand)]
     command: Option<Commands>,
@@ -183,6 +188,23 @@ struct IdArgs {
     id: String,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum, Default)]
+enum SortMode {
+    /// What-should-I-do-next: urgency then priority (default).
+    #[default]
+    Smart,
+    /// Creation order, oldest first.
+    Created,
+    /// Last-updated first.
+    Updated,
+    /// Priority only (extreme first).
+    Priority,
+    /// Due date ascending, no-date tasks at the end.
+    Due,
+    /// Alphabetical by title.
+    Title,
+}
+
 #[derive(clap::Args, Default)]
 struct LsArgs {
     /// Include closed and archived tasks.
@@ -205,6 +227,14 @@ struct LsArgs {
     /// Filter by tag. Repeat to require multiple tags.
     #[arg(short, long = "tag")]
     tags: Vec<String>,
+
+    /// Sort order: smart (default), created, updated, priority, due, title.
+    #[arg(long, value_enum, default_value_t = SortMode::Smart)]
+    sort: SortMode,
+
+    /// Reverse the sort direction.
+    #[arg(short = 'r', long)]
+    reverse: bool,
 }
 
 #[derive(clap::Args)]
@@ -228,7 +258,7 @@ fn main() -> Result<()> {
     match cli.command {
         Some(Commands::Add(args)) => run_add(&root, args, mode)?,
         Some(Commands::Ls(args)) => run_ls(&root, &args, mode)?,
-        None => run_ls(&root, &LsArgs::default(), mode)?,
+        None => run_ls(&root, &cli.ls, mode)?,
         Some(Commands::Show(args)) => run_show(&root, &args.id, mode)?,
         Some(Commands::Edit(args)) => run_edit(&root, args, mode)?,
         Some(Commands::Assign(args)) => run_assign(&root, &args.id, &args.member)?,
@@ -352,11 +382,10 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         })
         .collect();
 
-    // Smart default sort: what-should-I-do-next floats to the top.
-    // Order: archived last, closed after active, overdue before today
-    // before soon before later before no-due-date, higher priority
-    // before lower, older creation as final tiebreak.
-    filtered.sort_by_key(|t| sort_key(t, today));
+    // Sort per the user's requested mode. The smart default floats the
+    // what-should-I-do-next task to the top; alternative modes sort by
+    // a single dimension. --reverse flips the direction.
+    apply_sort(&mut filtered, args.sort, args.reverse, today);
 
     if filtered.is_empty() {
         println!("No open tasks. Add one with: jot add \"<title>\"");
@@ -892,6 +921,75 @@ fn run_rm(root: &Path, id: &str) -> Result<()> {
 /// Color due labels on a traffic-light-plus-dim gradient so dates are
 /// always visually distinct from the title: overdue red, today yellow,
 /// soon (this week) secondary green, later dim grey.
+/// Apply the user-selected sort mode to `tasks`. All modes keep
+/// archived/closed at the bottom (archived last, closed after active)
+/// so the secondary dimension only reorders within those buckets.
+fn apply_sort(tasks: &mut [&Task], mode: SortMode, reverse: bool, today: chrono::NaiveDate) {
+    match mode {
+        SortMode::Smart => tasks.sort_by_key(|t| sort_key(t, today)),
+        SortMode::Created => tasks.sort_by_key(|t| (t.archived, is_closed(t), t.item.created)),
+        SortMode::Updated => {
+            // Updated: newest first (reverse the created-style tuple).
+            tasks.sort_by(|a, b| {
+                (a.archived, is_closed(a), std::cmp::Reverse(a.item.updated)).cmp(&(
+                    b.archived,
+                    is_closed(b),
+                    std::cmp::Reverse(b.item.updated),
+                ))
+            });
+        }
+        SortMode::Priority => {
+            tasks.sort_by_key(|t| {
+                (
+                    t.archived,
+                    is_closed(t),
+                    priority_rank(&t.item.priority),
+                    t.item.created,
+                )
+            });
+        }
+        SortMode::Due => {
+            // No-date tasks always land at the end within their bucket.
+            tasks.sort_by_key(|t| {
+                (
+                    t.archived,
+                    is_closed(t),
+                    t.due_date.is_none(),
+                    t.due_date,
+                    t.item.created,
+                )
+            });
+        }
+        SortMode::Title => {
+            tasks.sort_by(|a, b| {
+                (a.archived, is_closed(a), a.item.title.to_lowercase()).cmp(&(
+                    b.archived,
+                    is_closed(b),
+                    b.item.title.to_lowercase(),
+                ))
+            });
+        }
+    }
+    if reverse {
+        tasks.reverse();
+    }
+}
+
+fn is_closed(t: &Task) -> bool {
+    matches!(t.item.status, joy_core::model::item::Status::Closed)
+}
+
+fn priority_rank(p: &joy_core::model::item::Priority) -> u8 {
+    use joy_core::model::item::Priority::*;
+    match p {
+        Extreme => 0,
+        Critical => 1,
+        High => 2,
+        Medium => 3,
+        Low => 4,
+    }
+}
+
 /// Ordering key for the default ls sort.
 ///
 /// The tuple sorts lexicographically; lower values float to the top.
