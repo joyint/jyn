@@ -11,9 +11,12 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T01:30:01.956053188Z
-updated: 2026-04-14T01:34:14.629862656Z
+updated: 2026-04-14T01:38:04.661095470Z
 description: 'Three UX fixes raised while exercising the CLI: (1) date rendering must keep the year so 2026-04-24 and 2027-04-24 are distinguishable in ls output; also accept shorter input forms MM-DD (current year implied) and DD.MM / DD.MM.YYYY; (2) in ls, move the TAGS column to the rightmost position, render tags without the ''#'' prefix, and introduce an ASSIGNEE column directly to the left of TAGS; (3) add a short ''-a'' flag plus ''--assignee'' alias for ''--assign'' on add and edit.'
 comments:
 - author: ai:claude@joy
   date: 2026-04-14T01:34:14.629862330Z
   text: '[x] Implemented three fixes: (1) due rendering keeps the year (Long mode YYYY-MM-DD; Short mode MM-DD for current year, YYYY-MM-DD otherwise); input parser accepts MM-DD (current year), DD.MM (current year), DD.MM.YYYY, on top of the existing YYYY-MM-DD plus today/tomorrow. (2) ls column order is now ID [PRIORITY] [DUE] TITLE [ASSIGNEE] [TAGS], tags rendered plain (no ''#'') in the rightmost column, assignee directly to its left. (3) ''-a'' and ''--assignee'' alias ''--assign'' on add and edit; ''jot add ... -a claude@joy'' and ''jot edit 1 -a member'' both work. bats grows four scenarios covering the year preservation, the new input shortcuts, the tag/assignee column order, and the -a shortcut.'
+- author: ai:claude@joy
+  date: 2026-04-14T01:38:04.661095340Z
+  text: '[x] Color polish: Soon severity now uses secondary green (color::label), Later uses dim grey (color::inactive). Full traffic-light gradient plus fading: overdue red -> today yellow -> this week green -> far away grey. Dates no longer blend into the title.'

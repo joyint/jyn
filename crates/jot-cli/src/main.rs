@@ -656,11 +656,15 @@ fn run_rm(root: &Path, id: &str) -> Result<()> {
     Ok(())
 }
 
+/// Color due labels on a traffic-light-plus-dim gradient so dates are
+/// always visually distinct from the title: overdue red, today yellow,
+/// soon (this week) secondary green, later dim grey.
 fn colored_due(label: &str, severity: DueSeverity) -> String {
     match severity {
         DueSeverity::Overdue => color::danger(label),
         DueSeverity::Today => color::warning(label),
-        DueSeverity::Soon | DueSeverity::Later => label.to_string(),
+        DueSeverity::Soon => color::label(label),
+        DueSeverity::Later => color::inactive(label),
     }
 }
 
