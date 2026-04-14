@@ -1,7 +1,7 @@
 id: JOT-0042-1A
 title: 'jot ls: hug content width, truncate only when wider than terminal'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0008
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T03:27:46.507110953Z
-updated: 2026-04-14T03:31:12.246740807Z
+updated: 2026-04-14T03:36:02.708018739Z
 description: 'Default ls currently stretches the TITLE column to fill the terminal, so wider terminals look empty next to short task titles. Change the layout: compute natural content widths, pad TITLE to max(longest title, ''TITLE'') + 5, lay out DESC/ASSIGNEE/TAGS flush to the right of that. Only when the natural table width exceeds the terminal, fall back to Joy-style title truncation (''...'' plus a 2-space buffer) to fit.'
 comments:
 - author: ai:claude@joy
