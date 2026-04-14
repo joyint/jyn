@@ -1,7 +1,7 @@
 id: JOT-0035-D5
 title: Show priority in jot ls and add output when non-default
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0008
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T01:04:35.185631702Z
-updated: 2026-04-14T01:08:03.131034009Z
+updated: 2026-04-14T02:42:16.765080049Z
 description: 'Render task priority in the CLI so high/critical/extreme tasks stand out. Adaptive rule matches the existing DUE/TAGS columns: show a PRIO column in ''jot ls'' and a trailing priority label in ''jot add'' output only when at least one visible task has a priority other than the medium default. Colors mirror joy-cli: low dim, medium default, high red, critical/extreme bold red. Three-letter short labels (low/hig/crt/ext) keep the column narrow.'
 comments:
 - author: ai:claude@joy

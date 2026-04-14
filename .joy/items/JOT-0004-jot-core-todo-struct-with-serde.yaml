@@ -1,7 +1,7 @@
 id: JOT-0004
 title: 'jot-core: Todo struct with serde flatten on Item'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,7 +10,7 @@ deps:
 - JOT-0003
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:25.732010330Z
-updated: 2026-04-13T23:41:34.986002899Z
+updated: 2026-04-14T02:42:16.672510826Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-13T23:41:34.986002219Z

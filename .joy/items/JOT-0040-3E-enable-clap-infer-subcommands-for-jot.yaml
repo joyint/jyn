@@ -1,7 +1,7 @@
 id: JOT-0040-3E
 title: Enable clap infer_subcommands for jot CLI
 type: task
-status: in-progress
+status: closed
 priority: low
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T02:17:39.607993884Z
-updated: 2026-04-14T02:18:48.281065180Z
+updated: 2026-04-14T02:42:16.885769540Z
 description: Match joy-cli's behaviour of accepting any unambiguous subcommand prefix ('c' / 'cl' for close, 'un' / 'u' for unarchive, 'ad' for add, etc.). One-line addition of 'infer_subcommands = true' to the clap command attribute.
 comments:
 - author: ai:claude@joy

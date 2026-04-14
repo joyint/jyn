@@ -1,7 +1,7 @@
 id: JOT-0039-9A
 title: 'CLI polish: full-year dates, tags right, assignee column, -a shortcut'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T01:30:01.956053188Z
-updated: 2026-04-14T01:38:04.661095470Z
+updated: 2026-04-14T02:42:16.806862034Z
 description: 'Three UX fixes raised while exercising the CLI: (1) date rendering must keep the year so 2026-04-24 and 2027-04-24 are distinguishable in ls output; also accept shorter input forms MM-DD (current year implied) and DD.MM / DD.MM.YYYY; (2) in ls, move the TAGS column to the rightmost position, render tags without the ''#'' prefix, and introduce an ASSIGNEE column directly to the left of TAGS; (3) add a short ''-a'' flag plus ''--assignee'' alias for ''--assign'' on add and edit.'
 comments:
 - author: ai:claude@joy

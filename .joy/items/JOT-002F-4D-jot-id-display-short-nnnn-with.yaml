@@ -1,7 +1,7 @@
 id: JOT-002F-4D
 title: 'Jot ID display: short #NNNN with adaptive suffix'
 type: decision
-status: in-progress
+status: closed
 priority: high
 parent: JOT-0002
 assignees:
@@ -10,7 +10,7 @@ capabilities:
 - conceive
 created_by: ai:claude@joy
 created: 2026-04-14T00:27:12.777156035Z
-updated: 2026-04-14T00:32:39.745530346Z
+updated: 2026-04-14T02:42:16.735740482Z
 description: |-
   ## Context
 

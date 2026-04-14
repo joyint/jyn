@@ -1,7 +1,7 @@
 id: JOT-0030-F9
 title: 'jot ls layout: header, columns, footer like Joy'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0008
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T00:38:16.897951519Z
-updated: 2026-04-14T01:17:33.212300675Z
+updated: 2026-04-14T02:42:16.745647244Z
 description: 'Adopt Joy''s table layout shape for ''jot ls'': top separator, dim header row, separator, colored rows, bottom separator, ''N tasks'' footer. Terminal-width-aware via terminal_size crate. Keeps jot visually consistent with joy while preserving the personal-tool feel (only #ID and title as primary columns; due/tags come with later iterations).'
 comments:
 - author: ai:claude@joy

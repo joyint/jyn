@@ -1,7 +1,7 @@
 id: JOT-003F-08
 title: Strikethrough and dim rendering for closed and archived tasks
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0008
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T02:05:54.321601135Z
-updated: 2026-04-14T02:13:49.186457406Z
+updated: 2026-04-14T02:42:16.874918229Z
 description: 'ls row rendering: closed tasks show title in strikethrough + dim (inactive grey). Archived tasks (only visible with --all) use stronger dim plus strikethrough across the whole row. Strikethrough uses ANSI \x1b[9m; terminals that do not support it render regular dim text (acceptable fallback). show footer gains optional ''Closed:'' and ''Archived:'' rows using the same chrome color as the timestamps.'
 comments:
 - author: ai:claude@joy

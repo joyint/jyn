@@ -1,7 +1,7 @@
 id: JOT-003C-22
 title: Archive is a Git-only concept, not pushed to sync backends
 type: decision
-status: in-progress
+status: closed
 priority: high
 parent: JOT-0018
 assignees:
@@ -10,7 +10,7 @@ capabilities:
 - conceive
 created_by: ai:claude@joy
 created: 2026-04-14T02:05:54.289533563Z
-updated: 2026-04-14T02:10:13.696442312Z
+updated: 2026-04-14T02:42:16.840539353Z
 description: |-
   ## Context
 

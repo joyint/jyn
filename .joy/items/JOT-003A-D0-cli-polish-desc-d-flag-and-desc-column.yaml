@@ -1,7 +1,7 @@
 id: JOT-003A-D0
 title: 'CLI polish: --desc/-d flag and DESC column in ls'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T01:40:28.965481294Z
-updated: 2026-04-14T01:42:50.937317768Z
+updated: 2026-04-14T02:42:16.817267233Z
 description: Rename --description to --desc (shorter, more typeable) with short -d. The existing --due loses its -d short form (still accessible as --due). Add a DESC column to jot ls that renders the character count of the task description, placed left of the ASSIGNEE column. Hidden when no visible task has a description.
 comments:
 - author: ai:claude@joy

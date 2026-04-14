@@ -1,7 +1,7 @@
 id: JOT-000B
 title: 'jot edit: modify title, due, priority, tags'
 type: story
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,7 +10,7 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.098436871Z
-updated: 2026-04-14T01:25:18.138340540Z
+updated: 2026-04-14T02:42:16.714901521Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-14T01:25:18.138340409Z

@@ -1,7 +1,7 @@
 id: JOT-0031-C7
 title: Colored CLI output with NO_COLOR and --color flag
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T00:38:16.914681580Z
-updated: 2026-04-14T00:41:17.692835620Z
+updated: 2026-04-14T02:42:16.755435936Z
 description: 'Color ID columns, headers, footers, and success messages across add/ls/rm. Auto-detect: disabled when stdout is not a TTY or NO_COLOR is set. Explicit --color=always|never|auto flag on the root command overrides. Semantic color helpers in jot-cli::color (mirrors joy-cli structure but minimal scope).'
 comments:
 - author: ai:claude@joy

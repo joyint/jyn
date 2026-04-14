@@ -1,7 +1,7 @@
 id: JOT-003D-7B
 title: 'jot close / jot reopen: mark tasks done (with ''done'' alias)'
 type: task
-status: in-progress
+status: closed
 priority: high
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T02:05:54.307105873Z
-updated: 2026-04-14T02:10:13.714392031Z
+updated: 2026-04-14T02:42:16.854317425Z
 description: '''jot close <ID>'' sets Item.status = Closed and records a new Task.closed_at timestamp. ''jot reopen <ID>'' reverts status to New and clears closed_at. ''jot done'' stays as an alias of ''jot close'' for the personal-task-manager vocabulary. Recurrence (JOT-0006) and dispatch-notify (JOT-001D) hook in later.'
 comments:
 - author: ai:claude@joy

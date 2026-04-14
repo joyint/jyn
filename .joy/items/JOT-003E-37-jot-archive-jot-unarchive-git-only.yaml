@@ -1,7 +1,7 @@
 id: JOT-003E-37
 title: 'jot archive / jot unarchive: Git-only hide from daily view'
 type: task
-status: in-progress
+status: closed
 priority: high
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T02:05:54.314646713Z
-updated: 2026-04-14T02:10:13.723731077Z
+updated: 2026-04-14T02:42:16.864889956Z
 description: '''jot archive <ID>'' sets Task.archived = true plus Task.archived_at. ''jot unarchive <ID>'' reverses both. Archived tasks are filtered from ls by default; --all includes them, stronger dim + strikethrough. Never synced (JOT-003C decision).'
 comments:
 - author: ai:claude@joy

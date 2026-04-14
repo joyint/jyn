@@ -1,7 +1,7 @@
 id: JOT-003B-C9
 title: 'Redesign jot show layout: three-band card'
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0009
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T01:52:14.028296103Z
-updated: 2026-04-14T01:55:12.948322021Z
+updated: 2026-04-14T02:42:16.827370737Z
 description: 'Replace the cramped single-line header of ''jot show'' with a three-band card layout: a top band for identity metadata (short ID, full ADR-027 ID, assignee, prio, source) with tags right-aligned, a middle band dedicated to the actual content (Title, Due, Description) with aligned labels, and a bottom band for record timestamps (Created, Updated). Separators between bands, labels in secondary green, values in their semantic colors.'
 comments:
 - author: ai:claude@joy

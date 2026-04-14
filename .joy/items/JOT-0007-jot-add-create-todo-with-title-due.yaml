@@ -1,7 +1,7 @@
 id: JOT-0007
 title: 'jot add: create todo with title, due, priority, tags'
 type: story
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,7 +10,7 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.091665662Z
-updated: 2026-04-14T01:02:11.517348474Z
+updated: 2026-04-14T02:42:16.682823030Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-13T23:38:06.566589090Z

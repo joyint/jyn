@@ -1,7 +1,7 @@
 id: JOT-0038-E8
 title: Description field support on add, edit, and show
 type: task
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -11,7 +11,7 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-14T01:22:09.722909149Z
-updated: 2026-04-14T01:25:18.154015047Z
+updated: 2026-04-14T02:42:16.796784906Z
 description: Add --description flag to 'jot add' and 'jot edit' writing joy-core Item.description. Rendered in 'jot show' as a paragraph block, truncated in list contexts. Multi-line value requires either quoted input or a '--description-stdin' variant (future). First iteration accepts quoted single-value --description.
 comments:
 - author: ai:claude@joy
