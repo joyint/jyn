@@ -508,9 +508,23 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         + if show_desc { desc_width + 1 } else { 0 }
         + if show_assignee { assignee_width + 1 } else { 0 }
         + if show_tags { tags_width + 1 } else { 0 };
+
+    // Prefer hugging content: TITLE column = max(longest title, "TITLE")
+    // + 5 right-margin. If that does not fit in the terminal, fall back
+    // to Joy-style truncation and let the table span the full width.
+    let longest_title = filtered
+        .iter()
+        .map(|t| t.item.title.len())
+        .max()
+        .unwrap_or(0);
+    let title_natural = longest_title.max("TITLE".len()) + 5;
     let min_title = 20;
-    let title_col = (term_w.saturating_sub(fixed)).max(min_title);
-    let frame_w = (fixed + title_col).min(term_w.max(1));
+    let (title_col, truncate) = if fixed + title_natural <= term_w {
+        (title_natural, false)
+    } else {
+        (term_w.saturating_sub(fixed).max(min_title), true)
+    };
+    let frame_w = fixed + title_col;
 
     // Column order: ID [PRIO] [DUE] TITLE [ASSIGNEE] [TAGS]. Tags sit
     // rightmost; assignee is the column immediately to the left of tags.
@@ -567,14 +581,19 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         // Strikethrough + dim for closed, fainter for archived. The
         // styling wraps only the title text; trailing column padding
         // stays plain so the line isn't struck through across empty
-        // space.
-        let title_text = &task.item.title;
-        let styled = if task.archived {
-            color::strikethrough_faint(title_text)
-        } else if matches!(task.item.status, joy_core::model::item::Status::Closed) {
-            color::strikethrough_dim(title_text)
+        // space. In truncated mode we reserve 2 right-margin chars so
+        // the `...` ending doesn't touch the next column.
+        let title_text = if truncate {
+            truncate_title(&task.item.title, title_col.saturating_sub(2))
         } else {
-            title_text.to_string()
+            task.item.title.clone()
+        };
+        let styled = if task.archived {
+            color::strikethrough_faint(&title_text)
+        } else if matches!(task.item.status, joy_core::model::item::Status::Closed) {
+            color::strikethrough_dim(&title_text)
+        } else {
+            title_text.clone()
         };
         let pad = title_col.saturating_sub(title_text.len());
         line.push_str(&format!(" {styled}{}", " ".repeat(pad)));
@@ -1090,6 +1109,19 @@ fn wrap_text(text: &str, width: usize) -> Vec<String> {
         lines.push(current);
     }
     lines
+}
+
+/// Truncate a title to `max_len` characters, appending `...` when the
+/// original exceeds the limit. Returns the original string untouched
+/// when it already fits.
+fn truncate_title(title: &str, max_len: usize) -> String {
+    if title.len() <= max_len {
+        return title.to_string();
+    }
+    if max_len <= 3 {
+        return ".".repeat(max_len);
+    }
+    format!("{}...", &title[..max_len - 3])
 }
 
 fn render_tags(tags: &[String]) -> String {

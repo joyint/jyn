@@ -685,6 +685,29 @@ load setup
     [ "$status" -ne 0 ]
 }
 
+@test "ls hugs content width on wide terminals and truncates on narrow ones" {
+    jot add short >/dev/null
+    jot add another quick thing >/dev/null
+
+    # Wide terminal: table should be ~32 chars (ID + TITLE with 5-space
+    # buffer after the longest title), not stretched to 200.
+    run env COLUMNS=200 jot --color=never
+    # Separator must be far shorter than 200.
+    sep_len=$(echo "$output" | grep -m1 "^-" | awk '{print length}')
+    [ "$sep_len" -lt 60 ]
+    # No truncation with plenty of room.
+    [[ "$output" != *"..."* ]]
+
+    # Narrow terminal: title gets '...' plus 2-space buffer before the
+    # next column (here no other columns, so just the truncation).
+    jot add "This title is far too long for a narrow 30-column terminal" >/dev/null
+    run env COLUMNS=30 jot --color=never
+    [[ "$output" == *"..."* ]]
+    # The separator on narrow mode runs the full terminal width.
+    sep_len=$(echo "$output" | grep -m1 "^-" | awk '{print length}')
+    [ "$sep_len" -eq 30 ]
+}
+
 @test "collision: same counter from two sources shows expanded form" {
     # Simulate a post-sync state: two YAML files with the same counter
     # but different title-hash suffixes (what would happen if two
