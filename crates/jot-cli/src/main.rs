@@ -319,7 +319,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     };
 
     let tasks = storage::load_tasks(root).context("loading tasks")?;
-    let filtered: Vec<&Task> = tasks
+    let mut filtered: Vec<&Task> = tasks
         .iter()
         .filter(|t| {
             // Visibility rules for status/archive:
@@ -351,6 +351,12 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
                 .all(|want| t.item.tags.iter().any(|h| h == want))
         })
         .collect();
+
+    // Smart default sort: what-should-I-do-next floats to the top.
+    // Order: archived last, closed after active, overdue before today
+    // before soon before later before no-due-date, higher priority
+    // before lower, older creation as final tiebreak.
+    filtered.sort_by_key(|t| sort_key(t, today));
 
     if filtered.is_empty() {
         println!("No open tasks. Add one with: jot add \"<title>\"");
@@ -886,6 +892,44 @@ fn run_rm(root: &Path, id: &str) -> Result<()> {
 /// Color due labels on a traffic-light-plus-dim gradient so dates are
 /// always visually distinct from the title: overdue red, today yellow,
 /// soon (this week) secondary green, later dim grey.
+/// Ordering key for the default ls sort.
+///
+/// The tuple sorts lexicographically; lower values float to the top.
+///   0. archived (false < true)       -- active + closed before archived
+///   1. closed   (false < true)       -- active before closed
+///   2. urgency  (u8)                 -- overdue, today, soon, later, none
+///   3. priority (u8)                 -- extreme, critical, high, medium, low
+///   4. created  (DateTime<Utc>)      -- older first as a stable tiebreak
+fn sort_key(
+    task: &Task,
+    today: chrono::NaiveDate,
+) -> (bool, bool, u8, u8, chrono::DateTime<chrono::Utc>) {
+    let closed = matches!(task.item.status, joy_core::model::item::Status::Closed);
+    let urgency: u8 = match task.due_date {
+        Some(d) => {
+            let delta = (d - today).num_days();
+            if delta < 0 {
+                0 // overdue
+            } else if delta == 0 {
+                1 // today
+            } else if delta <= 6 {
+                2 // soon (this week)
+            } else {
+                3 // later
+            }
+        }
+        None => 4, // no date
+    };
+    let priority: u8 = match task.item.priority {
+        joy_core::model::item::Priority::Extreme => 0,
+        joy_core::model::item::Priority::Critical => 1,
+        joy_core::model::item::Priority::High => 2,
+        joy_core::model::item::Priority::Medium => 3,
+        joy_core::model::item::Priority::Low => 4,
+    };
+    (task.archived, closed, urgency, priority, task.item.created)
+}
+
 fn colored_due(label: &str, severity: DueSeverity) -> String {
     match severity {
         DueSeverity::Overdue => color::danger(label),

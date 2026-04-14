@@ -571,6 +571,41 @@ load setup
     [[ "$output" == *$'\x1b[9m'* ]]
 }
 
+@test "ls default sort: overdue, today, soon, later, no-date; then priority; then creation" {
+    jot add -p low               a-nodate-low              >/dev/null
+    jot add -p extreme           b-nodate-extreme          >/dev/null
+    jot add --due 2020-01-01     c-overdue                 >/dev/null
+    jot add --due today          d-today-default           >/dev/null
+    jot add --due today -p high  e-today-high              >/dev/null
+    jot add --due tomorrow       f-tomorrow                >/dev/null
+    jot add --due 2030-01-01     g-later                   >/dev/null
+    jot add                      h-will-be-closed          >/dev/null
+    jot close 8                                            >/dev/null
+
+    run jot
+    [ "$status" -eq 0 ]
+    rows=$(echo "$output" | grep -E "^#")
+    # The eighth and final row must be the closed one.
+    last_row=$(echo "$rows" | tail -1)
+    [[ "$last_row" == *"h-will-be-closed"* ]]
+
+    # First row = overdue (strongest urgency).
+    first_row=$(echo "$rows" | sed -n '1p')
+    [[ "$first_row" == *"c-overdue"* ]]
+
+    # Second row = today with higher priority before today with default.
+    second=$(echo "$rows" | sed -n '2p')
+    third=$(echo "$rows" | sed -n '3p')
+    [[ "$second" == *"e-today-high"*    ]]
+    [[ "$third"  == *"d-today-default"* ]]
+
+    # Within no-date bucket, extreme > low.
+    # Find the position of the two no-date rows.
+    ex_pos=$(echo "$rows" | grep -n "b-nodate-extreme" | cut -d: -f1)
+    lo_pos=$(echo "$rows" | grep -n "a-nodate-low"     | cut -d: -f1)
+    [ "$ex_pos" -lt "$lo_pos" ]
+}
+
 @test "prefix shortcuts: any unambiguous subcommand prefix is accepted" {
     jot ad "prefix add" >/dev/null
     run jot l
