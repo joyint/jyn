@@ -1,0 +1,11 @@
+id: JOT-0044-BA
+title: Update jot just release and just publish to use joy bump/record/publish
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-14T18:28:35.829914804Z
+updated: 2026-04-14T18:28:35.829914804Z

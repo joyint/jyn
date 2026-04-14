@@ -90,16 +90,20 @@ release bump="patch":
         echo "Error: working tree is not clean."
         exit 1
     fi
-    echo "Updating dependencies..."
+    echo "Updating external dependencies..."
     cargo update
     just auto-commit
+    echo "Bumping version files..."
+    joy release bump "{{bump}}"
+    echo "Refreshing Cargo.lock..."
+    cargo update --workspace
     echo "Checking (format, lint, test)..."
     if ! just check > /dev/null 2>&1; then
-        echo "Checks failed. Run 'just check' for details."
+        echo "Checks failed. Run 'just check' for details. Rolling bump back."
+        git restore crates/ Cargo.lock
         exit 1
     fi
-    just auto-commit
-    joy release create "{{bump}}" --full
+    joy release record "{{bump}}"
 
 # Reads CARGO_REGISTRY_TOKEN from the environment (umbrella's `.env` is loaded
 # automatically by the umbrella justfile; CI sets it from its secret store).
@@ -145,4 +149,8 @@ publish:
         fi
         sleep 5
     done
-    echo "Publish complete."
+    echo "crates.io uploads complete."
+    # Push commits + tag and create the forge release only after a
+    # successful crates.io upload. A failed publish leaves just a local
+    # tag to delete, not a forge release pointing at a missing crate.
+    joy release publish
