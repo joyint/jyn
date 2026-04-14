@@ -90,29 +90,27 @@ impl PriorityArg {
 
 #[derive(clap::Args)]
 struct AddArgs {
-    /// Due date: `today`, `tomorrow`, YYYY-MM-DD, MM-DD, DD.MM, DD.MM.YYYY.
+    /// Due date.
     #[arg(long)]
     due: Option<String>,
 
-    /// Priority: low, medium (default), high, critical, extreme.
+    /// Priority.
     #[arg(short, long, value_enum)]
     priority: Option<PriorityArg>,
 
-    /// Tag. Repeat to attach multiple tags: `--tag work --tag home`.
+    /// Tag (repeatable).
     #[arg(short, long = "tag")]
     tags: Vec<String>,
 
-    /// Long-form description. Multi-line input requires shell quoting.
+    /// Description.
     #[arg(short = 'd', long = "desc", alias = "description")]
     description: Option<String>,
 
-    /// Assignee (free-form, typically an e-mail address).
+    /// Assignee (e-mail).
     #[arg(short = 'a', long, alias = "assignee")]
     assign: Option<String>,
 
-    /// Task title. Words are joined with spaces, so quoting is only needed
-    /// when the shell would otherwise eat characters (e.g. `!`, `*`, `?`).
-    /// Flags may appear before or after the title words.
+    /// Task title. Quoting is only needed for shell metacharacters.
     #[arg(num_args = 1..)]
     title: Vec<String>,
 }
@@ -132,7 +130,7 @@ struct EditArgs {
     #[arg(long)]
     title: Option<String>,
 
-    /// Set due date: `today`, `tomorrow`, YYYY-MM-DD, MM-DD, DD.MM, DD.MM.YYYY.
+    /// Set due date.
     #[arg(long)]
     due: Option<String>,
 
@@ -152,7 +150,7 @@ struct EditArgs {
     #[arg(long = "remove-tag")]
     remove_tags: Vec<String>,
 
-    /// Replace the description text.
+    /// Replace the description.
     #[arg(short = 'd', long = "desc", alias = "description")]
     description: Option<String>,
 
@@ -177,7 +175,7 @@ struct EditArgs {
 struct AssignArgs {
     /// Task ID.
     id: String,
-    /// Member identifier (e.g. e-mail address).
+    /// Member (e-mail).
     member: String,
 }
 
@@ -218,12 +216,11 @@ struct LsArgs {
     #[arg(long)]
     archived: bool,
 
-    /// Filter by due date (`today`, `tomorrow`, `YYYY-MM-DD`). Includes
-    /// overdue tasks when `today` is used.
+    /// Filter by due date (today includes overdue).
     #[arg(long)]
     due: Option<String>,
 
-    /// Filter by tag. Repeat to require multiple tags.
+    /// Filter by tag (repeatable, AND).
     #[arg(short, long = "tag")]
     tags: Vec<String>,
 
