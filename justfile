@@ -105,12 +105,10 @@ release bump="patch":
     fi
     joy release record "{{bump}}"
 
-# Reads CARGO_REGISTRY_TOKEN from the environment (umbrella's `.env` is loaded
-# automatically by the umbrella justfile; CI sets it from its secret store).
-# Skips a crate when the current version is already published.
-# See ADR-032 for the local-first release paradigm.
-# Publish workspace crates (jot-core, jot-cli) to crates.io
-publish:
+# Upload crates to crates.io only. Idempotent: already-uploaded
+# versions are skipped. CI's publish.yml calls this directly; the
+# forge release is handled separately by `joy release publish`.
+publish-crates:
     #!/usr/bin/env bash
     set -euo pipefail
     if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then
@@ -150,7 +148,10 @@ publish:
         sleep 5
     done
     echo "crates.io uploads complete."
-    # Push commits + tag and create the forge release only after a
-    # successful crates.io upload. A failed publish leaves just a local
-    # tag to delete, not a forge release pointing at a missing crate.
+
+# Full publish: upload crates + push + create forge release. Called
+# per sub by `just release-all -P` in the umbrella. crates.io upload
+# runs first so a failed upload leaves only a local tag to drop.
+# Publish workspace crates, then push + forge release.
+publish: publish-crates
     joy release publish
