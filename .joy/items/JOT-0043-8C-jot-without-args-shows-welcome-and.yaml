@@ -1,7 +1,7 @@
 id: JOT-0043-8C
 title: jot without args shows welcome and quickstart examples
 type: story
-status: in-progress
+status: closed
 priority: medium
 assignees:
 - member: ai:claude@joy
@@ -12,8 +12,11 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T17:08:53.480366154Z
-updated: 2026-04-14T17:09:47.817950517Z
+updated: 2026-04-14T17:14:52.489440320Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-14T17:09:47.809706867Z
   text: 'Plan: in run_ls, when storage::load_tasks returns empty (truly first-time user, not just filter-empty), print a multi-line welcome block with version and examples (jot add, jot ls, jot done N, jot --help, docs link). Existing ''No open tasks'' message stays for the tasks-exist-but-filter-matches-nothing case.'
+- author: ai:claude@joy
+  date: 2026-04-14T17:14:52.482260391Z
+  text: Done. Welcome block prints when no tasks exist (truly first-time user), showing version in jot brand color plus copy-paste examples (add, add with due, ls, done, help) and docs link. Filter-empty case keeps the terse one-liner.
