@@ -99,3 +99,4 @@
 2026-04-14T18:28:35.831Z JOT-0044-BA item.created "Update jot just release and just publish to use joy bump/record/publish" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T18:45:43.481Z JOT-0044-BA comment.added "Done. justfile release and publish recipes use joy release bump/record/publish. project.yaml version-files simplified to list of paths." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T18:45:43.489Z JOT-0044-BA item.status_changed "new -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T19:14:18.447Z release guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]

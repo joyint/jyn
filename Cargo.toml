@@ -6,7 +6,7 @@ members = [
 ]
 
 [workspace.dependencies]
-joy-core = "0.9.0"
+joy-core = "0.10.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml_ng = "0.10"
 serde_json = "1.0"
