@@ -1,0 +1,19 @@
+id: JOT-0040-3E
+title: Enable clap infer_subcommands for jot CLI
+type: task
+status: in-progress
+priority: low
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T02:17:39.607993884Z
+updated: 2026-04-14T02:18:48.281065180Z
+description: Match joy-cli's behaviour of accepting any unambiguous subcommand prefix ('c' / 'cl' for close, 'un' / 'u' for unarchive, 'ad' for add, etc.). One-line addition of 'infer_subcommands = true' to the clap command attribute.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T02:18:48.281065026Z
+  text: '[x] Added infer_subcommands = true to the clap command attribute. ''jot c'' / ''cl'' -> close, ''jot un'' / ''u'' -> unarchive, ''ad'' -> add, ''ar'' -> archive, ''s'' -> show, ''l'' -> ls, ''e'' -> edit. Ambiguous prefixes (''a'', ''r'') return a clean clap error with suggestions. bats scenario confirms success and failure paths.'
