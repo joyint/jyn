@@ -70,15 +70,16 @@ pub fn load_tasks(root: &Path) -> Result<Vec<Task>, JotError> {
     Ok(tasks)
 }
 
-/// Find the file for a task ID, accepting full or short form.
-/// Returns an error if the ID is ambiguous or missing.
+/// Find the file for a task ID. Accepts the display short form (`#A1`,
+/// `A1`), the ADR-027 short form (`TODO-00A1`), or the full form
+/// (`TODO-00A1-EA`). Returns an error if the ID is ambiguous or missing.
 pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JotError> {
     let dir = items_dir(root);
     if !dir.is_dir() {
         return Err(JotError::Other(format!("task not found: {id}")));
     }
-    let id_upper = id.to_uppercase();
-    let prefix = format!("{id_upper}-");
+    let normalized = crate::display::normalize_id_input(id);
+    let prefix = format!("{normalized}-");
 
     let matches: Vec<PathBuf> = std::fs::read_dir(&dir)
         .map_err(|e| JotError::Other(format!("cannot read {}: {}", dir.display(), e)))?

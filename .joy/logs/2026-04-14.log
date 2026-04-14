@@ -1,0 +1,3 @@
+2026-04-14T00:27:12.781Z JOT-002F-4D item.created "Jot ID display: short #NNNN with adaptive suffix" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T00:28:29.878Z JOT-002F-4D item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T00:32:39.783Z JOT-002F-4D comment.added "[x] Implemented: jot_core::display (short_id, format_ids with adaptive suffix, normalize_id_input). find_task_file accepts #A1 / A1 / TODO-00A1 / TODO-00A1-EA. Unit tests cover collision expansion and all input forms; bats adds a collision scenario with manually-crafted concurrent-create YAML." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

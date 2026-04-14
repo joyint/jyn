@@ -6,6 +6,7 @@ use std::io::IsTerminal;
 use anyhow::{Context, Result};
 use clap::Parser;
 
+use jot_core::display;
 use jot_core::model::Task;
 use jot_core::storage;
 
@@ -34,7 +35,7 @@ struct AddArgs {
 
 #[derive(clap::Args)]
 struct RmArgs {
-    /// Task ID (full or short form)
+    /// Task ID (short `#A1` or full `TODO-00A1-EA`)
     id: String,
 }
 
@@ -61,7 +62,16 @@ fn run_add(root: &std::path::Path, title: &str) -> Result<()> {
     let id = storage::next_id(root, title).context("generating next ID")?;
     let task = Task::new(id.clone(), title.to_string());
     storage::save_task(root, &task).context("saving task")?;
-    println!("{id}  {title}");
+
+    let all: Vec<Task> = storage::load_tasks(root).unwrap_or_default();
+    let full_ids: Vec<&str> = all.iter().map(|t| t.item.id.as_str()).collect();
+    let labels = display::format_ids(&full_ids);
+    let label = all
+        .iter()
+        .zip(labels.iter())
+        .find_map(|(t, l)| (t.item.id == id).then_some(l.as_str()))
+        .unwrap_or("");
+    println!("{label}  {title}");
     Ok(())
 }
 
@@ -72,14 +82,22 @@ fn run_ls(root: &std::path::Path) -> Result<()> {
         println!("No open tasks. Add one with: jot add \"<title>\"");
         return Ok(());
     }
-    for task in open {
-        println!("{}  {}", task.item.id, task.item.title);
+    let full_ids: Vec<&str> = open.iter().map(|t| t.item.id.as_str()).collect();
+    let labels = display::format_ids(&full_ids);
+    let width = labels.iter().map(|s| s.len()).max().unwrap_or(0);
+    for (task, label) in open.iter().zip(labels.iter()) {
+        println!("{label:<width$}  {}", task.item.title);
     }
     Ok(())
 }
 
 fn run_rm(root: &std::path::Path, id: &str) -> Result<()> {
     let task = storage::delete_task(root, id).context("deleting task")?;
-    println!("Removed {}  {}", task.item.id, task.item.title);
+    let remaining: Vec<Task> = storage::load_tasks(root).unwrap_or_default();
+    let mut all_ids: Vec<&str> = remaining.iter().map(|t| t.item.id.as_str()).collect();
+    all_ids.push(task.item.id.as_str());
+    let labels = display::format_ids(&all_ids);
+    let label = labels.last().map(String::as_str).unwrap_or("");
+    println!("Removed {label}  {}", task.item.title);
     Ok(())
 }

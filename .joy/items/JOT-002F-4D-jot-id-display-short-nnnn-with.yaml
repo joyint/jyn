@@ -1,0 +1,91 @@
+id: JOT-002F-4D
+title: 'Jot ID display: short #NNNN with adaptive suffix'
+type: decision
+status: in-progress
+priority: high
+parent: JOT-0002
+assignees:
+- member: ai:claude@joy
+capabilities:
+- conceive
+created_by: ai:claude@joy
+created: 2026-04-14T00:27:12.777156035Z
+updated: 2026-04-14T00:32:39.745530346Z
+description: |-
+  ## Context
+
+  Jot is a personal task manager on top of joy-core. Joy uses ADR-027
+  IDs of the form ACRONYM-XXXX-YY (e.g. TODO-00A1-EA) where the -YY
+  title-hash suffix guarantees collision safety across distributed
+  creation (laptop, phone, CalDAV sync, Joy dispatch). Users must be
+  able to refer to tasks by ID in the CLI, but typing the full form
+  every time is friction that competing task tools (Todoist, Things,
+  TaskWarrior) do not have.
+
+  Short sequential ordinals (1, 2, 3) were considered and rejected:
+  they either break under re-sorting/filtering (display-local) or
+  collide under distributed creation (workspace-global). Either way
+  they create surprises.
+
+  ## Decision
+
+  Display tasks with a short hex ID derived from the full ADR-027 ID:
+
+    TODO-00A1-EA  ->  #A1
+    TODO-0001-7F  ->  #1
+    TODO-0110-B3  ->  #110
+
+  Rules:
+
+  1. The displayed short form is the middle counter of the full ID,
+     with leading zeros and the '-YY' suffix stripped.
+  2. When the short form is ambiguous within the current workspace
+     (two tasks share the same counter with different suffixes, which
+     can happen after a concurrent add on two devices), the affected
+     rows display the full '#AAAA-YY' form while other rows stay short.
+     Other tools resolve ambiguity the same way (git commit hashes,
+     dpkg packages).
+  3. Commands accept all three forms as input: '#A1', 'TODO-00A1',
+     'TODO-00A1-EA'. Ambiguous short input returns a diagnostic listing
+     the matches and asks for the disambiguated form.
+  4. Detail views ('jot show'), commit messages, CalDAV UIDs, Joy
+     dispatch source fields, and '--json' output always use the full
+     ADR-027 ID. Short form is a display and input convenience only;
+     it is never persisted anywhere.
+
+  ## Consequences
+
+  Positive:
+  - Jot reads like Todoist ('#1', '#A1') while remaining fully
+    compatible with Joy's ID scheme - no parallel ID system, no
+    translation table.
+  - Stable: a task's short form never changes (until the task is
+    deleted, just like the full ID).
+  - Distributed-safe: the short form is a view of the full ID, not a
+    replacement; concurrent creation on multiple devices does not break
+    references because the full ID (and therefore the short form
+    including its suffix when needed) remains unique.
+  - Scripting stays honest: '--json' always emits the full ID, so
+    automation does not accidentally rely on display shortening.
+
+  Negative:
+  - Users occasionally see the longer '#AAAA-YY' form after a sync
+    conflict. This is a rare, self-explanatory event and mirrors the
+    git short-hash expansion pattern users already know.
+  - Hex digits are less intuitive than decimals for non-technical
+    users. Acceptable for Jot's developer-first target audience.
+
+  ## Alternatives rejected
+
+  - Session-local ordinals (line-number style): breaks scripting and
+    requires a 'valid until next ls' mental rule.
+  - Workspace-global creation-order ordinals: breaks under distributed
+    creation (two devices both produce '#12').
+  - Always show the full TODO-XXXX-YY ID: correct but noisy in a
+    personal todo context where the ID is rarely the user's concern.
+  - No IDs, reference by title keyword only: fails on similar titles
+    and makes batch operations clumsy.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T00:32:39.745530033Z
+  text: '[x] Implemented: jot_core::display (short_id, format_ids with adaptive suffix, normalize_id_input). find_task_file accepts #A1 / A1 / TODO-00A1 / TODO-00A1-EA. Unit tests cover collision expansion and all input forms; bats adds a collision scenario with manually-crafted concurrent-create YAML.'
