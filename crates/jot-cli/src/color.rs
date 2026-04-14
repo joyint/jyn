@@ -75,10 +75,19 @@ pub fn success(text: &str) -> String {
     wrap(SUCCESS, text)
 }
 
-/// Danger red -- reserved for error contexts.
-#[allow(dead_code)]
+/// Danger red -- reserved for error contexts and overdue due dates.
 pub fn danger(text: &str) -> String {
     wrap(DANGER, text)
+}
+
+/// Warning yellow -- for due-today highlights.
+pub fn warning(text: &str) -> String {
+    wrap("\x1b[33m", text)
+}
+
+/// Info cyan -- for tag chips.
+pub fn info(text: &str) -> String {
+    wrap("\x1b[36m", text)
 }
 
 /// Detect terminal width, falling back to 80 columns when the stream

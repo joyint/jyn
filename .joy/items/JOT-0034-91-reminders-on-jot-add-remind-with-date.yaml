@@ -1,0 +1,13 @@
+id: JOT-0034-91
+title: 'Reminders on jot add: --remind with date or offset'
+type: task
+status: new
+priority: medium
+parent: JOT-0018
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-14T00:53:53.191513814Z
+updated: 2026-04-14T00:53:53.191513814Z
+description: 'Accept --remind flag on ''jot add'' that writes Task.reminder. Input forms: ISO datetime or an offset relative to --due (''1d'', ''2h''). Reminder data flows through to VALARM via JOT-001B when CalDAV integration lands.'

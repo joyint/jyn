@@ -1,0 +1,13 @@
+id: JOT-0033-0A
+title: jot ls --mine filter based on assigned member
+type: task
+status: new
+priority: medium
+parent: JOT-0008
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T00:53:53.182888582Z
+updated: 2026-04-14T00:53:53.182888582Z
+description: Filter list by tasks whose assignee matches the current user. Requires identity resolution (git user.email or explicit config). Deferred from the JOT-0008 first pass because jot has no auth/identity layer yet.

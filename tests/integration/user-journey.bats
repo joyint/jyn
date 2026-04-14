@@ -124,6 +124,69 @@ load setup
     [[ "$output" == *"#3"* ]]
 }
 
+@test "add with --due, --priority, --tag shows in ls and on disk" {
+    run jot add --due today --tag work --priority high Review PR 42
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"added"*"#1"*"Review PR 42"*"today"*"#work"* ]]
+
+    # YAML carries all fields.
+    yaml=$(ls .jot/items/TODO-0001-*.yaml)
+    grep -q "priority: high" "$yaml"
+    grep -q "due_date:"      "$yaml"
+    grep -q "^tags:"         "$yaml"
+    grep -qF -- "- work"     "$yaml"
+
+    # ls grows DUE and TAGS columns only when data is present.
+    run jot
+    [[ "$output" == *"DUE"* ]]
+    [[ "$output" == *"TAGS"* ]]
+    [[ "$output" == *"today"* ]]
+    [[ "$output" == *"#work"* ]]
+}
+
+@test "ls without dues/tags stays a two-column table" {
+    jot add Plain task >/dev/null
+    run jot
+    [[ "$output" == *"ID"*"TITLE"* ]]
+    [[ "$output" != *"DUE"* ]]
+    [[ "$output" != *"TAGS"* ]]
+}
+
+@test "ls --tag filters tasks by tag (AND semantics for multiple flags)" {
+    jot add --tag work --tag urgent Fix prod outage >/dev/null
+    jot add --tag home Wash the car >/dev/null
+    jot add --tag work Review PR >/dev/null
+
+    run jot ls --tag work
+    [[ "$output" == *"Fix prod outage"* ]]
+    [[ "$output" == *"Review PR"*       ]]
+    [[ "$output" != *"Wash the car"*    ]]
+
+    # AND semantics: --tag work --tag urgent only matches tasks with both.
+    run jot ls --tag work --tag urgent
+    [[ "$output" == *"Fix prod outage"* ]]
+    [[ "$output" != *"Review PR"*       ]]
+}
+
+@test "ls --due today includes overdue, excludes future" {
+    jot add --due today     Must do now      >/dev/null
+    jot add --due tomorrow  Can wait         >/dev/null
+    jot add --due 2020-01-01 Ancient overdue >/dev/null
+    jot add                  Undated         >/dev/null
+
+    run jot ls --due today
+    [[ "$output" == *"Must do now"*      ]]
+    [[ "$output" == *"Ancient overdue"*  ]]
+    [[ "$output" != *"Can wait"*         ]]
+    [[ "$output" != *"Undated"*          ]]
+}
+
+@test "add rejects unknown --due values" {
+    run jot add --due friday Book dentist
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"cannot parse due date"* ]]
+}
+
 @test "--color=never produces no ANSI escape codes" {
     jot add "Buy milk" >/dev/null
     run jot --color=never

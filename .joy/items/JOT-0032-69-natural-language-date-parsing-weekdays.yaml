@@ -1,0 +1,13 @@
+id: JOT-0032-69
+title: 'Natural-language date parsing: weekdays and relative offsets'
+type: task
+status: new
+priority: medium
+parent: JOT-0007
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-14T00:53:53.164351057Z
+updated: 2026-04-14T00:53:53.164351057Z
+description: Extend the --due parser beyond 'today', 'tomorrow', and ISO dates to accept weekday names ('friday', 'fri', 'next monday') and relative offsets ('+3d', '+1w'). Same parser feeds --reminder offsets ('1d', '2h'). Reuses a crate (e.g. dateparser or chrono-english) or stays hand-rolled -- decision tied to dependency minimalism goals.

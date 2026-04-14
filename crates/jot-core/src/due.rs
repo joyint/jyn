@@ -1,0 +1,102 @@
+// Copyright (c) 2026 Joydev GmbH (joydev.com)
+// SPDX-License-Identifier: MIT
+
+//! Minimal due-date parsing and rendering.
+//!
+//! Accepts the three forms the first iteration of `jot add --due` needs:
+//!   - `today`
+//!   - `tomorrow`
+//!   - `YYYY-MM-DD` (ISO 8601 calendar date)
+//!
+//! Weekday names (`fri`, `next monday`) and relative offsets (`+3d`) are
+//! deferred to JOT-0032-69; the parser returns a structured error for
+//! anything it does not recognise so the CLI can surface a useful hint.
+//!
+//! Rendering produces short human-readable labels for a list view,
+//! with a side-channel severity so the CLI can colorise consistently.
+
+use chrono::{Duration, NaiveDate};
+
+#[derive(Debug, thiserror::Error)]
+#[error("cannot parse due date '{input}': expected 'today', 'tomorrow', or YYYY-MM-DD")]
+pub struct ParseDueError {
+    input: String,
+}
+
+/// Parse a `--due` argument against a reference 'today' date.
+pub fn parse_due(input: &str, today: NaiveDate) -> Result<NaiveDate, ParseDueError> {
+    let trimmed = input.trim();
+    match trimmed.to_lowercase().as_str() {
+        "today" => Ok(today),
+        "tomorrow" => Ok(today + Duration::days(1)),
+        _ => NaiveDate::parse_from_str(trimmed, "%Y-%m-%d").map_err(|_| ParseDueError {
+            input: input.to_string(),
+        }),
+    }
+}
+
+/// Relative severity of a due date compared to 'today'.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DueSeverity {
+    Overdue,
+    Today,
+    Soon,
+    Later,
+}
+
+/// Render a due date as a short label. Returns `(label, severity)` so
+/// the CLI can apply colors consistently.
+pub fn render_due(due: NaiveDate, today: NaiveDate) -> (String, DueSeverity) {
+    let delta = (due - today).num_days();
+    match delta {
+        d if d < 0 => (format!("overdue {}d", d.abs()), DueSeverity::Overdue),
+        0 => ("today".into(), DueSeverity::Today),
+        1 => ("tomorrow".into(), DueSeverity::Soon),
+        d if (2..=6).contains(&d) => (due.format("%a").to_string(), DueSeverity::Soon),
+        _ => (due.format("%b %-d").to_string(), DueSeverity::Later),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn d(y: i32, m: u32, day: u32) -> NaiveDate {
+        NaiveDate::from_ymd_opt(y, m, day).unwrap()
+    }
+
+    #[test]
+    fn parses_today_tomorrow_iso() {
+        let today = d(2026, 4, 14);
+        assert_eq!(parse_due("today", today).unwrap(), today);
+        assert_eq!(parse_due("TOMORROW", today).unwrap(), d(2026, 4, 15));
+        assert_eq!(parse_due("2026-12-31", today).unwrap(), d(2026, 12, 31));
+    }
+
+    #[test]
+    fn rejects_unsupported_forms() {
+        let today = d(2026, 4, 14);
+        assert!(parse_due("friday", today).is_err());
+        assert!(parse_due("+3d", today).is_err());
+        assert!(parse_due("", today).is_err());
+    }
+
+    #[test]
+    fn renders_relative_labels() {
+        let today = d(2026, 4, 14); // Tuesday
+        assert_eq!(render_due(today, today).0, "today");
+        assert_eq!(render_due(d(2026, 4, 15), today).0, "tomorrow");
+        assert_eq!(render_due(d(2026, 4, 17), today).0, "Fri");
+        assert_eq!(render_due(d(2026, 4, 25), today).0, "Apr 25");
+        assert_eq!(render_due(d(2026, 4, 13), today).0, "overdue 1d");
+    }
+
+    #[test]
+    fn renders_severity() {
+        let today = d(2026, 4, 14);
+        assert_eq!(render_due(today, today).1, DueSeverity::Today);
+        assert_eq!(render_due(d(2026, 4, 15), today).1, DueSeverity::Soon);
+        assert_eq!(render_due(d(2026, 4, 13), today).1, DueSeverity::Overdue);
+        assert_eq!(render_due(d(2026, 5, 30), today).1, DueSeverity::Later);
+    }
+}
