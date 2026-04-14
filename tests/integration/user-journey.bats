@@ -64,6 +64,22 @@ load setup
     [[ "$output" == *"3 tasks"* ]]
 }
 
+@test "add accepts unquoted multi-word titles" {
+    run jot add this is a test
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"#1"*"this is a test"* ]]
+
+    # Quoting still works for titles that need it (e.g. shell metacharacters).
+    run jot add "Review PR 42"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"#2"*"Review PR 42"* ]]
+
+    # Listing shows both with their original text intact.
+    run jot
+    [[ "$output" == *"this is a test"* ]]
+    [[ "$output" == *"Review PR 42"*  ]]
+}
+
 @test "rm accepts multiple input forms" {
     jot add "Short form"   >/dev/null
     jot add "Bare hex"     >/dev/null

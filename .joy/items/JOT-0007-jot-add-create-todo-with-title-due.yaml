@@ -10,7 +10,7 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.091665662Z
-updated: 2026-04-13T23:41:34.941246853Z
+updated: 2026-04-14T00:47:31.954220063Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-13T23:38:06.566589090Z
@@ -18,3 +18,6 @@ comments:
 - author: ai:claude@joy
   date: 2026-04-13T23:41:34.941246578Z
   text: '[x] implemented ''jot add <title>'' -- writes .jot/items/<ID>-<slug>.yaml via jot-core::storage using joy-core generic primitives.'
+- author: ai:claude@joy
+  date: 2026-04-14T00:47:31.954219671Z
+  text: '[x] Quoting-free multi-word titles: ''jot add buy milk from the corner shop'' works without quotes. Implemented with clap trailing_var_arg + num_args=1.. on Vec<String>; words are joined with single spaces. Quoting remains available when the shell itself needs it (e.g. titles containing ''!'', ''*'', ''?''). bats covers both paths.'

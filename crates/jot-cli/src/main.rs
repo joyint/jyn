@@ -35,8 +35,10 @@ enum Commands {
 
 #[derive(clap::Args)]
 struct AddArgs {
-    /// Task title
-    title: String,
+    /// Task title. Words are joined with spaces, so quoting is only needed
+    /// when the shell would otherwise eat characters (e.g. `!`, `*`, `?`).
+    #[arg(trailing_var_arg = true, num_args = 1..)]
+    title: Vec<String>,
 }
 
 #[derive(clap::Args)]
@@ -52,7 +54,7 @@ fn main() -> Result<()> {
     let root = std::env::current_dir().context("cannot read current directory")?;
 
     match cli.command {
-        Some(Commands::Add(args)) => run_add(&root, &args.title)?,
+        Some(Commands::Add(args)) => run_add(&root, &args.title.join(" "))?,
         Some(Commands::Ls) | None => run_ls(&root)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
     }
