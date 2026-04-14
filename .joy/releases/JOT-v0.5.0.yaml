@@ -1,0 +1,14 @@
+version: v0.5.0
+date: 2026-04-14
+previous: v0.4.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 7
+  items: 2
+items:
+  tasks:
+  - id: JOT-0044-BA
+    title: Update jot just release and just publish to use joy bump/record/publish
+  bugs:
+  - id: JOT-0045-5B
+    title: publish.yml on CI fails because just publish needs joy binary

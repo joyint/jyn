@@ -104,3 +104,4 @@
 2026-04-14T19:30:34.654Z JOT-0045-5B item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T19:30:34.660Z JOT-0045-5B comment.added "Same fix as JOY-00E4. publish-crates for CI, publish for local." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T19:30:34.667Z JOT-0045-5B item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T19:33:36.378Z v0.5.0 release.created [horst.schwarz@joydev.com]

@@ -1,6 +1,6 @@
 [package]
 name = "jot-cli"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 license = "MIT"
 description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
@@ -14,7 +14,7 @@ name = "jot"
 path = "src/main.rs"
 
 [dependencies]
-jot-core = { version = "0.4.0", path = "../jot-core" }
+jot-core = { version = "0.5.0", path = "../jot-core" }
 joy-core = { workspace = true }
 clap = { workspace = true }
 anyhow = { workspace = true }
