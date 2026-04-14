@@ -11,3 +11,4 @@
 2026-04-14T00:53:53.176Z JOT-0032-69 item.created "Natural-language date parsing: weekdays and relative offsets" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T00:53:53.184Z JOT-0033-0A item.created "jot ls --mine filter based on assigned member" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-14T00:53:53.194Z JOT-0034-91 item.created "Reminders on jot add: --remind with date or offset" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-14T01:02:11.520Z JOT-0007 comment.added "[x] Fixed: flags after the title no longer get swallowed into the title string. Root cause was clap's trailing_var_arg on the Vec<String>; dropping it preserves quote-free multi-word titles while letting clap parse flags at either end. bats gains a dedicated ordering-robustness scenario." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

@@ -10,7 +10,7 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.091665662Z
-updated: 2026-04-14T00:47:31.954220063Z
+updated: 2026-04-14T01:02:11.517348474Z
 comments:
 - author: ai:claude@joy
   date: 2026-04-13T23:38:06.566589090Z
@@ -21,3 +21,6 @@ comments:
 - author: ai:claude@joy
   date: 2026-04-14T00:47:31.954219671Z
   text: '[x] Quoting-free multi-word titles: ''jot add buy milk from the corner shop'' works without quotes. Implemented with clap trailing_var_arg + num_args=1.. on Vec<String>; words are joined with single spaces. Quoting remains available when the shell itself needs it (e.g. titles containing ''!'', ''*'', ''?''). bats covers both paths.'
+- author: ai:claude@joy
+  date: 2026-04-14T01:02:11.517347695Z
+  text: '[x] Fixed: flags after the title no longer get swallowed into the title string. Root cause was clap''s trailing_var_arg on the Vec<String>; dropping it preserves quote-free multi-word titles while letting clap parse flags at either end. bats gains a dedicated ordering-robustness scenario.'

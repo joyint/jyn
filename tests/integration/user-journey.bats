@@ -124,6 +124,27 @@ load setup
     [[ "$output" == *"#3"* ]]
 }
 
+@test "add: flags may follow the title words" {
+    # Flag after bare multi-word title.
+    run jot add this is cool -d today
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"this is cool"*"today"* ]]
+    [[ "$output" != *"-d today"*              ]]
+
+    # Flag after quoted title plus another flag.
+    run jot add "this is also cool" -d today --tag work
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"this is also cool"*"today"*"#work"* ]]
+
+    # Flag, title, flag.
+    run jot add -d today my chore --tag home
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"my chore"*"today"*"#home"* ]]
+
+    # Titles land in YAML without the flag tokens.
+    ! grep -RlF -- "-d today" .jot/items
+}
+
 @test "add with --due, --priority, --tag shows in ls and on disk" {
     run jot add --due today --tag work --priority high Review PR 42
     [ "$status" -eq 0 ]

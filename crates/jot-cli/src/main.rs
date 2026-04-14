@@ -74,7 +74,8 @@ struct AddArgs {
 
     /// Task title. Words are joined with spaces, so quoting is only needed
     /// when the shell would otherwise eat characters (e.g. `!`, `*`, `?`).
-    #[arg(trailing_var_arg = true, num_args = 1..)]
+    /// Flags may appear before or after the title words.
+    #[arg(num_args = 1..)]
     title: Vec<String>,
 }
 
