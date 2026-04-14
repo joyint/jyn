@@ -1,0 +1,19 @@
+id: JOT-0041-F0
+title: 'jot ls default sort: active first, then by urgency and priority'
+type: task
+status: in-progress
+priority: medium
+parent: JOT-0008
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-14T02:21:00.867178568Z
+updated: 2026-04-14T02:23:28.367319077Z
+description: 'Sort ls output so the task a user should work on next floats to the top. Primary key: active tasks before closed, non-archived before archived (only relevant with --all). Secondary: due-date urgency (overdue, today, soon this week, later, no-date). Tertiary: priority (extreme, critical, high, medium, low). Final tiebreak: creation order (older first). A --sort flag for alternative orders (created, updated, title, due, priority) can follow later.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-14T02:23:28.367318568Z
+  text: '[x] Default ls sort implemented via sort_key tuple (archived, closed, urgency, priority, created). What-should-I-do-next floats to the top: overdue -> today -> soon (this week) -> later -> no-date. Priority breaks ties. Creation order stabilises the rest. Active first, closed after, archived last. bats scenario asserts the canonical ordering across eight tasks.'
