@@ -228,7 +228,7 @@ struct LsArgs {
     #[arg(short, long = "tag")]
     tags: Vec<String>,
 
-    /// Sort order: smart (default), created, updated, priority, due, title.
+    /// Sort order.
     #[arg(long, value_enum, default_value_t = SortMode::Smart)]
     sort: SortMode,
 
