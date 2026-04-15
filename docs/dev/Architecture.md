@@ -147,6 +147,43 @@ The `.jot/config.yaml` contains a `version` field (currently `1`). Schema evolut
 
 ---
 
+## Configuration
+
+Jot has its own config layer, implemented in `jot-core::config`. It is deliberately independent of `joy-core::model::Config` because jot has a much smaller settings surface -- duplicating the struct is cheaper than importing and narrowing joy's.
+
+### Files and merge order
+
+Two optional YAML files, merged lowest-precedence first:
+
+| Layer            | Path                                                      | Purpose                                    |
+| ---------------- | --------------------------------------------------------- | ------------------------------------------ |
+| code defaults    | `Config::default()`                                       | Always present, sets every field           |
+| personal global  | `$XDG_CONFIG_HOME/jot/config.yaml` (else `~/.config/...`) | Per-user preference across all projects    |
+| project-local    | `<cwd>/.jot/config.yaml`                                  | Per-project override, committable          |
+
+The local layer follows jot's task model: it is scoped to cwd, not walked up the directory tree. `jot ls` in a subdirectory sees different tasks than `jot ls` one level up, and config follows the same rule for consistency.
+
+### Strict schema
+
+Both `Config` and `OutputConfig` carry `#[serde(deny_unknown_fields)]`. Combined with the validate-before-write path in `jot config set` (YAML round-trip through the typed Config after merging with defaults), typos like `outpt.fortune` are rejected at set time with a schema-derived hint. Integrators who need to carry arbitrary extension keys should extend the struct rather than rely on serde tolerance.
+
+### CLI
+
+`jot config` exposes read, list, and write operations. Write targets are resolved in this order:
+
+1. explicit `--global` or `--local` flag wins,
+2. else if `.jot/` exists in cwd, write local,
+3. else if the global file already exists, write global,
+4. else fail with an actionable message listing both flags.
+
+Step 4 is deliberate. Auto-creating a `.jot/` on first `jot config set` from a random directory (e.g. `$HOME`) would leave a surprising project marker behind; forcing the explicit flag once is a small cost for clarity.
+
+### joy-core integration
+
+The first consumer is the `joy_core::fortune::fortune(...)` call in `jot-cli::main`. The fortune function itself is pure and ungated inside joy-core; jot-cli owns the gate via `config.output.fortune` (bool) and `config.output.fortune_category` (optional `joy_core::fortune::Category`). No changes to joy-core were required, and no joy-core version bump: the integration is a caller-side decision, as it should be for library-level easter-egg features.
+
+---
+
 ## Performance Targets
 
 - `jot add`: <100ms (quick capture must feel instant)

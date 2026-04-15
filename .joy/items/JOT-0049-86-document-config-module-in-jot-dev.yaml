@@ -1,0 +1,18 @@
+id: JOT-0049-86
+title: Document config module in jot dev Architecture.md
+type: task
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-15T06:23:40.652485133Z
+updated: 2026-04-15T06:25:25.414016658Z
+description: Add a Configuration section to docs/dev/Architecture.md covering the jot-core::config module, the two-file layout (global vs. project-local), strict schema (deny_unknown_fields), defaults<global<local merge order, the jot config CLI shape including --global/--local target resolution, and the gating of joy-core::fortune as the first concrete consumer of the config. Keep it factual and cross-link to jot-cli/README.md for end-user quickstart rather than duplicating.
+comments:
+- author: ai:claude@joy
+  date: 2026-04-15T06:25:25.404408788Z
+  text: 'Added a Configuration section in docs/dev/Architecture.md covering: the two-file layout (global + project-local with cwd-scoped semantics matching jot''s task model), strict schema rationale (deny_unknown_fields plus validate-before-write), the four-step write-target resolution of jot config set with the fail-loud default, and the joy-core fortune integration as the first concrete consumer (no joy-core changes required).'
