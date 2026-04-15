@@ -3,3 +3,7 @@
 2026-04-15T04:49:38.779Z JOT-0046-53 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T04:50:52.875Z JOT-0046-53 comment.added "Updated welcome text pair in src/main.rs, README.md, and Vision.md to 'Review pull request JOY-00D3' --tag work / 'Call Lisa' --tag personal --prio high. Left the integration test at tests/integration/user-journey.bats:346 untouched: the 'Buy groceries' there is test fixture paired with --tag shopping, not user-facing copy." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T04:50:52.887Z JOT-0046-53 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T05:04:23.876Z JOT-0047-0E item.created "Add --prio as visible alias for --priority in jot add and edit" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T05:04:23.892Z JOT-0047-0E item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T05:07:32.039Z JOT-0047-0E comment.added "Done. --prio added as visible_alias on both AddArgs::priority and EditArgs::priority. Help output shows 'Priority [aliases: --prio]'. Manual test confirms jot add Call Lisa --tag personal --prio high parses cleanly and persists priority=high." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T05:07:32.050Z JOT-0047-0E item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

@@ -1,0 +1,18 @@
+id: JOT-0047-0E
+title: Add --prio as visible alias for --priority in jot add and edit
+type: task
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-15T05:04:23.872594450Z
+updated: 2026-04-15T05:07:32.047139051Z
+description: 'Recent samples in CLI welcome text and website use --prio high, which does not exist (only --priority or -p). Instead of reverting the samples, make --prio a first-class short-long alias for --priority in both ''jot add'' and ''jot edit'' via clap''s visible_alias. Rationale: --prio is genuinely more ergonomic to type than --priority, the alias costs one attribute per struct, and it keeps the now-committed sample flags valid.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-15T05:07:32.026409769Z
+  text: 'Done. --prio added as visible_alias on both AddArgs::priority and EditArgs::priority. Help output shows ''Priority [aliases: --prio]''. Manual test confirms jot add Call Lisa --tag personal --prio high parses cleanly and persists priority=high.'

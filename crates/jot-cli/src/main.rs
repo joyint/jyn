@@ -100,7 +100,7 @@ struct AddArgs {
     due: Option<String>,
 
     /// Priority.
-    #[arg(short, long, value_enum, hide_possible_values = true)]
+    #[arg(short, long, visible_alias = "prio", value_enum, hide_possible_values = true)]
     priority: Option<PriorityArg>,
 
     /// Tag (repeatable).
@@ -144,7 +144,7 @@ struct EditArgs {
     no_due: bool,
 
     /// Set priority.
-    #[arg(short, long, value_enum, hide_possible_values = true)]
+    #[arg(short, long, visible_alias = "prio", value_enum, hide_possible_values = true)]
     priority: Option<PriorityArg>,
 
     /// Add a tag (repeatable).
