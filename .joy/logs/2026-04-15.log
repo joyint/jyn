@@ -15,3 +15,4 @@
 2026-04-15T06:23:40.667Z JOT-0049-86 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T06:25:25.407Z JOT-0049-86 comment.added "Added a Configuration section in docs/dev/Architecture.md covering: the two-file layout (global + project-local with cwd-scoped semantics matching jot's task model), strict schema rationale (deny_unknown_fields plus validate-before-write), the four-step write-target resolution of jot config set with the fail-loud default, and the joy-core fortune integration as the first concrete consumer (no joy-core changes required)." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T06:25:25.415Z JOT-0049-86 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T06:40:10.963Z v0.5.1 release.created [horst.schwarz@joydev.com]

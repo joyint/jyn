@@ -1,0 +1,19 @@
+version: v0.5.1
+date: 2026-04-15
+previous: v0.5.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 16
+  items: 4
+items:
+  stories:
+  - id: JOT-0048-0F
+    title: Add config system to jot CLI (global and project)
+  tasks:
+  - id: JOT-0047-0E
+    title: Add --prio as visible alias for --priority in jot add and edit
+  - id: JOT-0049-86
+    title: Document config module in jot dev Architecture.md
+  reworks:
+  - id: JOT-0046-53
+    title: Align sample tasks in CLI welcome and docs with website
