@@ -7,3 +7,4 @@
 2026-04-15T05:04:23.892Z JOT-0047-0E item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T05:07:32.039Z JOT-0047-0E comment.added "Done. --prio added as visible_alias on both AddArgs::priority and EditArgs::priority. Help output shows 'Priority [aliases: --prio]'. Manual test confirms jot add Call Lisa --tag personal --prio high parses cleanly and persists priority=high." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-15T05:07:32.050Z JOT-0047-0E item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T05:21:35.371Z JOT-0048-0F item.created "Add config system to jot CLI (global and project)" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
