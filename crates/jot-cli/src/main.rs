@@ -260,8 +260,8 @@ fn print_welcome() {
     );
     println!();
     println!("  No tasks yet. Try:");
-    println!("    jot add \"Buy groceries\"");
-    println!("    jot add \"Call mum\" --due friday");
+    println!("    jot add \"Review pull request JOY-00D3\" --tag work");
+    println!("    jot add \"Call Lisa\" --tag personal --prio high");
     println!("    jot ls");
     println!("    jot done 1");
     println!("    jot --help");

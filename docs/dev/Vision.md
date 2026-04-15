@@ -88,7 +88,7 @@ Jot uses the `TODO` prefix for item IDs (configurable via project acronym).
 
 ```sh
 jot add <TITLE> [OPTIONS]               # Create a new todo
-  jot add "Buy groceries" --due tomorrow --priority high
+  jot add "Review pull request JOY-00D3" --tag work
   jot add "Dentist" --due 2026-04-01 --reminder "2026-04-01T08:00:00"
   jot add "Weekly review" --recur "weekly on fri"
 

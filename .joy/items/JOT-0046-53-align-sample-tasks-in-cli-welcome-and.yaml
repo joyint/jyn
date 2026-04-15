@@ -1,0 +1,19 @@
+id: JOT-0046-53
+title: Align sample tasks in CLI welcome and docs with website
+type: rework
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 1
+created_by: ai:claude@joy
+created: 2026-04-15T04:49:32.935180104Z
+updated: 2026-04-15T04:50:52.884719545Z
+description: 'Replace the ''Buy groceries'' / ''Call mum'' sample pair with the standard ''Review pull request JOY-00D3'' / ''Call Lisa'' pair used on the website, in jot-cli welcome text (src/main.rs), crates/jot-cli/README.md, docs/dev/Vision.md, and the integration test that references ''Buy groceries''. Also adopt the consistent flag set: --tag work / --tag personal --prio high.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-15T04:50:52.870460238Z
+  text: 'Updated welcome text pair in src/main.rs, README.md, and Vision.md to ''Review pull request JOY-00D3'' --tag work / ''Call Lisa'' --tag personal --prio high. Left the integration test at tests/integration/user-journey.bats:346 untouched: the ''Buy groceries'' there is test fixture paired with --tag shopping, not user-facing copy.'

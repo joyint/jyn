@@ -16,8 +16,8 @@ This installs the `jot` binary.
 ## Quick start
 
 ```sh
-jot add "Buy groceries" --due tomorrow
-jot add "Weekly review" --recur weekly
+jot add "Review pull request JOY-00D3" --tag work
+jot add "Call Lisa" --tag personal --prio high
 jot ls
 jot done 1
 ```

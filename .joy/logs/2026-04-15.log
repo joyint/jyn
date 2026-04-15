@@ -1,0 +1,5 @@
+2026-04-15T04:49:22.432Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T04:49:32.937Z JOT-0046-53 item.created "Align sample tasks in CLI welcome and docs with website" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T04:49:38.779Z JOT-0046-53 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T04:50:52.875Z JOT-0046-53 comment.added "Updated welcome text pair in src/main.rs, README.md, and Vision.md to 'Review pull request JOY-00D3' --tag work / 'Call Lisa' --tag personal --prio high. Left the integration test at tests/integration/user-journey.bats:346 untouched: the 'Buy groceries' there is test fixture paired with --tag shopping, not user-facing copy." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-15T04:50:52.887Z JOT-0046-53 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
