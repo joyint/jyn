@@ -664,6 +664,8 @@ load setup
     run jot l
     [[ "$output" == *"prefix add"* ]]
 
+    # 'c' is an explicit alias for close (close vs config prefix would
+    # otherwise be ambiguous).
     run jot c 1
     [ "$status" -eq 0 ]
     [[ "$output" == *"closed"* ]]
@@ -683,6 +685,10 @@ load setup
 
     # 'r' is ambiguous (reopen vs rm) -- clap errors cleanly.
     run jot r 1
+    [ "$status" -ne 0 ]
+
+    # 'co' is ambiguous (close vs config) -- clap errors cleanly.
+    run jot co 1
     [ "$status" -ne 0 ]
 }
 

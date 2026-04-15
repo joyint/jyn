@@ -465,6 +465,7 @@ dependencies = [
  "clap",
  "jot-core",
  "joy-core",
+ "serde_json",
  "serde_yaml_ng",
  "terminal_size",
 ]

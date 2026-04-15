@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 mod color;
+mod commands;
 
 use std::io::IsTerminal;
 use std::path::Path;
@@ -60,7 +61,7 @@ enum Commands {
     /// Assign a task to a member
     Assign(AssignArgs),
     /// Mark a task as done
-    #[command(alias = "done")]
+    #[command(aliases = ["done", "c"])]
     Close(IdArgs),
     /// Reopen a closed task
     Reopen(IdArgs),
@@ -70,6 +71,8 @@ enum Commands {
     Unarchive(IdArgs),
     /// Remove a task
     Rm(RmArgs),
+    /// Read, inspect, or write jot config
+    Config(commands::config::ConfigArgs),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
@@ -306,11 +309,17 @@ fn main() -> Result<()> {
         Some(Commands::Archive(args)) => run_archive(&root, &args.id)?,
         Some(Commands::Unarchive(args)) => run_unarchive(&root, &args.id)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
+        Some(Commands::Config(args)) => commands::config::run(args)?,
     }
 
     if std::io::stdout().is_terminal() {
-        if let Some(text) = joy_core::fortune::fortune(None, 0.2) {
-            eprintln!("\n\x1b[2m{text}\x1b[0m");
+        let cfg = jot_core::config::load_config();
+        if cfg.output.fortune {
+            if let Some(text) =
+                joy_core::fortune::fortune(cfg.output.fortune_category.as_ref(), 0.2)
+            {
+                eprintln!("\n\x1b[2m{text}\x1b[0m");
+            }
         }
     }
 

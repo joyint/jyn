@@ -1,8 +1,10 @@
 id: JOT-0048-0F
 title: Add config system to jot CLI (global and project)
 type: story
-status: new
+status: closed
 priority: medium
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -10,5 +12,9 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy
 created: 2026-04-15T05:21:35.367263670Z
-updated: 2026-04-15T05:21:35.367263670Z
+updated: 2026-04-15T06:18:13.628396712Z
 description: 'Jot has no config layer today. Immediate consequence: joy-core emits random ''fortunes'' in CLI output (easter-egg feature inherited via the joy-core library), and jot cannot opt out because there is no config surface to express the opt-out. Mirror the joy CLI config pattern for jot: global config at XDG $XDG_CONFIG_HOME/jot/config.yaml (default ~/.config/jot/config.yaml), project-level config at ./.jot/config.yaml, with project overriding global. Add ''jot config get <key>'', ''jot config set <key> <value>'', ''jot config list'' subcommands that match the joy CLI shape. Plumb the resolved settings through to joy-core so library-level features (fortunes, any future shared toggles) honour jot''s config. Design the key namespace so jot-specific settings do not collide with joy-core settings. First concrete setting to wire up: output.fortunes = false (or similar - final key name part of the design).'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-15T06:18:13.605165586Z
+  text: 'Done. Added jot-core::config module (strict schema via deny_unknown_fields, YAML round-trip validation, layered load defaults < global < local). Added jot-cli config subcommand with get/set and an optional bare-list view. set-target resolution: explicit --global/--local win; else auto-pick local if .jot/ present, global if ~/.config/jot/config.yaml exists, else fail-loud with an actionable message. Fortune call in main.rs now gated on cfg.output.fortune and passes cfg.output.fortune_category. 15 new bats cases in tests/integration/config.bats cover the full contract. Welcome text updated to use --priority rather than --prio via aliases-on-Close: infer_subcommands made c ambiguous between close/config, so Close picks up c as an explicit alias and co stays ambiguous (documented in the prefix-shortcuts test).'
