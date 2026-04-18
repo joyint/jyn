@@ -1,0 +1,6 @@
+2026-04-18T10:22:31.092Z project guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
+2026-04-18T10:26:24.886Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-18T10:28:39.374Z JOT-004A-2F guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
+2026-04-18T10:32:58.999Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-18T10:32:59.015Z JOT-004A-EE item.created "BATS due-rendering test fails on near-future dates" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-18T10:32:59.054Z JOT-004A-EE item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

@@ -18,10 +18,10 @@ members:
     capabilities: all
     public_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
     salt: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
-    ai_tokens:
+    ai_delegations:
       ai:claude@joy:
-        token_key: d244ea3c4f0f929c7aa19dc81ea995ebb2d4e0527a3146ec31e6b7ee101c4a19
-        created: 2026-04-15T04:35:38.683419889Z
+        delegation_key: d935686271cfe16dbe0a4e14f14d4e3bef31cc033dea80b2d9f6544c4a79c757
+        created: 2026-04-18T10:22:40.963904117Z
 created: 2026-03-20T10:51:52.574885092Z
 release:
   version-files:

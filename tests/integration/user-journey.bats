@@ -192,12 +192,12 @@ load setup
     [[ "$row" != *"#work"* ]]
 }
 
-@test "due rendering: full year on ISO dates so 2026 and 2027 differ" {
-    jot add --due 2026-04-24 same month 2026 >/dev/null
-    jot add --due 2027-04-24 same month 2027 >/dev/null
+@test "due rendering: full year on ISO dates so 2028 and 2029 differ" {
+    jot add --due 2028-06-15 same month 2026 >/dev/null
+    jot add --due 2029-06-15 same month 2027 >/dev/null
     run jot
-    [[ "$output" == *"2026-04-24"* ]]
-    [[ "$output" == *"2027-04-24"* ]]
+    [[ "$output" == *"2028-06-15"* ]]
+    [[ "$output" == *"2029-06-15"* ]]
 }
 
 @test "due input: MM-DD and DD.MM shortcuts are accepted" {
