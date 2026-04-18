@@ -28,8 +28,17 @@ fmt-check:
 lint:
     cargo clippy --workspace -- -D warnings
 
+# Abort if the local Rust stable toolchain is behind the latest release.
+[private]
+_toolchain-check:
+    #!/usr/bin/env bash
+    if rustup check stable 2>/dev/null | grep -q "Update available"; then
+        echo "Error: Rust stable toolchain is outdated. Run 'rustup update stable'."
+        exit 1
+    fi
+
 # Run fmt-check, lint, test
-check: fmt-check lint test
+check: _toolchain-check fmt-check lint test
 
 # Check tools and deps
 doctor:
