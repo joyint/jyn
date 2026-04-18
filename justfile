@@ -109,6 +109,8 @@ release bump="patch":
         exit 1
     fi
     joy release record "{{bump}}"
+    tag=$(git describe --tags --exact-match HEAD 2>/dev/null || echo "unknown")
+    echo "Tagged ${tag} locally. Run 'just publish' to ship."
 
 # Upload crates to crates.io only. Idempotent: already-uploaded
 # versions are skipped. CI's publish.yml calls this directly; the
