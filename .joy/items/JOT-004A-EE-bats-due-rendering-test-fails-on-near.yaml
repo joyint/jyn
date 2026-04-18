@@ -1,7 +1,7 @@
 id: JOT-004A-EE
 title: BATS due-rendering test fails on near-future dates
 type: bug
-status: in-progress
+status: closed
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -11,5 +11,5 @@ capabilities:
 effort: 1
 created_by: ai:claude@joy
 created: 2026-04-18T10:32:59.010957579Z
-updated: 2026-04-18T10:32:59.049058879Z
+updated: 2026-04-18T10:33:06.692294981Z
 description: 'Test ''due rendering: full year on ISO dates so 2026 and 2027 differ'' uses 2026-04-24 which falls within the current week when run in mid-April 2026. Jot renders near-future dates as weekday labels (Fri) instead of full ISO, so the assertion fails. Fix: use far-future dates that always get full ISO rendering.'
