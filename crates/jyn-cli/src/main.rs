@@ -12,14 +12,14 @@ use chrono::Local;
 use clap::Parser;
 use joy_core::model::item::Priority;
 
-use jot_core::display;
-use jot_core::due::{self, DueSeverity, LabelMode};
-use jot_core::model::Task;
-use jot_core::storage;
+use jyn_core::display;
+use jyn_core::due::{self, DueSeverity, LabelMode};
+use jyn_core::model::Task;
+use jyn_core::storage;
 
 #[derive(Parser)]
 #[command(
-    name = "jot",
+    name = "jyn",
     version,
     about = "Personal task manager",
     infer_subcommands = true
@@ -35,12 +35,12 @@ struct Cli {
     )]
     color: color::ColorChoice,
 
-    /// Use compact labels. Also via JOT_SHORT.
+    /// Use compact labels. Also via JYN_SHORT.
     #[arg(long, global = true)]
     short: bool,
 
-    /// Ls-style flags usable without typing 'ls': `jot -a`, `jot --sort
-    /// title`, `jot --tag work`, and so on.
+    /// Ls-style flags usable without typing 'ls': `jyn -a`, `jyn --sort
+    /// title`, `jyn --tag work`, and so on.
     #[command(flatten)]
     ls: LsArgs,
 
@@ -264,24 +264,24 @@ struct RmArgs {
     id: String,
 }
 
-/// Welcome block shown when no tasks exist yet. Keeps the jot flavour
+/// Welcome block shown when no tasks exist yet. Keeps the jyn flavour
 /// (personal, minimal) - no wizard, just version plus a handful of
 /// example commands so a fresh user has something to copy.
 fn print_welcome() {
     println!();
     println!(
         "  {}",
-        color::label(&format!("jot {}", env!("CARGO_PKG_VERSION")))
+        color::label(&format!("jyn {}", env!("CARGO_PKG_VERSION")))
     );
     println!();
     println!("  No tasks yet. Try:");
-    println!("    jot add \"Review pull request JOY-00D3\" --tag work");
-    println!("    jot add \"Call Lisa\" --tag personal --prio high");
-    println!("    jot ls");
-    println!("    jot done 1");
-    println!("    jot --help");
+    println!("    jyn add \"Review pull request JOY-00D3\" --tag work");
+    println!("    jyn add \"Call Lisa\" --tag personal --prio high");
+    println!("    jyn ls");
+    println!("    jyn done 1");
+    println!("    jyn --help");
     println!();
-    println!("  Docs: https://joyint.com/en/jot/docs");
+    println!("  Docs: https://joyint.com/en/jyn/docs");
     println!();
 }
 
@@ -289,7 +289,7 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     color::init(cli.color);
 
-    let mode = if cli.short || std::env::var_os("JOT_SHORT").is_some() {
+    let mode = if cli.short || std::env::var_os("JYN_SHORT").is_some() {
         LabelMode::Short
     } else {
         LabelMode::Long
@@ -313,7 +313,7 @@ fn main() -> Result<()> {
     }
 
     if std::io::stdout().is_terminal() {
-        let cfg = jot_core::config::load_config();
+        let cfg = jyn_core::config::load_config();
         if cfg.output.fortune {
             if let Some(text) =
                 joy_core::fortune::fortune(cfg.output.fortune_category.as_ref(), 0.2)

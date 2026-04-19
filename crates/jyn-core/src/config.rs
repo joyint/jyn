@@ -1,17 +1,17 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
-//! User configuration for jot.
+//! User configuration for jyn.
 //!
 //! Layout mirrors joy-cli's config: YAML files at two locations, merged
 //! at load time with a deep-merge. Strict schema via `deny_unknown_fields`
-//! at every level so that typos in `jot config set` are reported instead
+//! at every level so that typos in `jyn config set` are reported instead
 //! of silently written.
 //!
 //! Layers, highest precedence last:
 //!   1. code defaults (`Config::default()`)
-//!   2. global personal: `$XDG_CONFIG_HOME/jot/config.yaml`
-//!   3. project-local personal: `<root>/.jot/config.yaml`
+//!   2. global personal: `$XDG_CONFIG_HOME/jyn/config.yaml`
+//!   3. project-local personal: `<root>/.jyn/config.yaml`
 
 use std::path::{Path, PathBuf};
 
@@ -68,7 +68,7 @@ fn default_fortune() -> bool {
     true
 }
 
-/// `$XDG_CONFIG_HOME/jot/config.yaml`, falling back to `~/.config/jot/config.yaml`.
+/// `$XDG_CONFIG_HOME/jyn/config.yaml`, falling back to `~/.config/jyn/config.yaml`.
 pub fn global_config_path() -> PathBuf {
     global_config_path_from(
         std::env::var("XDG_CONFIG_HOME").ok().map(PathBuf::from),
@@ -79,12 +79,12 @@ pub fn global_config_path() -> PathBuf {
 fn global_config_path_from(xdg: Option<PathBuf>, home: Option<PathBuf>) -> PathBuf {
     let config_dir =
         xdg.unwrap_or_else(|| home.unwrap_or_else(|| PathBuf::from(".")).join(".config"));
-    config_dir.join("jot").join(CONFIG_FILE)
+    config_dir.join("jyn").join(CONFIG_FILE)
 }
 
-/// `<root>/.jot/config.yaml`.
+/// `<root>/.jyn/config.yaml`.
 pub fn local_config_path(root: &Path) -> PathBuf {
-    crate::storage::jot_dir(root).join(CONFIG_FILE)
+    crate::storage::jyn_dir(root).join(CONFIG_FILE)
 }
 
 fn home_dir() -> Option<PathBuf> {
@@ -165,14 +165,14 @@ pub fn load_personal_config_value() -> serde_json::Value {
     merged
 }
 
-/// Returns cwd if it contains a `.jot/` directory, else `None`.
+/// Returns cwd if it contains a `.jyn/` directory, else `None`.
 ///
-/// jot's task model is per-cwd (no walking up), and config follows the
+/// jyn's task model is per-cwd (no walking up), and config follows the
 /// same rule for consistency: the local config layer corresponds to
-/// exactly the `.jot/` directory a user sees when they `ls` their cwd.
+/// exactly the `.jyn/` directory a user sees when they `ls` their cwd.
 pub fn current_project_root() -> Option<PathBuf> {
     let cwd = std::env::current_dir().ok()?;
-    if crate::storage::jot_dir(&cwd).is_dir() {
+    if crate::storage::jyn_dir(&cwd).is_dir() {
         Some(cwd)
     } else {
         None
@@ -383,27 +383,27 @@ mod tests {
             Some(PathBuf::from("/tmp/xdg")),
             Some(PathBuf::from("/home/user")),
         );
-        assert_eq!(p, PathBuf::from("/tmp/xdg/jot/config.yaml"));
+        assert_eq!(p, PathBuf::from("/tmp/xdg/jyn/config.yaml"));
     }
 
     #[test]
     fn global_config_path_falls_back_to_home_dot_config() {
         let p = global_config_path_from(None, Some(PathBuf::from("/home/user")));
-        assert_eq!(p, PathBuf::from("/home/user/.config/jot/config.yaml"));
+        assert_eq!(p, PathBuf::from("/home/user/.config/jyn/config.yaml"));
     }
 
     #[test]
     fn global_config_path_falls_back_to_cwd_without_home() {
         let p = global_config_path_from(None, None);
-        assert_eq!(p, PathBuf::from("./.config/jot/config.yaml"));
+        assert_eq!(p, PathBuf::from("./.config/jyn/config.yaml"));
     }
 
     #[test]
-    fn local_config_path_is_under_dot_jot() {
+    fn local_config_path_is_under_dot_jyn() {
         let root = Path::new("/some/project");
         assert_eq!(
             local_config_path(root),
-            Path::new("/some/project/.jot/config.yaml")
+            Path::new("/some/project/.jyn/config.yaml")
         );
     }
 }

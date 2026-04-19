@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #[derive(Debug, thiserror::Error)]
-pub enum JotError {
+pub enum JynError {
     #[error(transparent)]
     Joy(#[from] joy_core::error::JoyError),
 

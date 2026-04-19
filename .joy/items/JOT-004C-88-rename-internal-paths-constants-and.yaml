@@ -1,8 +1,10 @@
 id: JOT-004C-88
 title: Rename internal paths, constants, and env vars
 type: story
-status: new
+status: in-progress
 priority: high
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -10,5 +12,20 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy
 created: 2026-04-18T17:32:58.813868759Z
-updated: 2026-04-18T17:32:58.813868759Z
+updated: 2026-04-19T20:07:59.596621837Z
 description: 'Phase 1 of the jot -> jyn rename. Flip all user-visible and storage-layer identifiers. Changes: (1) crates/jyn-core/src/storage.rs: const JOT_DIR = ''.jot'' -> const JYN_DIR = ''.jyn''; rename constant and all usages. (2) crates/jyn-core/src/config.rs: config paths ''~/.config/jot/'' -> ''~/.config/jyn/'', ''$XDG_CONFIG_HOME/jot/'' -> ''/jyn/'', ''./.jot/config.yaml'' -> ''./.jyn/config.yaml''. Update doc comments. (3) crates/jyn-cli/src/main.rs: env var JOT_SHORT -> JYN_SHORT (rename reader); docs string ''https://joyint.com/en/jot/docs'' -> ''/jyn/docs''. (4) crates/jyn-cli/src/commands/config.rs: help text and docstrings referring to jot config paths. (5) CLI help text everywhere that mentions ''jot''. No backwards-compatibility fallback for old .jot/ dir or JOT_ env vars - hard cut per epic decision.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-19T20:07:59.596621181Z
+  text: |-
+    Plan:
+    1. Grep for JOT_DIR, JOT_SHORT, '.jot', '~/.config/jot', XDG '/jot' in crates/ and tests/.
+    2. storage.rs: const JOT_DIR = '.jot' -> const JYN_DIR = '.jyn'. Rename constant and all usages.
+    3. config.rs: config-path doc comments and resolve_config_path logic update ~/.config/jot -> ~/.config/jyn, XDG, ./.jot -> ./.jyn.
+    4. CLI ENV var JOT_SHORT -> JYN_SHORT in main.rs (plus any docstring mention).
+    5. Help strings / docstrings that reference paths explicitly update the path name. High-level CLI text like 'personal task manager' left untouched.
+    6. URLs in CLI output (docs.jot -> docs.jyn) update.
+    7. cargo build --workspace + cargo test --workspace. Fixtures under tests/ may reference .jot paths -- update or the tests break.
+    8. Commit, submit.
+
+    Out of scope: .joy/project.yaml acronym flip (JOT-004D-F3), top-level docs and README (JOT-004E-02), CI/justfile (JOT-004F-F2).

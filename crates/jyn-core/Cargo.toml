@@ -1,11 +1,11 @@
 [package]
-name = "jot-core"
+name = "jyn-core"
 version = "0.5.1"
 edition = "2021"
 license = "MIT"
-description = "Core library for Jot personal task manager - extends joy-core with recurrence"
-repository = "https://github.com/joyint/jot"
-homepage = "https://joyint.com/en/jot"
+description = "Core library for Jyn personal task manager - extends joy-core with recurrence"
+repository = "https://github.com/joyint/jyn"
+homepage = "https://joyint.com/en/jyn"
 readme = "README.md"
 
 [dependencies]

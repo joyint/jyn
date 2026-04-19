@@ -1,20 +1,20 @@
 [package]
-name = "jot-cli"
+name = "jyn-cli"
 version = "0.5.1"
 edition = "2021"
 license = "MIT"
 description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
-repository = "https://github.com/joyint/jot"
-homepage = "https://joyint.com/en/jot"
+repository = "https://github.com/joyint/jyn"
+homepage = "https://joyint.com/en/jyn"
 readme = "README.md"
-default-run = "jot"
+default-run = "jyn"
 
 [[bin]]
-name = "jot"
+name = "jyn"
 path = "src/main.rs"
 
 [dependencies]
-jot-core = { version = "0.5.1", path = "../jot-core" }
+jyn-core = { version = "0.5.1", path = "../jyn-core" }
 joy-core = { workspace = true }
 clap = { workspace = true }
 anyhow = { workspace = true }

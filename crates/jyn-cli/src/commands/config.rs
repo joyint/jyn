@@ -1,17 +1,17 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
-//! `jot config` subcommand - read, inspect, and write the user config.
+//! `jyn config` subcommand - read, inspect, and write the user config.
 //!
 //! Layout mirrors joy-cli's config command. Write location resolution is
-//! jot-specific: see [`resolve_write_target`].
+//! jyn-specific: see [`resolve_write_target`].
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
 
-use jot_core::config as cfg;
+use jyn_core::config as cfg;
 
 use crate::color;
 
@@ -41,11 +41,11 @@ struct SetArgs {
     key: String,
     /// Value to set (string, number, or boolean).
     value: String,
-    /// Write to the personal global config (~/.config/jot/config.yaml).
+    /// Write to the personal global config (~/.config/jyn/config.yaml).
     #[arg(long, conflicts_with = "local")]
     global: bool,
-    /// Write to the project-local config (./.jot/config.yaml), creating
-    /// `.jot/` if it does not exist yet.
+    /// Write to the project-local config (./.jyn/config.yaml), creating
+    /// `.jyn/` if it does not exist yet.
     #[arg(long, conflicts_with = "global")]
     local: bool,
 }
@@ -185,12 +185,12 @@ impl WriteTarget {
     }
 }
 
-/// Where `jot config set` should write.
+/// Where `jyn config set` should write.
 ///
 /// Precedence:
 /// 1. Explicit `--global` or `--local` flag.
-/// 2. `.jot/` in cwd -> local.
-/// 3. `~/.config/jot/config.yaml` already exists -> global.
+/// 2. `.jyn/` in cwd -> local.
+/// 3. `~/.config/jyn/config.yaml` already exists -> global.
 /// 4. Neither exists -> fail with an explicit, actionable error.
 fn resolve_write_target(global_flag: bool, local_flag: bool) -> Result<WriteTarget> {
     if global_flag {
@@ -212,8 +212,8 @@ fn resolve_write_target(global_flag: bool, local_flag: bool) -> Result<WriteTarg
 
     bail!(
         "No config exists yet. Choose a location:\n  \
-         jot config set --global <key> <value>   (writes to ~/.config/jot/config.yaml)\n  \
-         jot config set --local  <key> <value>   (writes to ./.jot/config.yaml)"
+         jyn config set --global <key> <value>   (writes to ~/.config/jyn/config.yaml)\n  \
+         jyn config set --local  <key> <value>   (writes to ./.jyn/config.yaml)"
     )
 }
 
@@ -253,7 +253,7 @@ fn set_value(key: &str, raw_value: &str, global_flag: bool, local_flag: bool) ->
         bail!("'{key}' is not a known config key or '{raw_value}' has the wrong type");
     }
 
-    // Ensure parent dir exists (auto-create `.jot/` or `~/.config/jot/` on demand).
+    // Ensure parent dir exists (auto-create `.jyn/` or `~/.config/jyn/` on demand).
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)
             .with_context(|| format!("cannot create {}", parent.display()))?;

@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
-//! Workspace storage for jot.
+//! Workspace storage for jyn.
 //!
-//! Jot reuses joy-core's generic YAML primitives (`store::write_yaml`,
+//! Jyn reuses joy-core's generic YAML primitives (`store::write_yaml`,
 //! `store::read_yaml`) and ID helpers (`item_filename`, `title_hash_suffix`)
-//! to operate on `.jot/` without duplicating IO logic or requiring changes
+//! to operate on `.jyn/` without duplicating IO logic or requiring changes
 //! to joy-core. See `docs/dev/Architecture.md`.
 
 use std::path::{Path, PathBuf};
@@ -14,30 +14,30 @@ use joy_core::items::title_hash_suffix;
 use joy_core::model::item::item_filename;
 use joy_core::store::{read_yaml, write_yaml};
 
-use crate::error::JotError;
+use crate::error::JynError;
 use crate::model::Task;
 
-pub const JOT_DIR: &str = ".jot";
+pub const JYN_DIR: &str = ".jyn";
 pub const ITEMS_DIR: &str = "items";
 pub const ACRONYM: &str = "TODO";
 
-pub fn jot_dir(root: &Path) -> PathBuf {
-    root.join(JOT_DIR)
+pub fn jyn_dir(root: &Path) -> PathBuf {
+    root.join(JYN_DIR)
 }
 
 pub fn items_dir(root: &Path) -> PathBuf {
-    jot_dir(root).join(ITEMS_DIR)
+    jyn_dir(root).join(ITEMS_DIR)
 }
 
-/// Create `.jot/items/` if missing. Idempotent.
-pub fn ensure_items_dir(root: &Path) -> Result<(), JotError> {
+/// Create `.jyn/items/` if missing. Idempotent.
+pub fn ensure_items_dir(root: &Path) -> Result<(), JynError> {
     let dir = items_dir(root);
     std::fs::create_dir_all(&dir)
-        .map_err(|e| JotError::Other(format!("cannot create {}: {}", dir.display(), e)))
+        .map_err(|e| JynError::Other(format!("cannot create {}: {}", dir.display(), e)))
 }
 
-/// Write a task to `.jot/items/{ID}-{slug}.yaml`.
-pub fn save_task(root: &Path, task: &Task) -> Result<(), JotError> {
+/// Write a task to `.jyn/items/{ID}-{slug}.yaml`.
+pub fn save_task(root: &Path, task: &Task) -> Result<(), JynError> {
     ensure_items_dir(root)?;
     let filename = item_filename(&task.item.id, &task.item.title);
     let path = items_dir(root).join(filename);
@@ -45,14 +45,14 @@ pub fn save_task(root: &Path, task: &Task) -> Result<(), JotError> {
     Ok(())
 }
 
-/// Load all tasks from `.jot/items/`, sorted by filename.
-pub fn load_tasks(root: &Path) -> Result<Vec<Task>, JotError> {
+/// Load all tasks from `.jyn/items/`, sorted by filename.
+pub fn load_tasks(root: &Path) -> Result<Vec<Task>, JynError> {
     let dir = items_dir(root);
     if !dir.is_dir() {
         return Ok(Vec::new());
     }
     let mut entries: Vec<_> = std::fs::read_dir(&dir)
-        .map_err(|e| JotError::Other(format!("cannot read {}: {}", dir.display(), e)))?
+        .map_err(|e| JynError::Other(format!("cannot read {}: {}", dir.display(), e)))?
         .filter_map(|e| e.ok())
         .filter(|e| {
             e.path()
@@ -73,16 +73,16 @@ pub fn load_tasks(root: &Path) -> Result<Vec<Task>, JotError> {
 /// Find the file for a task ID. Accepts the display short form (`#A1`,
 /// `A1`), the ADR-027 short form (`TODO-00A1`), or the full form
 /// (`TODO-00A1-EA`). Returns an error if the ID is ambiguous or missing.
-pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JotError> {
+pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JynError> {
     let dir = items_dir(root);
     if !dir.is_dir() {
-        return Err(JotError::Other(format!("task not found: {id}")));
+        return Err(JynError::Other(format!("task not found: {id}")));
     }
     let normalized = crate::display::normalize_id_input(id);
     let prefix = format!("{normalized}-");
 
     let matches: Vec<PathBuf> = std::fs::read_dir(&dir)
-        .map_err(|e| JotError::Other(format!("cannot read {}: {}", dir.display(), e)))?
+        .map_err(|e| JynError::Other(format!("cannot read {}: {}", dir.display(), e)))?
         .filter_map(|e| e.ok())
         .map(|e| e.path())
         .filter(|p| {
@@ -93,9 +93,9 @@ pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JotError> {
         .collect();
 
     match matches.len() {
-        0 => Err(JotError::Other(format!("task not found: {id}"))),
+        0 => Err(JynError::Other(format!("task not found: {id}"))),
         1 => Ok(matches.into_iter().next().unwrap()),
-        _ => Err(JotError::Other(format!(
+        _ => Err(JynError::Other(format!(
             "ambiguous ID {id}: {} matches",
             matches.len()
         ))),
@@ -103,14 +103,14 @@ pub fn find_task_file(root: &Path, id: &str) -> Result<PathBuf, JotError> {
 }
 
 /// Load a single task by its full or short ID.
-pub fn load_task(root: &Path, id: &str) -> Result<Task, JotError> {
+pub fn load_task(root: &Path, id: &str) -> Result<Task, JynError> {
     let path = find_task_file(root, id)?;
     Ok(read_yaml(&path)?)
 }
 
 /// Overwrite a task on disk. If the title changed and produced a new
 /// filename (slug-derived), the old file is removed.
-pub fn update_task(root: &Path, task: &Task) -> Result<(), JotError> {
+pub fn update_task(root: &Path, task: &Task) -> Result<(), JynError> {
     let old_path = find_task_file(root, &task.item.id)?;
     save_task(root, task)?;
     let new_path = items_dir(root).join(item_filename(&task.item.id, &task.item.title));
@@ -121,16 +121,16 @@ pub fn update_task(root: &Path, task: &Task) -> Result<(), JotError> {
 }
 
 /// Delete a task by ID. Returns the deleted task.
-pub fn delete_task(root: &Path, id: &str) -> Result<Task, JotError> {
+pub fn delete_task(root: &Path, id: &str) -> Result<Task, JynError> {
     let path = find_task_file(root, id)?;
     let task: Task = read_yaml(&path)?;
     std::fs::remove_file(&path)
-        .map_err(|e| JotError::Other(format!("cannot remove {}: {}", path.display(), e)))?;
+        .map_err(|e| JynError::Other(format!("cannot remove {}: {}", path.display(), e)))?;
     Ok(task)
 }
 
 /// Generate the next ID in the form `TODO-XXXX-YY` (ADR-027).
-pub fn next_id(root: &Path, title: &str) -> Result<String, JotError> {
+pub fn next_id(root: &Path, title: &str) -> Result<String, JynError> {
     let suffix = title_hash_suffix(title);
     let dir = items_dir(root);
     if !dir.is_dir() {
@@ -140,7 +140,7 @@ pub fn next_id(root: &Path, title: &str) -> Result<String, JotError> {
     let prefix = format!("{ACRONYM}-");
     let mut max_num: u16 = 0;
     for entry in std::fs::read_dir(&dir)
-        .map_err(|e| JotError::Other(format!("cannot read {}: {}", dir.display(), e)))?
+        .map_err(|e| JynError::Other(format!("cannot read {}: {}", dir.display(), e)))?
         .filter_map(|e| e.ok())
     {
         let name = entry.file_name();
@@ -155,7 +155,7 @@ pub fn next_id(root: &Path, title: &str) -> Result<String, JotError> {
     }
 
     let next = max_num.checked_add(1).ok_or_else(|| {
-        JotError::Other(format!("{ACRONYM} ID space exhausted (max {ACRONYM}-FFFF)"))
+        JynError::Other(format!("{ACRONYM} ID space exhausted (max {ACRONYM}-FFFF)"))
     })?;
     Ok(format!("{ACRONYM}-{next:04X}-{suffix}"))
 }
