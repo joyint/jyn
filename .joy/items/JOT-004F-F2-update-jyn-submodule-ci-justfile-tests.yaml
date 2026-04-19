@@ -1,7 +1,7 @@
 id: JOT-004F-F2
 title: Update jyn submodule CI, justfile, tests, fixtures
 type: task
-status: in-progress
+status: review
 priority: medium
 assignees:
 - member: ai:claude@joy
@@ -10,7 +10,7 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy
 created: 2026-04-18T17:32:58.834334206Z
-updated: 2026-04-19T20:34:34.881628142Z
+updated: 2026-04-19T20:47:47.968689587Z
 description: 'Phase 1 of the rename. Files inside the jyn submodule: justfile (all recipes, publish/release mechanics, paths), .github/workflows/ci.yaml (''cargo build -p jot-cli'' -> ''cargo build -p jyn-cli'', other crate refs), integration tests (tests/integration/config.bats and any other .bats or rust test files referring to jot), test fixtures in .jot/ directories (rename fixture paths if any reference .jot/ literally). Verify ''just ci'' or equivalent runs green on branch rename/jyn before merging.'
 comments:
 - author: ai:claude@joy
@@ -27,3 +27,14 @@ comments:
     8. Commit, submit.
 
     Out of scope: crates.io actual publish (JOT-0050-8D).
+- author: ai:claude@joy
+  date: 2026-04-19T20:47:45.161544767Z
+  text: |-
+    [x] justfile: test-int, install, publish-crates recipes migrated to jyn (jyn-cli/jyn-core/jyn ordering)
+    [x] .github/workflows/ci.yaml: cargo build -p jot-cli -> jyn-cli
+    [x] tests/integration/setup.bash: JOT_BIN -> JYN_BIN, target/debug/jot -> jyn, command -v jot -> jyn (debug build retained for bats iteration speed, confirmed by user)
+    [x] tests/integration/user-journey.bats: jot -> jyn, .jot/ -> .jyn/, JOT_SHORT -> JYN_SHORT
+    [x] tests/integration/config.bats: same (~/.config/jot -> /jyn, .jot/ -> .jyn/, jot -> jyn)
+    [x] Source-code comments/strings: color.rs module header, config.rs doc comment, model.rs close/reopen/archive doc comments, lib.rs config help + 'No open tasks' hint
+    [x] Verified: just check green (fmt + clippy + 39 unit tests + 58 bats integration tests)
+    Out of scope per item spec: dist-workspace.toml had no jot references (scanned, clean).
