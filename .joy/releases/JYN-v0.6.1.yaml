@@ -1,0 +1,11 @@
+version: v0.6.1
+date: 2026-04-19
+previous: v0.6.0
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  bugs:
+  - id: JYN-0001-F8
+    title: cargo-dist Windows linker collision between jyn and jyn-cli binaries

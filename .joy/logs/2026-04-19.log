@@ -42,3 +42,4 @@
 2026-04-19T22:19:33.316Z JYN-0001-F8 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T22:19:33.330Z JYN-0001-F8 comment.added "[x] crates/jyn/Cargo.toml: added [package.metadata.dist] dist = false with explanatory comment. Alias crate continues to publish to crates.io for 'cargo install jyn'; prebuilt binaries on GitHub come exclusively from jyn-cli." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T22:19:33.357Z JYN-0001-F8 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T22:21:20.041Z v0.6.1 release.created [horst.schwarz@joydev.com]
