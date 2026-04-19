@@ -490,6 +490,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "jyn"
+version = "0.5.1"
+dependencies = [
+ "anyhow",
+ "jyn-cli",
+]
+
+[[package]]
 name = "jyn-cli"
 version = "0.5.1"
 dependencies = [

@@ -1,7 +1,7 @@
 id: JOT-004D-F3
 title: 'Flip .joy metadata: name jot -> jyn, acronym JOT -> JYN'
 type: task
-status: in-progress
+status: review
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -10,7 +10,7 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-18T17:32:58.821323731Z
-updated: 2026-04-19T20:13:02.740269863Z
+updated: 2026-04-19T20:19:52.175720458Z
 description: 'Phase 1 of the rename, depends on JOY-00F1-AD (''joy project set acronym'' CLI in joy submodule). Changes in jot/.joy/project.yaml: name ''jot'' -> ''jyn''; acronym ''JOT'' -> ''JYN''; version-files paths crates/jot-core/Cargo.toml -> crates/jyn-core/Cargo.toml and crates/jot-cli/Cargo.toml -> crates/jyn-cli/Cargo.toml. Commands: ''joy project set name jyn'' and ''joy project set acronym JYN'' (requires JOY-00F1-AD to ship first) and ''joy project set version-files ...'' or direct update of the list. Existing JOT-xxxx items keep their IDs as historical record; new items auto-prefix JYN-xxxx. After this, rename the project directory reference in umbrella .gitmodules (handled by JI-00E7-A2).'
 comments:
 - author: ai:claude@joy
@@ -27,3 +27,9 @@ comments:
     6. Commit .joy/project.yaml on rename/jyn with ref JOT-004D-F3.
 
     Out of scope: renaming existing JOT-xxxx items, which stay as historical record per the umbrella-level strategy (new items get JYN-xxxx automatically once the acronym is flipped).
+- author: ai:claude@joy
+  date: 2026-04-19T20:19:52.166533928Z
+  text: |-
+    [x] Done. Commit d48f7bb. name: jot -> jyn, acronym JOT -> JYN via joy project set (required JOY-00F1-AD; user invoked locally built joy since installed version pre-dates the feature). Existing JOT-xxxx items keep historical prefix; new items use JYN-xxxx.
+
+    Two follow-up bugs surfaced during the flip and will be filed in JOY when Phase 1 wraps: (1) acronym rename orphans the local delegation private key directory (~/.local/state/joy/delegations/<acronym>/ path contains the old acronym, joy can't find the key under the new name); (2) joy ai rotate is referenced in ADR-033 §1 and in error messages but the subcommand is not implemented.

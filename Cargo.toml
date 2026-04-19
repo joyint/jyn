@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/jyn-core",
     "crates/jyn-cli",
+    "crates/jyn",
 ]
 
 [workspace.dependencies]

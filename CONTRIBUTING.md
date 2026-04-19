@@ -1,6 +1,6 @@
 # Contributing
 
-This document covers the coding conventions, testing strategy, CI/CD pipeline, and commit message format for the Jot repository.
+This document covers the coding conventions, testing strategy, CI/CD pipeline, and commit message format for the Jyn repository.
 
 For product vision and CLI design see [docs/dev/Vision.md](docs/dev/Vision.md). For technology choices and architecture see [docs/dev/Architecture.md](docs/dev/Architecture.md).
 
@@ -35,13 +35,13 @@ The product backlog lives in `.joy/` and is managed with the `joy` CLI. Run `joy
 - Types: `PascalCase`
 - Functions/methods: `snake_case`
 - Constants: `SCREAMING_SNAKE_CASE`
-- Crate names: `jot-core`, `jot-cli` (kebab-case)
+- Crate names: `jyn-core`, `jyn-cli` (kebab-case)
 - Module names: `snake_case`
 
 **Error handling:**
 
-- `jot-core` uses `thiserror` enums -- every error type is explicit and matchable
-- `jot-cli` uses `anyhow` for convenient error propagation to the user
+- `jyn-core` uses `thiserror` enums -- every error type is explicit and matchable
+- `jyn-cli` uses `anyhow` for convenient error propagation to the user
 - No `unwrap()` or `expect()` in library code. Allowed in tests and in CLI `main()` only.
 
 **Dependencies:** Minimize. Every new dependency must justify its inclusion. Prefer stdlib and well-maintained crates with few transitive dependencies.
@@ -69,13 +69,13 @@ The header goes on the first line of the file, before any `#![...]` attributes, 
 
 **Unit tests** (Rust `#[cfg(test)]` modules):
 
-- Every public function in jot-core has unit tests
+- Every public function in jyn-core has unit tests
 - Data model serialization/deserialization roundtrips
 - Recurrence rule logic
 
 **Integration tests** (`tests/` directory):
 
-- CLI command execution against real `.jot/` directories
+- CLI command execution against real `.jyn/` directories
 - Full workflows: add, done, ls, edit, rm
 
 **Snapshot tests** (for CLI output):
@@ -95,7 +95,7 @@ just test-coverage     # With coverage report
 
 ### Coverage Target
 
-Aim for >80% line coverage on jot-core. No hard enforcement -- coverage is a signal, not a goal.
+Aim for >80% line coverage on jyn-core. No hard enforcement -- coverage is a signal, not a goal.
 
 ---
 
@@ -120,7 +120,7 @@ Releases are triggered by Git tags (`v0.1.0`, `v1.0.0`, etc.).
 
 - Standalone binaries (tar.gz, zip)
 - Homebrew formula
-- Cargo install: `cargo install jot`
+- Cargo install: `cargo install jyn-cli`
 
 ---
 
@@ -168,7 +168,7 @@ The product backlog is managed with Joy (the `joy` CLI). Key conventions:
 
 - **Item types:** epic, story, task, bug, rework, decision, idea
 - **Priority levels:** critical, high, medium, low
-- **ID scheme:** JOT-0001 to JOT-FFFF (items), JOT-MS-01 to JOT-MS-FF (milestones), hex-based
+- **ID scheme:** JYN-0001 to JYN-FFFF (items), JYN-MS-01 to JYN-MS-FF (milestones), hex-based. Pre-existing JOT-xxxx items are kept as historical record after the rename.
 - **Language:** All titles, descriptions, and comments in English
 - **Status tracking:** `joy start <ID>` before coding, `joy close <ID>` after committing -- never skip
 - **Implementation flow:** Comment planned solution into the item, confirm, implement, update todos
@@ -178,4 +178,4 @@ The product backlog is managed with Joy (the `joy` CLI). Key conventions:
 
 ## Related
 
-Jot is part of the [Joyint ecosystem](https://github.com/joyint/project). Shared architectural decisions (ADRs) and cross-project conventions are maintained there.
+Jyn is part of the [Joyint ecosystem](https://github.com/joyint/project). Shared architectural decisions (ADRs) and cross-project conventions are maintained there.

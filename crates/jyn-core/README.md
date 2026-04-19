@@ -1,6 +1,6 @@
-# jot-core
+# jyn-core
 
-Core library for [Jot](https://joyint.com/en/jot) - a Git-native personal task manager.
+Core library for [Jyn](https://joyint.com/en/jyn) - a Git-native personal task manager.
 
 Extends [joy-core](https://crates.io/crates/joy-core) with recurrence rules,
 personal task semantics, and CalDAV-ready data structures.
@@ -9,7 +9,7 @@ personal task semantics, and CalDAV-ready data structures.
 
 ```toml
 [dependencies]
-jot-core = "0.2"
+jyn-core = "0.2"
 ```
 
 ## License
