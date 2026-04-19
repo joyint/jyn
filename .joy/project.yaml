@@ -25,5 +25,6 @@ members:
 created: 2026-03-20T10:51:52.574885092Z
 release:
   version-files:
-  - crates/jot-core/Cargo.toml
-  - crates/jot-cli/Cargo.toml
+  - crates/jyn-core/Cargo.toml
+  - crates/jyn-cli/Cargo.toml
+  - crates/jyn/Cargo.toml
