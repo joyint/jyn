@@ -32,3 +32,10 @@ installers = ["shell", "powershell"]
 install-path = "~/.local/bin"
 # Target platforms to build for (Rust target-triple syntax).
 targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
+# Build each package separately with 'cargo build -p <pkg>' instead of
+# a single 'cargo build --workspace'. Required because jyn-cli and the
+# jyn alias crate both declare a bin called 'jyn'; a parallel workspace
+# build races on the same target/.../jyn.exe output path and fails on
+# Windows with LNK1104 'cannot open file'. Combined with
+# 'dist = false' in crates/jyn/Cargo.toml, only jyn-cli gets packaged.
+precise-builds = true

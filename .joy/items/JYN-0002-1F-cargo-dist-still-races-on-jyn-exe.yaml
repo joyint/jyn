@@ -1,0 +1,18 @@
+id: JYN-0002-1F
+title: cargo-dist still races on jyn.exe without precise-builds
+type: bug
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+created_by: ai:claude@joy
+created: 2026-04-19T22:28:44.845683014Z
+updated: 2026-04-19T22:28:49.762784048Z
+description: 'v0.6.1 hotfix (JYN-0001-F8) added ''[package.metadata.dist] dist = false'' to the alias crate expecting it to exclude the crate from cargo-dist''s build. It does exclude it from the artifact plan, but cargo-dist still runs a single workspace-wide ''cargo build'' which compiles both jyn-cli (bin jyn) and jyn (bin jyn) in parallel, racing on target/.../jyn.exe on Windows (LNK1104). Fix: add ''precise-builds = true'' to [dist] in dist-workspace.toml so cargo-dist compiles each package individually with ''cargo build -p <pkg>''.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-19T22:28:49.741768922Z
+  text: '[x] dist-workspace.toml: added precise-builds = true to [dist] with explanatory comment. Will be validated by v0.6.2 release workflow.'
