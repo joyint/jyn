@@ -457,33 +457,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
-name = "jot-cli"
-version = "0.5.1"
-dependencies = [
- "anyhow",
- "chrono",
- "clap",
- "jot-core",
- "joy-core",
- "serde_json",
- "serde_yaml_ng",
- "terminal_size",
-]
-
-[[package]]
-name = "jot-core"
-version = "0.5.1"
-dependencies = [
- "chrono",
- "joy-core",
- "serde",
- "serde_json",
- "serde_yaml_ng",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
 name = "joy-core"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -514,6 +487,33 @@ checksum = "2964e92d1d9dc3364cae4d718d93f227e3abb088e747d92e0395bfdedf1c12ca"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "jyn-cli"
+version = "0.5.1"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "clap",
+ "joy-core",
+ "jyn-core",
+ "serde_json",
+ "serde_yaml_ng",
+ "terminal_size",
+]
+
+[[package]]
+name = "jyn-core"
+version = "0.5.1"
+dependencies = [
+ "chrono",
+ "joy-core",
+ "serde",
+ "serde_json",
+ "serde_yaml_ng",
+ "tempfile",
+ "thiserror",
 ]
 
 [[package]]

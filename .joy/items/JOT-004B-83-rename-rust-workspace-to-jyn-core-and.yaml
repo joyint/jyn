@@ -1,8 +1,10 @@
 id: JOT-004B-83
 title: Rename Rust workspace to jyn-core and jyn-cli
 type: story
-status: new
+status: in-progress
 priority: high
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -10,5 +12,20 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy
 created: 2026-04-18T17:32:58.807372526Z
-updated: 2026-04-18T17:32:58.807372526Z
+updated: 2026-04-19T20:05:51.861487321Z
 description: 'Phase 1 of the jot -> jyn rename (see JI-00E3-C5 in umbrella). Rename Cargo workspace and all Rust module/package identity. Changes: (1) Cargo.toml workspace members: crates/jot-core -> crates/jyn-core, crates/jot-cli -> crates/jyn-cli. (2) crates/jot-core/Cargo.toml: name = jyn-core, repository = https://github.com/joyint/jyn, homepage = https://joyint.com/en/jyn. (3) crates/jot-cli/Cargo.toml: name = jyn-cli, default-run = jyn, [[bin]] name = jyn, dependency jot-core -> jyn-core. (4) Rename source directories crates/jot-core -> crates/jyn-core and crates/jot-cli -> crates/jyn-cli (git mv). (5) All Rust ''use'' paths and extern crate names: jot_core -> jyn_core. (6) Re-export / lib re-name if applicable. Work on branch rename/jyn. Verify with ''cargo build --workspace'' and ''cargo test --workspace'' before merge.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-19T20:05:51.861487177Z
+  text: |-
+    Plan:
+    1. git mv crates/jot-core crates/jyn-core and crates/jot-cli crates/jyn-cli.
+    2. Root Cargo.toml: workspace.members -> crates/jyn-*. Keep joy-core workspace dep unchanged.
+    3. crates/jyn-core/Cargo.toml: name jot-core -> jyn-core, description mentions Jyn, repository+homepage to github.com/joyint/jyn and joyint.com/en/jyn.
+    4. crates/jyn-cli/Cargo.toml: name jot-cli -> jyn-cli, default-run and [[bin]] name jot -> jyn, dependency reference jot-core -> jyn-core, URL metadata.
+    5. Source code: rename use/extern references jot_core -> jyn_core, crate identifier jot_cli -> jyn_cli where applicable.
+    6. Cargo.lock: let cargo build regenerate.
+    7. cargo fmt, cargo build --workspace, cargo test --workspace. Fix any compile errors from renamed imports.
+    8. Commit on rename/jyn with ref JOT-004B-83, submit.
+
+    Scope boundary: this item only renames the Rust workspace identity. Internal paths (.jot -> .jyn directory), ENV vars (JOT_SHORT -> JYN_SHORT), and string literals in CLI help remain for JOT-004C-88.
