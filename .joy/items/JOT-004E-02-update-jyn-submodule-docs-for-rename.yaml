@@ -1,0 +1,12 @@
+id: JOT-004E-02
+title: Update jyn submodule docs for rename
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy
+created: 2026-04-18T17:32:58.827834519Z
+updated: 2026-04-18T17:32:58.827834519Z
+description: 'Phase 1 of the rename. Files inside the jyn submodule: README.md (product name, install ''curl -fsSL get.joyint.com/jyn | sh'', ''cargo install jyn-cli'', all brand mentions), CONTRIBUTING.md (scopes, crate names jot-core -> jyn-core, jot-cli -> jyn-cli), docs/dev/Vision.md (.jot/ -> .jyn/ directory references, .jot/items/ -> .jyn/items/ YAML examples, CalDAV VTODO mapping copy), docs/dev/Architecture.md (dependency table entries, file tree, protobuf comment ''jot.proto'' -> ''jyn.proto'', config schema paths). Keep technical accuracy; historical README content can be preserved in a note if useful.'

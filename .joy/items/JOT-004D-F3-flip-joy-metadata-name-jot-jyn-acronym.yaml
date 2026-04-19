@@ -1,0 +1,12 @@
+id: JOT-004D-F3
+title: 'Flip .joy metadata: name jot -> jyn, acronym JOT -> JYN'
+type: task
+status: new
+priority: high
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-18T17:32:58.821323731Z
+updated: 2026-04-18T17:32:58.821323731Z
+description: 'Phase 1 of the rename, depends on JOY-00F1-AD (''joy project set acronym'' CLI in joy submodule). Changes in jot/.joy/project.yaml: name ''jot'' -> ''jyn''; acronym ''JOT'' -> ''JYN''; version-files paths crates/jot-core/Cargo.toml -> crates/jyn-core/Cargo.toml and crates/jot-cli/Cargo.toml -> crates/jyn-cli/Cargo.toml. Commands: ''joy project set name jyn'' and ''joy project set acronym JYN'' (requires JOY-00F1-AD to ship first) and ''joy project set version-files ...'' or direct update of the list. Existing JOT-xxxx items keep their IDs as historical record; new items auto-prefix JYN-xxxx. After this, rename the project directory reference in umbrella .gitmodules (handled by JI-00E7-A2).'

@@ -1,0 +1,12 @@
+id: JOT-0050-8D
+title: 'Reserve crates.io: publish initial jyn-core and jyn-cli'
+type: task
+status: new
+priority: high
+capabilities:
+- implement
+effort: 2
+created_by: ai:claude@joy
+created: 2026-04-19T11:57:31.280626171Z
+updated: 2026-04-19T11:57:31.280626171Z
+description: 'Secure crates.io ownership of the jyn-core and jyn-cli names before the v0.6.0 release. crates.io does not support reservation without publishing, so this task publishes minimal shell versions (e.g. 0.0.1) from the renamed workspace. Owner becomes the publishing account and the names are claimed. v0.6.0 later overrides with real content via normal semver. Prerequisites: JOT-004B-83 (workspace rename to jyn-core/jyn-cli) merged, so Cargo manifests already carry name = jyn-core and name = jyn-cli. Trademark gate JI-00E5-A3 is closed (green). Steps: (1) ensure crates/jyn-core/Cargo.toml and crates/jyn-cli/Cargo.toml have correct metadata (name, version 0.0.1, readme, license, repository https://github.com/joyint/jyn, homepage, description, keywords). (2) cargo publish --dry-run to validate. (3) cargo publish for jyn-core first. (4) cargo publish for jyn-cli (depends on jyn-core). (5) Verify on crates.io that ownership is set to the intended account; add joyint GitHub team as owner if applicable. (6) Tag the commit with ''reserve-v0.0.1'' for traceability. Non-goal: shipping functional code - a stub main or lib.rs is fine. Links back to umbrella epic JI-00E3-C5.'

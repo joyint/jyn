@@ -1,0 +1,12 @@
+id: JOT-004F-F2
+title: Update jyn submodule CI, justfile, tests, fixtures
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy
+created: 2026-04-18T17:32:58.834334206Z
+updated: 2026-04-18T17:32:58.834334206Z
+description: 'Phase 1 of the rename. Files inside the jyn submodule: justfile (all recipes, publish/release mechanics, paths), .github/workflows/ci.yaml (''cargo build -p jot-cli'' -> ''cargo build -p jyn-cli'', other crate refs), integration tests (tests/integration/config.bats and any other .bats or rust test files referring to jot), test fixtures in .jot/ directories (rename fixture paths if any reference .jot/ literally). Verify ''just ci'' or equivalent runs green on branch rename/jyn before merging.'

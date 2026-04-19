@@ -1,0 +1,3 @@
+2026-04-19T11:57:31.256Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T11:57:31.287Z JOT-0050-8D item.created "Reserve crates.io: publish initial jyn-core and jyn-cli" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T20:04:58.423Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
