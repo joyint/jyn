@@ -33,3 +33,6 @@
 2026-04-19T20:49:20.440Z JOT-004D-F3 item.status_changed "review -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T20:49:20.460Z JOT-004E-02 item.status_changed "review -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T20:49:20.481Z JOT-004F-F2 item.status_changed "review -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T21:48:30.442Z JOT-0050-8D item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T21:50:13.554Z JOT-0050-8D comment.added "[x] Published v0.5.1 to crates.io (real content, not a placeholder reservation):\n    - jyn-core 0.5.1 uploaded\n    - jyn-cli 0.5.1 uploaded (depends on jyn-core 0.5.1)\n    - jyn 0.5.1 alias crate uploaded (depends on jyn-cli 0.5.1)\nVerified: HTTP 200 on crates.io/api/v1/crates/{jyn-core,jyn-cli,jyn}.\nMechanics: ran 'just publish-crates' in jyn submodule with CARGO_REGISTRY_TOKEN from umbrella .env. Ordering by the recipe: core -> cli -> alias.\nCloses the reservation concern: names secured, shipped real v0.5.1 payload rather than stubs." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T21:50:13.563Z JOT-0050-8D item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
