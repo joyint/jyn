@@ -1,0 +1,25 @@
+version: v0.6.0
+date: 2026-04-19
+previous: v0.5.1
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 37
+  items: 7
+items:
+  stories:
+  - id: JOT-004B-83
+    title: Rename Rust workspace to jyn-core and jyn-cli
+  - id: JOT-004C-88
+    title: Rename internal paths, constants, and env vars
+  tasks:
+  - id: JOT-004D-F3
+    title: 'Flip .joy metadata: name jot -> jyn, acronym JOT -> JYN'
+  - id: JOT-004E-02
+    title: Update jyn submodule docs for rename
+  - id: JOT-004F-F2
+    title: Update jyn submodule CI, justfile, tests, fixtures
+  - id: JOT-0050-8D
+    title: 'Reserve crates.io: publish initial jyn-core and jyn-cli'
+  bugs:
+  - id: JOT-004A-EE
+    title: BATS due-rendering test fails on near-future dates
