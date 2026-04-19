@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
-//! Minimal color + layout helpers for the jot CLI.
+//! Minimal color + layout helpers for the jyn CLI.
 //!
 //! Mirrors the shape of `joy-cli::color` (semantic ANSI constants, dim
 //! `label()` for structural chrome, colored `id()` for identifiers,
-//! `header`/`footer` for the table frame) but carries only what jot
+//! `header`/`footer` for the table frame) but carries only what jyn
 //! currently needs. NO_COLOR and non-TTY auto-disable; `--color` on
 //! the root command overrides.
 

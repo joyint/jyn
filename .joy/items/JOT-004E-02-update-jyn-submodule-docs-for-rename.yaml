@@ -1,7 +1,7 @@
 id: JOT-004E-02
 title: Update jyn submodule docs for rename
 type: task
-status: in-progress
+status: review
 priority: medium
 assignees:
 - member: ai:claude@joy
@@ -10,7 +10,7 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy
 created: 2026-04-18T17:32:58.827834519Z
-updated: 2026-04-19T20:20:10.471639119Z
+updated: 2026-04-19T20:34:34.861594774Z
 description: 'Phase 1 of the rename. Files inside the jyn submodule: README.md (product name, install ''curl -fsSL get.joyint.com/jyn | sh'', ''cargo install jyn-cli'', all brand mentions), CONTRIBUTING.md (scopes, crate names jot-core -> jyn-core, jot-cli -> jyn-cli), docs/dev/Vision.md (.jot/ -> .jyn/ directory references, .jot/items/ -> .jyn/items/ YAML examples, CalDAV VTODO mapping copy), docs/dev/Architecture.md (dependency table entries, file tree, protobuf comment ''jot.proto'' -> ''jyn.proto'', config schema paths). Keep technical accuracy; historical README content can be preserved in a note if useful.'
 comments:
 - author: ai:claude@joy
@@ -26,3 +26,14 @@ comments:
     7. Any other .md in repo root or docs/.
 
     Scope boundary: this is docs-only. Code was done in 004B-83 and 004C-88. CI + tests are 004F-F2.
+- author: ai:claude@joy
+  date: 2026-04-19T20:34:34.854841Z
+  text: |-
+    [x] Done on rename/jyn.
+
+    - Top-level README, CONTRIBUTING (scopes, crate names, install commands).
+    - crates/jyn-cli/README.md, crates/jyn-core/README.md brand + install aligned.
+    - docs/dev/Vision.md, docs/dev/Architecture.md: product prose, .jot/ -> .jyn/ paths, CLI examples, URLs, crate names.
+    - Added during this scope: crates/jyn alias crate (analogous to crates/jon) so users can 'cargo install jyn' directly. Required splitting jyn-cli's main.rs into lib.rs (pub fn run()) + minimal main.rs. jyn-cli stays individually installable.
+
+    cargo build --workspace, cargo test --workspace green. Item-ID prefix TODO unchanged (jot's hardcoded ACRONYM, independent of product name).

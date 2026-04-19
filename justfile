@@ -13,7 +13,7 @@ test-unit:
 
 # Integration tests (bats)
 test-int:
-    cargo build -p jot-cli
+    cargo build -p jyn-cli
     bats tests/integration/*.bats
 
 # Format all code
@@ -59,7 +59,7 @@ setup:
 
 # Install to ~/.local/bin/
 install:
-    cargo build --release -p jot-cli && mkdir -p ~/.local/bin && cp target/release/jot ~/.local/bin/jot
+    cargo build --release -p jyn-cli && mkdir -p ~/.local/bin && cp target/release/jyn ~/.local/bin/jyn
 
 # Auto-commit known generated files (.joy/, lockfiles)
 [private]
@@ -134,7 +134,9 @@ publish-crates:
         exit 1
     fi
     # Order matters: dependents after dependencies.
-    crates=(jot-core jot-cli)
+    # Order matters: dependents after dependencies. jyn (alias crate)
+    # must publish last because it depends on jyn-cli being on crates.io.
+    crates=(jyn-core jyn-cli jyn)
     for crate in "${crates[@]}"; do
         version=$(cargo pkgid --quiet -p "$crate" 2>/dev/null | sed 's/.*[#@]\(.*\)/\1/')
         if [ -z "$version" ]; then

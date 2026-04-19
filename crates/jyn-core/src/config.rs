@@ -132,7 +132,7 @@ pub fn load_config() -> Config {
     }
 }
 
-/// Untyped merged view across all layers, suitable for `jot config` display.
+/// Untyped merged view across all layers, suitable for `jyn config` display.
 pub fn load_config_value() -> serde_json::Value {
     let mut merged: serde_json::Value = serde_json::to_value(Config::default()).unwrap_or_default();
 

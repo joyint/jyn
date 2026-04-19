@@ -2,12 +2,12 @@
 # Common setup for bats integration tests.
 # Sources: https://bats-core.readthedocs.io/
 
-# Prefer debug build for speed; fall back to jot on PATH.
-JOT_BIN="${JOT_BIN:-$(pwd)/target/debug/jot}"
-if [ ! -x "$JOT_BIN" ]; then
-    JOT_BIN="$(command -v jot)"
+# Prefer debug build for speed; fall back to jyn on PATH.
+JYN_BIN="${JYN_BIN:-$(pwd)/target/debug/jyn}"
+if [ ! -x "$JYN_BIN" ]; then
+    JYN_BIN="$(command -v jyn)"
 fi
-export PATH="$(dirname "$JOT_BIN"):$PATH"
+export PATH="$(dirname "$JYN_BIN"):$PATH"
 
 setup() {
     TEST_DIR="$(mktemp -d)"

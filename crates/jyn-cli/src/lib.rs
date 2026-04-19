@@ -71,7 +71,7 @@ enum Commands {
     Unarchive(IdArgs),
     /// Remove a task
     Rm(RmArgs),
-    /// Read, inspect, or write jot config
+    /// Read, inspect, or write jyn config
     Config(commands::config::ConfigArgs),
 }
 
@@ -445,7 +445,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     apply_sort(&mut filtered, args.sort, args.reverse, today);
 
     if filtered.is_empty() {
-        println!("No open tasks. Add one with: jot add \"<title>\"");
+        println!("No open tasks. Add one with: jyn add \"<title>\"");
         return Ok(());
     }
 

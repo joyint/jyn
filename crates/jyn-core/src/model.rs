@@ -33,8 +33,8 @@ pub struct Task {
     pub source: Option<String>,
 
     /// Timestamp the task was closed. Mirrors VTODO's `COMPLETED` and
-    /// MS Graph's `completedDateTime`. Written by `jot close`, cleared
-    /// by `jot reopen`.
+    /// MS Graph's `completedDateTime`. Written by `jyn close`, cleared
+    /// by `jyn reopen`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub closed_at: Option<DateTime<Utc>>,
 
@@ -43,8 +43,8 @@ pub struct Task {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub archived: bool,
 
-    /// Timestamp the task was archived. Written by `jot archive`,
-    /// cleared by `jot unarchive`.
+    /// Timestamp the task was archived. Written by `jyn archive`,
+    /// cleared by `jyn unarchive`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived_at: Option<DateTime<Utc>>,
 }
