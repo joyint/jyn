@@ -491,7 +491,7 @@ dependencies = [
 
 [[package]]
 name = "jyn"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "anyhow",
  "jyn-cli",
@@ -499,7 +499,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-cli"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "anyhow",
  "chrono",
@@ -513,7 +513,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-core"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "chrono",
  "joy-core",

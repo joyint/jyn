@@ -47,3 +47,4 @@
 2026-04-19T22:28:49.730Z JYN-0002-1F item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T22:28:49.745Z JYN-0002-1F comment.added "[x] dist-workspace.toml: added precise-builds = true to [dist] with explanatory comment. Will be validated by v0.6.2 release workflow." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T22:28:49.767Z JYN-0002-1F item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T22:30:04.393Z v0.6.2 release.created [horst.schwarz@joydev.com]

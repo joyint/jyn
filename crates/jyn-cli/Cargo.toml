@@ -1,6 +1,6 @@
 [package]
 name = "jyn-cli"
-version = "0.6.1"
+version = "0.6.2"
 edition = "2021"
 license = "MIT"
 description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
@@ -14,7 +14,7 @@ name = "jyn"
 path = "src/main.rs"
 
 [dependencies]
-jyn-core = { version = "0.6.1", path = "../jyn-core" }
+jyn-core = { version = "0.6.2", path = "../jyn-core" }
 joy-core = { workspace = true }
 clap = { workspace = true }
 anyhow = { workspace = true }

@@ -1,0 +1,11 @@
+version: v0.6.2
+date: 2026-04-19
+previous: v0.6.1
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 4
+  items: 1
+items:
+  bugs:
+  - id: JYN-0002-1F
+    title: cargo-dist still races on jyn.exe without precise-builds
