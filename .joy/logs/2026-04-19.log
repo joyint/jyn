@@ -38,3 +38,7 @@
 2026-04-19T21:50:13.563Z JOT-0050-8D item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-04-19T22:00:00.306Z release guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
 2026-04-19T22:14:11.625Z v0.6.0 release.created [horst.schwarz@joydev.com]
+2026-04-19T22:19:27.337Z JYN-0001-F8 item.created "cargo-dist Windows linker collision between jyn and jyn-cli binaries" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T22:19:33.316Z JYN-0001-F8 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T22:19:33.330Z JYN-0001-F8 comment.added "[x] crates/jyn/Cargo.toml: added [package.metadata.dist] dist = false with explanatory comment. Alias crate continues to publish to crates.io for 'cargo install jyn'; prebuilt binaries on GitHub come exclusively from jyn-cli." [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-04-19T22:19:33.357Z JYN-0001-F8 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]

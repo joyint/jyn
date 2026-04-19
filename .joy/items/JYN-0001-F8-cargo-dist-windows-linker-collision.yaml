@@ -1,0 +1,18 @@
+id: JYN-0001-F8
+title: cargo-dist Windows linker collision between jyn and jyn-cli binaries
+type: bug
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+created_by: ai:claude@joy
+created: 2026-04-19T22:19:27.333749435Z
+updated: 2026-04-19T22:19:33.351138846Z
+description: 'The v0.6.0 release workflow failed on Windows: both the jyn-cli crate and the jyn alias crate declare a bin named ''jyn'', and cargo-dist''s workspace build runs them in parallel. On Linux this is a warning; on Windows the linker fails with LNK1104 (''cannot open file jyn.exe'') because both builds try to write the same path. Result: no prebuilt binaries attached to v0.6.0 release, curl installer returns 404 for jyn-cli-*.tar.xz. Fix: exclude the alias crate from cargo-dist via ''[package.metadata.dist] dist = false'' in crates/jyn/Cargo.toml. The alias stays on crates.io (cargo install jyn still works), only the prebuilt binaries come from jyn-cli. Cut as v0.6.1 hotfix.'
+comments:
+- author: ai:claude@joy
+  date: 2026-04-19T22:19:33.327178895Z
+  text: '[x] crates/jyn/Cargo.toml: added [package.metadata.dist] dist = false with explanatory comment. Alias crate continues to publish to crates.io for ''cargo install jyn''; prebuilt binaries on GitHub come exclusively from jyn-cli.'

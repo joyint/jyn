@@ -15,3 +15,11 @@ path = "src/main.rs"
 [dependencies]
 jyn-cli = { version = "0.6.0", path = "../jyn-cli" }
 anyhow = { workspace = true }
+
+# Exclude this alias crate from cargo-dist. Both jyn-cli (real crate)
+# and jyn (thin alias) produce a 'jyn' binary, which is a warning
+# locally but a hard linker error on Windows inside cargo-dist's
+# workspace build. The alias exists so 'cargo install jyn' works on
+# crates.io -- prebuilt GitHub release binaries come from jyn-cli.
+[package.metadata.dist]
+dist = false
