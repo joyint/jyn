@@ -14,6 +14,22 @@ members:
       document: {}
       create: {}
       assign: {}
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:claude@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-04-20T19:04:20.194901689Z
+      signature: d5edf75d8ec7d2f5422f478e081d68ecb7685f5a18a7a76fb5a4972a454e51c3f8f928d6d4bd778df8b2816bb423b157eaa6a2497959bff0a3dec8be4938d601
   horst.schwarz@joydev.com:
     capabilities: all
     public_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
