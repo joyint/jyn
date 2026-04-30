@@ -458,9 +458,9 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "joy-core"
-version = "0.12.0"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4277cb9f68d61e4ed62abed4b65c913c6a326a762456812c6e93f21762940ed7"
+checksum = "a26be64ccccd01df1e53862227c1eccb3d05aa70c15ac4319b4399d921275195"
 dependencies = [
  "argon2",
  "base64ct",
