@@ -132,8 +132,15 @@ teardown() {
     # Force a TTY by faking via script(1) so fortune's is_terminal check passes.
     # Run many times so a 20% probability would almost certainly surface at
     # least once if the gate were broken.
+    # Detect util-linux vs BSD script: -ec is util-linux; BSD takes the
+    # command after the file argument.
+    if script --version 2>&1 | grep -q util-linux; then
+        run_in_pty() { script -qec "$1" /dev/null; }
+    else
+        run_in_pty() { script -q /dev/null sh -c "$1"; }
+    fi
     for _ in $(seq 1 20); do
-        out="$(script -qec 'jyn add foo' /dev/null 2>&1)"
+        out="$(run_in_pty 'jyn add foo' 2>&1)"
         [[ "$out" != *$'\x1b[2m'* ]] || return 1
     done
 }
