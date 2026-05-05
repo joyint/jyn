@@ -1,6 +1,6 @@
 [package]
 name = "jyn"
-version = "0.6.2"
+version = "0.6.3"
 edition = "2021"
 license = "MIT"
 description = "Personal task manager - Git-native, CLI-first, CalDAV-ready"
@@ -13,7 +13,7 @@ name = "jyn"
 path = "src/main.rs"
 
 [dependencies]
-jyn-cli = { version = "0.6.2", path = "../jyn-cli" }
+jyn-cli = { version = "0.6.3", path = "../jyn-cli" }
 anyhow = { workspace = true }
 
 # Exclude this alias crate from cargo-dist. Both jyn-cli (real crate)
