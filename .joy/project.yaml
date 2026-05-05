@@ -32,11 +32,13 @@ members:
       signature: d5edf75d8ec7d2f5422f478e081d68ecb7685f5a18a7a76fb5a4972a454e51c3f8f928d6d4bd778df8b2816bb423b157eaa6a2497959bff0a3dec8be4938d601
   horst.schwarz@joydev.com:
     capabilities: all
-    public_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
-    salt: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
+    verify_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
+    kdf_nonce: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
+    seed_wrap_passphrase: 3abed46ba0972f9102d55e33cc5cf794dc95abb6e9cbc887a31ba2455cdd9c23d5714fad742d29c65e2e855114eb928a98ffdf6131ff68e521657d8a
+    seed_wrap_recovery: 234f5f9824de2393695f3a24ca1ee26cc545681cd1add7ffef84c4a02088b43886588ae8ea83cfd209ffe4064f4bebbeb4c8a5396b7d5eb7576fa0cd
     ai_delegations:
       ai:claude@joy:
-        delegation_key: d935686271cfe16dbe0a4e14f14d4e3bef31cc033dea80b2d9f6544c4a79c757
+        delegation_verifier: d935686271cfe16dbe0a4e14f14d4e3bef31cc033dea80b2d9f6544c4a79c757
         created: 2026-04-18T10:22:40.963904117Z
 created: 2026-03-20T10:51:52.574885092Z
 release:
