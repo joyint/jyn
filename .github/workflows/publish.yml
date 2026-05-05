@@ -3,6 +3,12 @@
 # forge release (that is created by the local `joy release publish`
 # before this workflow runs). See ADR-032 for the local-first
 # release paradigm.
+#
+# jyn depends on joy-core via crates.io but uses [patch.crates-io]
+# locally and joy-core itself path-depends on joy-crypt
+# (../crypt/crates/joy-crypt). Standalone tag-driven workflow has
+# no umbrella, so we shell-clone the public sibling repos joy and
+# crypt next to the workspace before invoking cargo.
 
 name: Publish to crates.io
 
@@ -21,6 +27,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
 
       - uses: dtolnay/rust-toolchain@stable
 

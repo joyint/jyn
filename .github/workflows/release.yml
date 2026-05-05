@@ -60,6 +60,14 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
+      # jyn's [patch.crates-io] joy-core points at ../joy/crates/joy-core,
+      # and joy-core itself path-depends on ../crypt/crates/joy-crypt.
+      # actions/checkout refuses paths above $GITHUB_WORKSPACE, so we shell-
+      # clone both public siblings into the parent of the workspace.
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
       - name: Install dist
         # we specify bash to get pipefail; it guards against the `curl` command
         # failing. otherwise `sh` won't catch that `curl` returned non-0
@@ -120,6 +128,14 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
+      # jyn's [patch.crates-io] joy-core points at ../joy/crates/joy-core,
+      # and joy-core itself path-depends on ../crypt/crates/joy-crypt.
+      # actions/checkout refuses paths above $GITHUB_WORKSPACE, so we shell-
+      # clone both public siblings into the parent of the workspace.
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
       - name: Install Rust non-interactively if not already installed
         if: ${{ matrix.container }}
         run: |
@@ -179,6 +195,14 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
+      # jyn's [patch.crates-io] joy-core points at ../joy/crates/joy-core,
+      # and joy-core itself path-depends on ../crypt/crates/joy-crypt.
+      # actions/checkout refuses paths above $GITHUB_WORKSPACE, so we shell-
+      # clone both public siblings into the parent of the workspace.
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
       - name: Install cached dist
         uses: actions/download-artifact@v7
         with:
@@ -229,6 +253,14 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
+      # jyn's [patch.crates-io] joy-core points at ../joy/crates/joy-core,
+      # and joy-core itself path-depends on ../crypt/crates/joy-crypt.
+      # actions/checkout refuses paths above $GITHUB_WORKSPACE, so we shell-
+      # clone both public siblings into the parent of the workspace.
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
       - name: Install cached dist
         uses: actions/download-artifact@v7
         with:
@@ -308,3 +340,11 @@ jobs:
         with:
           persist-credentials: false
           submodules: recursive
+      # jyn's [patch.crates-io] joy-core points at ../joy/crates/joy-core,
+      # and joy-core itself path-depends on ../crypt/crates/joy-crypt.
+      # actions/checkout refuses paths above $GITHUB_WORKSPACE, so we shell-
+      # clone both public siblings into the parent of the workspace.
+      - name: Clone joyint/joy and joyint/crypt siblings
+        run: |
+          git clone --depth 1 https://github.com/joyint/joy.git ../joy
+          git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
