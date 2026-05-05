@@ -10,16 +10,38 @@ env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: "-Dwarnings"
 
+# Read-only access is enough.
+permissions:
+  contents: read
+
+# jyn uses [patch.crates-io] joy-core = { path = "../joy/crates/joy-core" }
+# so local builds resolve joy-core from the umbrella checkout. For the
+# standalone CI run, we clone joyint/joy and joyint/crypt into sibling
+# directories so the patch path resolves and joy-core's transitive
+# joy-crypt path dependency is satisfied. Both repos are public; no
+# PAT or deploy key is required.
+
 jobs:
   fmt:
     name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: jyn
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/joy
+          path: joy
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/crypt
+          path: crypt
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
+        working-directory: jyn
 
   lint:
     name: Lint
@@ -27,11 +49,24 @@ jobs:
     needs: fmt
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: jyn
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/joy
+          path: joy
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/crypt
+          path: crypt
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: jyn
       - run: cargo clippy --workspace -- -D warnings
+        working-directory: jyn
 
   test:
     name: Test
@@ -39,9 +74,22 @@ jobs:
     needs: fmt
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: jyn
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/joy
+          path: joy
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/crypt
+          path: crypt
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: jyn
       - run: cargo test --workspace
+        working-directory: jyn
 
   integration:
     name: Integration (bats)
@@ -49,11 +97,25 @@ jobs:
     needs: fmt
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: jyn
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/joy
+          path: joy
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/crypt
+          path: crypt
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: jyn
       - run: sudo apt-get update && sudo apt-get install -y bats
       - run: cargo build -p jyn-cli
+        working-directory: jyn
       - run: bats tests/integration/*.bats
+        working-directory: jyn
 
   build:
     name: Build
@@ -61,6 +123,19 @@ jobs:
     needs: [lint, test, integration]
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: jyn
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/joy
+          path: joy
+      - uses: actions/checkout@v4
+        with:
+          repository: joyint/crypt
+          path: crypt
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: jyn
       - run: cargo build --workspace
+        working-directory: jyn
