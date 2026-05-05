@@ -20,3 +20,13 @@ chrono = { version = "0.4", features = ["serde"] }
 [profile.dist]
 inherits = "release"
 lto = "thin"
+
+# Local development override: when building inside the umbrella checkout,
+# resolve `joy-core` from the sibling `joy` submodule instead of crates.io.
+# `cargo publish` strips this section automatically, so external users
+# running `cargo install jyn-cli` continue to fetch joy-core from the
+# registry. Replaces the `paths = [...]` override that used to live in
+# umbrella/.cargo/config.toml; see Cargo's recommendation against `paths`
+# overrides that change transitive dependencies.
+[patch.crates-io]
+joy-core = { path = "../joy/crates/joy-core" }
