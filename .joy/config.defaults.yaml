@@ -1,11 +1,11 @@
-agents:
-  architect:
-    mode: pairing
-  default:
-    mode: collaborative
+version: 1
 output:
   color: auto
-  emoji: true
+  emoji: false
+  short: true
   fortune: true
-  short: false
-version: 1
+workflow:
+  auto-assign: true
+  auto-git: add
+modes:
+  default: collaborative
