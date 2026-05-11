@@ -34,7 +34,7 @@ members:
     capabilities: all
     verify_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
     kdf_nonce: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
-    seed_wrap_passphrase: 3abed46ba0972f9102d55e33cc5cf794dc95abb6e9cbc887a31ba2455cdd9c23d5714fad742d29c65e2e855114eb928a98ffdf6131ff68e521657d8a
+    seed_wrap_passphrase: 0cd49bff630d5607e60e09844a2aa644c8835719ba5a5f40cf74f2f50e64b3152942640bd22b1cfb020cb6823f9b99a1f9d8cf7bdeae78e5efcf4a44
     seed_wrap_recovery: 234f5f9824de2393695f3a24ca1ee26cc545681cd1add7ffef84c4a02088b43886588ae8ea83cfd209ffe4064f4bebbeb4c8a5396b7d5eb7576fa0cd
     ai_delegations:
       ai:claude@joy:
