@@ -38,8 +38,10 @@ members:
     seed_wrap_recovery: 234f5f9824de2393695f3a24ca1ee26cc545681cd1add7ffef84c4a02088b43886588ae8ea83cfd209ffe4064f4bebbeb4c8a5396b7d5eb7576fa0cd
     ai_delegations:
       ai:claude@joy:
-        delegation_verifier: d935686271cfe16dbe0a4e14f14d4e3bef31cc033dea80b2d9f6544c4a79c757
+        delegation_verifier: aab5068719d5d18a17d72a54b30b81d01103e499e8bf527bff160094a1ad989b
+        delegation_salt: f053d4856c77f1f939484ddf8f620c6d4242ebf34686a587f8b4fb1aae5fe4e8
         created: 2026-04-18T10:22:40.963904117Z
+        rotated: 2026-05-15T15:14:13.498659409Z
 created: 2026-03-20T10:51:52.574885092Z
 release:
   version-files:
