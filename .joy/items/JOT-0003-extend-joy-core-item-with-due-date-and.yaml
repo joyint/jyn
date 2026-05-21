@@ -1,10 +1,17 @@
 id: JOT-0003
 title: Extend joy-core Item with due_date and reminder
 type: task
-status: new
+status: closed
 priority: medium
 parent: JOT-0002
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:25.730184454Z
-updated: 2026-03-20T11:09:25.730184454Z
+updated: 2026-05-21T18:18:58.829758Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T18:18:58.829758Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:18:58.749343Z
+  text: Closing as superseded. The chosen design adds due_date, reminder, and recurrence to the jyn-core Task via serde flatten over joy_core::Item (JOT-0004, done), deliberately keeping joy-core generic rather than extending its Item. The due_date and reminder fields exist today; this item's premise of extending joy-core Item was not adopted.

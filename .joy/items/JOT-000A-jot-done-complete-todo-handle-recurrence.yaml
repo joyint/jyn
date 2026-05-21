@@ -7,6 +7,10 @@ parent: JOT-0002
 deps:
 - JOT-0006
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:32.096709731Z
-updated: 2026-03-20T11:09:45.867958743Z
+updated: 2026-05-21T18:18:59.232148Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:18:59.232148Z
+  text: 'Re-scope note (keeping open): the plain done/close transition already shipped via JOT-003D-7B (done). This item now covers only recurrence handling on completion, i.e. spawning the next occurrence when a recurring task is closed. Remains blocked by JOT-0006 (completion logic with next-occurrence).'

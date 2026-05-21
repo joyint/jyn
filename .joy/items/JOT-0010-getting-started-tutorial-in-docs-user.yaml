@@ -1,10 +1,17 @@
 id: JOT-0010
 title: Getting Started tutorial in docs/user/
 type: story
-status: new
+status: closed
 priority: medium
 parent: JOT-0002
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:40.777678885Z
-updated: 2026-03-20T11:09:40.777678885Z
+updated: 2026-05-21T18:17:01.343Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T18:17:01.343Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:17:01.262941Z
+  text: 'Closing as already implemented. JYN-0005-90 added docs/user/Tutorial.md plus the jyn tutorial command (with -i interactive browsing), which is exactly this item: a Getting Started tutorial under docs/user/. Delivered.'

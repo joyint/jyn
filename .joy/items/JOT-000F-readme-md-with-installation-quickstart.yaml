@@ -5,6 +5,10 @@ status: new
 priority: medium
 parent: JOT-0002
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:40.776031519Z
-updated: 2026-03-20T11:09:40.776031519Z
+updated: 2026-05-21T18:18:59.306954Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:18:59.306954Z
+  text: 'Re-scope note (keeping open): README.md exists with install instructions but still lacks the quickstart and examples this item asks for, and its status line still reads Pre-development (stale). Narrowed to: add quickstart plus examples and refresh the status to reflect the now-working CLI (add/ls/show/edit/done/archive, tutorial, update).'
