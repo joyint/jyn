@@ -15,6 +15,9 @@ serde_yaml_ng = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 chrono = { workspace = true }
+# Full RFC 5545 recurrence rules. Core to jyn (recurring personal tasks),
+# so the dependency is justified despite the minimalism guideline.
+rrule = "0.14"
 
 [dev-dependencies]
 tempfile = "3"

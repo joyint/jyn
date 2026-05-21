@@ -1,0 +1,14 @@
+id: JYN-0009-01
+title: 'jyn add/edit --recur: set the RRULE from the CLI'
+type: task
+status: new
+priority: medium
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T20:21:20.924502Z
+updated: 2026-05-21T20:21:20.924502Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: 'No CLI path sets a tasks recurrence today: the jyn-core Task has a recurrence: Option<String> (RFC 5545 RRULE) field, but neither jyn add nor jyn edit exposes it. Add a --recur flag to add and edit that accepts an RRULE string (e.g. FREQ=WEEKLY;BYDAY=MO), validated via the rrule crate, plus --no-recur on edit to clear it. Part of the recurrence end-to-end work alongside JOT-0005 (model), JOT-0006 (next-occurrence), and JOT-000A (done handling).'

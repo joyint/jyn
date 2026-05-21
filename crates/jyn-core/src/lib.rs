@@ -6,4 +6,5 @@ pub mod display;
 pub mod due;
 pub mod error;
 pub mod model;
+pub mod recurrence;
 pub mod storage;

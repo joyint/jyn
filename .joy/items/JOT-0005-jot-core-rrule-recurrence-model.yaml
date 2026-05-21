@@ -1,12 +1,26 @@
 id: JOT-0005
 title: 'jot-core: RRULE recurrence model'
 type: task
-status: new
+status: closed
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0004
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:25.733718464Z
-updated: 2026-03-20T11:09:45.859089675Z
+updated: 2026-05-21T20:42:12.751690Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T20:22:54.681139Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T20:42:12.751690Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T20:23:40.321110Z
+  text: 'Plan: add a jyn-core recurrence module backed by the rrule crate (0.14, full RFC 5545; user-approved despite the dependency because recurrence is core to jyn). Provide validate(rule) for the RRULE body (e.g. FREQ=WEEKLY;BYDAY=MO) and next_occurrence(rule, anchor, after) computing the next date strictly after a given date, anchoring DTSTART at the task''s date. Wire validation so invalid RRULEs are rejected. Unit-test common frequencies/intervals; run just check. Completion/spawn (JOT-0006), the --recur flag (JYN-0009-01), and done handling (JOT-000A) build on this.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T20:42:12.665202Z
+  text: '[x] Added jyn-core recurrence module backed by rrule 0.14. validate(rule) parses and builds an RRULE body to reject invalid rules; next_occurrence(rule, anchor, after) returns the next date strictly after a given date (rrule after is inclusive of an exact match, so it takes two and filters > after). Dates anchored at UTC midnight. Unit tests cover daily/weekly/monthly/yearly, intervals, and an exhausted COUNT. just check green.'
