@@ -1,0 +1,38 @@
+version: v0.6.4
+date: 2026-05-21
+previous: v0.6.3
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 61
+  items: 12
+- id: horst.schwarz@joydev.com
+  events: 1
+  items: 1
+items:
+  stories:
+  - id: JYN-0005-90
+    title: Add `jyn tutorial` command with rendered user tutorial
+  - id: JYN-0004-E6
+    title: Add `jyn update` for cargo-dist binary self-update
+  - id: JYN-0007-61
+    title: Resolve jyn data dir via upward search and show it in the list footer
+  - id: JOT-0010
+    title: Getting Started tutorial in docs/user/
+  tasks:
+  - id: JYN-0008-8C
+    title: Add bats integration tests for jyn tutorial, update, and workspace resolution
+  - id: JOT-0003
+    title: Extend joy-core Item with due_date and reminder
+  - id: JOT-000E
+    title: Publish jot-core and jot-cli to crates.io
+  - id: JOT-0020
+    title: Publish jot-core, jot-cli to crates.io
+  - id: JOT-0032-69
+    title: 'Natural-language date parsing: weekdays and relative offsets'
+  - id: JOT-0005
+    title: 'jot-core: RRULE recurrence model'
+  - id: JYN-0009-01
+    title: 'jyn add/edit --recur: set the RRULE from the CLI'
+  decisions:
+  - id: JYN-000A-B1
+    title: Recurring task completion model and time-capable due dates
