@@ -1,14 +1,27 @@
 id: JYN-0009-01
 title: 'jyn add/edit --recur: set the RRULE from the CLI'
 type: task
-status: new
+status: closed
 priority: medium
+assignees:
+- member: ai:claude@joy
 capabilities:
 - implement
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-21T20:21:20.924502Z
-updated: 2026-05-21T20:21:20.924502Z
+updated: 2026-05-21T22:03:55.299069Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history: []
+history:
+- date: 2026-05-21T20:43:22.389940Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T22:03:55.299069Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'No CLI path sets a tasks recurrence today: the jyn-core Task has a recurrence: Option<String> (RFC 5545 RRULE) field, but neither jyn add nor jyn edit exposes it. Add a --recur flag to add and edit that accepts an RRULE string (e.g. FREQ=WEEKLY;BYDAY=MO), validated via the rrule crate, plus --no-recur on edit to clear it. Part of the recurrence end-to-end work alongside JOT-0005 (model), JOT-0006 (next-occurrence), and JOT-000A (done handling).'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T20:43:22.470574Z
+  text: 'Plan: add --recur <RRULE> to jyn add and jyn edit, validated via jyn_core::recurrence::validate (reject invalid rules with a clear error). Add --no-recur to edit to clear it. Set Task.recurrence accordingly. Show recurrence in jyn show, and update the tutorial. bats + just check.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T22:03:55.220493Z
+  text: '[x] --recur on add/edit (validated via jyn_core::recurrence) + --no-recur on edit; jyn show displays Recurs:. just check was green. The time-capable due model and done-handling are captured in a separate decision; the stored RRULE string is forward-compatible with it.'

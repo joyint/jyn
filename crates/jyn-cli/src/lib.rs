@@ -128,6 +128,10 @@ struct AddArgs {
     #[arg(short = 'a', long, alias = "assignee")]
     assign: Option<String>,
 
+    /// Recurrence rule (RFC 5545 RRULE body, e.g. "FREQ=WEEKLY;BYDAY=MO").
+    #[arg(long)]
+    recur: Option<String>,
+
     /// Task title. Quoting is only needed for shell metacharacters.
     #[arg(num_args = 1..)]
     title: Vec<String>,
@@ -193,6 +197,14 @@ struct EditArgs {
     /// Remove an assignee (repeatable).
     #[arg(long, alias = "unassignee")]
     unassign: Vec<String>,
+
+    /// Set the recurrence rule (RFC 5545 RRULE body, e.g. "FREQ=WEEKLY").
+    #[arg(long)]
+    recur: Option<String>,
+
+    /// Clear the recurrence rule.
+    #[arg(long, conflicts_with = "recur")]
+    no_recur: bool,
 }
 
 #[derive(clap::Args)]
@@ -377,6 +389,10 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
         });
     }
     task.due_date = due_date;
+    if let Some(rule) = args.recur.as_deref() {
+        jyn_core::recurrence::validate(rule).map_err(anyhow::Error::msg)?;
+        task.recurrence = Some(rule.to_string());
+    }
 
     storage::save_task(root, &task).context("saving task")?;
 
@@ -404,6 +420,9 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
     if let Some(d) = due_date {
         let (label_due, sev) = due::render_due(d, today, mode);
         line.push_str(&format!("  {}", colored_due(&label_due, sev)));
+    }
+    if let Some(rule) = task.recurrence.as_deref() {
+        line.push_str(&format!("  {}", color::info(rule)));
     }
     if !args.tags.is_empty() {
         line.push_str(&format!("  {}", render_tags(&args.tags)));
@@ -759,6 +778,10 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
         left_plain.push(format!("Source: {src}"));
         left_colored.push(format!("{} {src}", color::label("Source:")));
     }
+    if let Some(rule) = &task.recurrence {
+        left_plain.push(format!("Recurs: {rule}"));
+        left_colored.push(format!("{} {rule}", color::label("Recurs:")));
+    }
 
     let (right_plain, right_colored) = if task.item.tags.is_empty() {
         (String::new(), String::new())
@@ -898,6 +921,13 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
         task.item
             .assignees
             .retain(|a| !args.unassign.contains(&a.member));
+    }
+    if args.no_recur {
+        task.recurrence = None;
+    }
+    if let Some(rule) = args.recur.as_deref() {
+        jyn_core::recurrence::validate(rule).map_err(anyhow::Error::msg)?;
+        task.recurrence = Some(rule.to_string());
     }
 
     task.item.updated = chrono::Utc::now();

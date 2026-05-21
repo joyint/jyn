@@ -56,3 +56,7 @@
 2026-05-21T20:23:40.331Z JOT-0005 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-21T20:42:12.676Z JOT-0005 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-21T20:42:12.762Z JOT-0005 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-21T20:43:22.400Z JYN-0009-01 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-21T20:43:22.481Z JYN-0009-01 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-21T22:03:55.230Z JYN-0009-01 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-21T22:03:55.309Z JYN-0009-01 item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
