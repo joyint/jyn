@@ -30,10 +30,12 @@ jyn add "Rotate the leaked token" --prio critical
 
 ### Due dates
 
-`--due` takes a calendar date in `YYYY-MM-DD` form.
+`--due` accepts several forms: `today` and `tomorrow`; a calendar date (`YYYY-MM-DD`, or `MM-DD` / `DD.MM` for the current year); a weekday name (`fri`, `friday`, or `next monday`, always the next such day in the future, never today); or a relative offset (`+3d`, `2w`).
 
 ```sh
 jyn add "Renew the TLS certificate" --due 2026-07-15
+jyn add "Reply to the RFC" --due fri
+jyn add "Pay the invoice" --due +3d
 ```
 
 ### Tags

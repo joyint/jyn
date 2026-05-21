@@ -5,22 +5,26 @@
 //!
 //! Accepts the common forms a personal task manager needs:
 //!   - `today`, `tomorrow`
+//!   - weekday names: `fri`, `friday`, `next monday` (next future occurrence)
+//!   - relative offsets: `+3d`, `3d`, `+1w`, `2w` (added to today)
 //!   - `YYYY-MM-DD` (ISO 8601 calendar date)
 //!   - `MM-DD`      (current year implied)
 //!   - `DD.MM`      (German short form, current year implied)
 //!   - `DD.MM.YYYY` (German long form)
 //!
-//! Weekday names (`fri`, `next monday`) and relative offsets (`+3d`) are
-//! deferred to JOT-0032-69; the parser returns a structured error for
-//! anything it does not recognise so the CLI can surface a useful hint.
+//! Weekday names always resolve to the next matching day in the future,
+//! never today (so `friday` on a Friday means the following Friday); the
+//! optional `next ` prefix is accepted as a synonym. The parser returns a
+//! structured error for anything it does not recognise so the CLI can
+//! surface a useful hint. See JOT-0032-69.
 //!
 //! Rendering produces short human-readable labels for a list view,
 //! with a side-channel severity so the CLI can colorise consistently.
 
-use chrono::{Datelike, Duration, NaiveDate};
+use chrono::{Datelike, Duration, NaiveDate, Weekday};
 
 #[derive(Debug, thiserror::Error)]
-#[error("cannot parse due date '{input}': expected 'today', 'tomorrow', YYYY-MM-DD, MM-DD, DD.MM, or DD.MM.YYYY")]
+#[error("cannot parse due date '{input}': expected 'today', 'tomorrow', a weekday (e.g. 'fri', 'next monday'), an offset (e.g. '+3d', '2w'), YYYY-MM-DD, MM-DD, DD.MM, or DD.MM.YYYY")]
 pub struct ParseDueError {
     input: String,
 }
@@ -34,6 +38,12 @@ pub fn parse_due(input: &str, today: NaiveDate) -> Result<NaiveDate, ParseDueErr
     }
     if lower == "tomorrow" {
         return Ok(today + Duration::days(1));
+    }
+    if let Some(date) = parse_weekday(&lower, today) {
+        return Ok(date);
+    }
+    if let Some(date) = parse_offset(&lower, today) {
+        return Ok(date);
     }
 
     let year = today.year();
@@ -53,6 +63,50 @@ pub fn parse_due(input: &str, today: NaiveDate) -> Result<NaiveDate, ParseDueErr
     Err(ParseDueError {
         input: input.to_string(),
     })
+}
+
+/// Map a full or three-letter weekday name to a `chrono::Weekday`.
+fn weekday_from_name(s: &str) -> Option<Weekday> {
+    Some(match s {
+        "monday" | "mon" => Weekday::Mon,
+        "tuesday" | "tue" => Weekday::Tue,
+        "wednesday" | "wed" => Weekday::Wed,
+        "thursday" | "thu" => Weekday::Thu,
+        "friday" | "fri" => Weekday::Fri,
+        "saturday" | "sat" => Weekday::Sat,
+        "sunday" | "sun" => Weekday::Sun,
+        _ => return None,
+    })
+}
+
+/// Parse a weekday name into the next matching date strictly after today.
+/// Accepts an optional `next ` prefix as a synonym. Returns `None` when
+/// the input is not a weekday name.
+fn parse_weekday(lower: &str, today: NaiveDate) -> Option<NaiveDate> {
+    let name = lower.strip_prefix("next ").unwrap_or(lower).trim();
+    let target = weekday_from_name(name)?;
+    let today_idx = today.weekday().num_days_from_monday();
+    let target_idx = target.num_days_from_monday();
+    // 0 means the weekday is today; map it to a week out so a weekday
+    // name is always a future date (1..=7), never today.
+    let raw = (target_idx + 7 - today_idx) % 7;
+    let ahead = if raw == 0 { 7 } else { raw };
+    Some(today + Duration::days(ahead as i64))
+}
+
+/// Parse a relative offset like `+3d`, `3d`, `+1w`, or `2w` into a date
+/// `n` days/weeks after today. The leading `+` is optional. Returns
+/// `None` when the input is not a recognised offset.
+fn parse_offset(lower: &str, today: NaiveDate) -> Option<NaiveDate> {
+    let body = lower.strip_prefix('+').unwrap_or(lower);
+    let (num, unit) = body.split_at(body.len().checked_sub(1)?);
+    // u32 rejects empty, negative, and non-digit numerators.
+    let n = i64::from(num.parse::<u32>().ok()?);
+    match unit {
+        "d" => Some(today + Duration::days(n)),
+        "w" => Some(today + Duration::weeks(n)),
+        _ => None,
+    }
 }
 
 /// Relative severity of a due date compared to 'today'.
@@ -128,10 +182,36 @@ mod tests {
     }
 
     #[test]
+    fn parses_weekday_names() {
+        let today = d(2026, 4, 14); // Tuesday
+                                    // Upcoming weekday within the week.
+        assert_eq!(parse_due("friday", today).unwrap(), d(2026, 4, 17));
+        assert_eq!(parse_due("fri", today).unwrap(), d(2026, 4, 17));
+        assert_eq!(parse_due("Sunday", today).unwrap(), d(2026, 4, 19));
+        // Today's own weekday resolves to the following week, never today.
+        assert_eq!(parse_due("tue", today).unwrap(), d(2026, 4, 21));
+        // The optional "next " prefix is accepted as a synonym.
+        assert_eq!(parse_due("next monday", today).unwrap(), d(2026, 4, 20));
+        assert_eq!(parse_due("mon", today).unwrap(), d(2026, 4, 20));
+    }
+
+    #[test]
+    fn parses_relative_offsets() {
+        let today = d(2026, 4, 14);
+        assert_eq!(parse_due("+3d", today).unwrap(), d(2026, 4, 17));
+        assert_eq!(parse_due("3d", today).unwrap(), d(2026, 4, 17));
+        assert_eq!(parse_due("+1w", today).unwrap(), d(2026, 4, 21));
+        assert_eq!(parse_due("2w", today).unwrap(), d(2026, 4, 28));
+    }
+
+    #[test]
     fn rejects_unsupported_forms() {
         let today = d(2026, 4, 14);
-        assert!(parse_due("friday", today).is_err());
-        assert!(parse_due("+3d", today).is_err());
+        assert!(parse_due("someday", today).is_err());
+        assert!(parse_due("3", today).is_err()); // offset needs a unit
+        assert!(parse_due("+3x", today).is_err()); // unknown unit
+        assert!(parse_due("+w", today).is_err()); // missing count
+        assert!(parse_due("-3d", today).is_err()); // no negative offsets
         assert!(parse_due("", today).is_err());
     }
 

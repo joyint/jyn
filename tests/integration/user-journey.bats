@@ -312,9 +312,21 @@ load setup
 }
 
 @test "add rejects unknown --due values" {
-    run jyn add --due friday Book dentist
+    # 'friday' and '+3d' are valid (JOT-0032-69); 'someday' is not.
+    run jyn add --due someday Book dentist
     [ "$status" -ne 0 ]
     [[ "$output" == *"cannot parse due date"* ]]
+}
+
+@test "add accepts weekday and offset --due values (JOT-0032-69)" {
+    run jyn add --due fri Call dentist
+    [ "$status" -eq 0 ]
+    run jyn add --due "next monday" Team sync
+    [ "$status" -eq 0 ]
+    run jyn add --due +3d Pay invoice
+    [ "$status" -eq 0 ]
+    run jyn add --due 2w Quarterly review
+    [ "$status" -eq 0 ]
 }
 
 @test "--color=never produces no ANSI escape codes" {

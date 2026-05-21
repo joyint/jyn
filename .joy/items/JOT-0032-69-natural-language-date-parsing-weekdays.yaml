@@ -1,13 +1,28 @@
 id: JOT-0032-69
 title: 'Natural-language date parsing: weekdays and relative offsets'
 type: task
-status: new
+status: closed
 priority: medium
 parent: JOT-0007
+assignees:
+- member: ai:claude@joy
 capabilities:
 - implement
 effort: 2
 created_by: ai:claude@joy
 created: 2026-04-14T00:53:53.164351057Z
-updated: 2026-04-14T00:53:53.164351057Z
+updated: 2026-05-21T19:59:12.316556Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T19:45:21.588087Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T19:59:12.316556Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Extend the --due parser beyond 'today', 'tomorrow', and ISO dates to accept weekday names ('friday', 'fri', 'next monday') and relative offsets ('+3d', '+1w'). Same parser feeds --reminder offsets ('1d', '2h'). Reuses a crate (e.g. dateparser or chrono-english) or stays hand-rolled -- decision tied to dependency minimalism goals.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T19:45:21.664545Z
+  text: 'Plan: extend jyn-core due::parse_due to accept weekday names (monday..sunday and mon..sun, optional next prefix) resolving to the next future occurrence (never today), plus relative offsets (+Nd / +Nw, leading + optional) added to today. Hand-rolled with chrono, no new dependency (dependency-minimalism). Update the error message and module doc, add unit tests, run just check. Time-of-day reminder offsets (1d/2h) stay with JOT-0034.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T19:51:14.810777Z
+  text: '[x] Extended jyn-core due::parse_due with weekday names (monday..sunday and mon..sun, optional next prefix; always the next future occurrence, never today) and relative offsets (+Nd/Nd, +Nw/Nw; negatives and missing units rejected). Hand-rolled with chrono, no new dependency. Updated the module doc and error hint; added unit tests for weekdays/offsets/rejections. Integration: updated the bats test that assumed friday is rejected (it is now valid) and added a test that add accepts fri/next monday/+3d/2w. just check is green (fmt, clippy -D warnings, unit + 69 bats). Note: just check also caught a latent rustfmt violation in commands/update.rs from JOT-0004 that a piped --check had masked; fixed by cargo fmt.'
