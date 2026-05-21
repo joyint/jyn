@@ -163,11 +163,6 @@ pub fn header(columns: &[(&str, usize)], width: usize) -> String {
     format!("{sep}\n{row}\n{sep}")
 }
 
-/// Bottom frame: separator, summary line.
-pub fn footer(message: &str, width: usize) -> String {
-    format!("{}\n{}", separator(width), label(message))
-}
-
 /// Pluralize: "1 task" / "3 tasks".
 pub fn plural(count: usize, singular: &str) -> String {
     if count == 1 {

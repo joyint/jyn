@@ -37,8 +37,15 @@ _toolchain-check:
         exit 1
     fi
 
-# Run fmt-check, lint, test
-check: _toolchain-check fmt-check lint test
+# Refresh the in-crate copy of the tutorial from the canonical doc.
+# crates/jyn-cli ships its own copy because `cargo package` builds the
+# crate in isolation; a unit test fails if the two drift.
+sync-tutorial:
+    mkdir -p crates/jyn-cli/docs/user
+    cp docs/user/Tutorial.md crates/jyn-cli/docs/user/Tutorial.md
+
+# Run sync-tutorial, fmt-check, lint, test
+check: _toolchain-check sync-tutorial fmt-check lint test
 
 # Check tools and deps
 doctor:
@@ -124,7 +131,7 @@ release bump="patch":
 # Upload crates to crates.io only. Idempotent: already-uploaded
 # versions are skipped. CI's publish.yml calls this directly; the
 # forge release is handled separately by `joy release publish`.
-publish-crates:
+publish-crates: sync-tutorial
     #!/usr/bin/env bash
     set -euo pipefail
     if [ -z "${CARGO_REGISTRY_TOKEN:-}" ]; then

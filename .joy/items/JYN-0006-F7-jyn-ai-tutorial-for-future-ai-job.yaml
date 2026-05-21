@@ -1,0 +1,13 @@
+id: JYN-0006-F7
+title: '`jyn ai tutorial` for future AI job-dispatch workflow'
+type: idea
+status: deferred
+priority: low
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T14:11:34.165769Z
+updated: 2026-05-21T14:12:27.246647Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T14:12:27.246647Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Deferred. jyn has no AI governance surface today (no delegation tokens, capabilities, or item lifecycle gates), so a jyn ai tutorial would have almost no content right now. It becomes relevant once automated AI orchestration dispatches Jobs to AI members through jyn. The shape and content need a design pass in a pair-mode session before this is scoped and scheduled.

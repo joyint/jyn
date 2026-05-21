@@ -15,10 +15,13 @@ path = "src/main.rs"
 
 [dependencies]
 jyn-core = { version = "0.6.3", path = "../jyn-core" }
-joy-core = { workspace = true }
+joy-core = { workspace = true, features = ["tutorial"] }
 clap = { workspace = true }
 anyhow = { workspace = true }
 chrono = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml_ng = { workspace = true }
 terminal_size = "0.4"
+# Self-update for cargo-dist-distributed binaries. Receipt-gated, so
+# brew / cargo-install / distro-package builds opt out gracefully.
+axoupdater = { version = "0.10", features = ["blocking"] }

@@ -25,6 +25,23 @@ pub fn jyn_dir(root: &Path) -> PathBuf {
     root.join(JYN_DIR)
 }
 
+/// Walk up from `start` to the nearest directory that contains a `.jyn/`
+/// subdirectory, and return that directory (the workspace root). Mirrors
+/// how git and joy locate their data dir, so running jyn from a
+/// subdirectory still finds the workspace above it. Returns `None` when
+/// no `.jyn/` exists between `start` and the filesystem root; callers
+/// then fall back to `start` so a first `jyn add` creates `.jyn/` there.
+pub fn find_workspace_root(start: &Path) -> Option<PathBuf> {
+    let mut dir = Some(start);
+    while let Some(d) = dir {
+        if d.join(JYN_DIR).is_dir() {
+            return Some(d.to_path_buf());
+        }
+        dir = d.parent();
+    }
+    None
+}
+
 pub fn items_dir(root: &Path) -> PathBuf {
     jyn_dir(root).join(ITEMS_DIR)
 }
@@ -229,6 +246,28 @@ mod tests {
             .unwrap()
             .to_string_lossy()
             .starts_with(short));
+    }
+
+    #[test]
+    fn find_workspace_root_walks_up() {
+        let dir = tempdir().unwrap();
+        let root = dir.path();
+        std::fs::create_dir_all(root.join(JYN_DIR)).unwrap();
+        let nested = root.join("a").join("b");
+        std::fs::create_dir_all(&nested).unwrap();
+
+        // From a nested subdirectory, resolution finds the .jyn/ above.
+        let found = find_workspace_root(&nested).unwrap();
+        // tempfile may hand back a symlinked path (e.g. /var -> /private/var
+        // on macOS), so compare canonical forms rather than the raw paths.
+        assert_eq!(found.canonicalize().unwrap(), root.canonicalize().unwrap());
+    }
+
+    #[test]
+    fn find_workspace_root_none_when_absent() {
+        let dir = tempdir().unwrap();
+        // No .jyn/ anywhere under this fresh temp dir.
+        assert!(find_workspace_root(dir.path()).is_none());
     }
 
     #[test]

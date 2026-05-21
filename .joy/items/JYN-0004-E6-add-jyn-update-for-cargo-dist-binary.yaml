@@ -1,0 +1,31 @@
+id: JYN-0004-E6
+title: Add `jyn update` for cargo-dist binary self-update
+type: story
+status: closed
+priority: high
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T14:11:34.008995Z
+updated: 2026-05-21T14:46:59.193556Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T14:45:13.650392Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T14:46:59.113794Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T14:46:59.193556Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Port the binary self-update from joy update to jyn. Use axoupdater, receipt-gated by the cargo-dist install receipt so brew, cargo-install, and distro-package builds skip the swap with a clear message instead of clobbering a foreign-managed binary. Provide a --check flag for a read-only staleness audit. Scope is deliberately limited to the binary swap: unlike joy, jyn has no embedded files, git hooks, auth artefacts, or AI tool files to synchronise, so the joy update registry machinery is out of scope.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T14:45:13.726877Z
+  text: 'Plan: Add a jyn update command that self-updates the binary, mirroring joys axoupdater approach. Add axoupdater (blocking) to jyn-cli, PKG_NAME jyn-cli. run() runs the receipt-gated binary swap so brew/cargo-install/distro builds report managed by another installer and skip cleanly; --check is read-only and exits 2 when an update is available. No in-repo sync: jyn keeps no managed repo state, so joys update registry is intentionally out of scope. Output kept light in jyns style. Verify build, fmt, clippy, and jyn update --check behaviour.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T14:46:59.037359Z
+  text: '[x] Added jyn update command. Added axoupdater (blocking) to jyn-cli. run() performs the receipt-gated binary self-update (PKG_NAME jyn-cli); builds without a cargo-dist install receipt (brew, cargo-install, distro packages) report managed by another installer and skip the swap. --check is read-only and exits 2 when an update is available, 0 otherwise. No in-repo sync since jyn keeps no managed repo state, so joys update registry stays out of scope. Verified: build, fmt, clippy -D warnings, and the full test suite pass; jyn update and jyn update --check behave correctly on a non-cargo-dist dev build (managed by another installer, exit 0).'

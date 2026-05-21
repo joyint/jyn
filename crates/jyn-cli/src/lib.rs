@@ -73,6 +73,10 @@ enum Commands {
     Rm(RmArgs),
     /// Read, inspect, or write jyn config
     Config(commands::config::ConfigArgs),
+    /// Show the jyn tutorial (use -i to browse chapter by chapter)
+    Tutorial(commands::tutorial::TutorialArgs),
+    /// Update the jyn binary to the latest release
+    Update(commands::update::UpdateArgs),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
@@ -295,7 +299,12 @@ pub fn run() -> Result<()> {
         LabelMode::Long
     };
 
-    let root = std::env::current_dir().context("cannot read current directory")?;
+    // Resolve the workspace by walking up from the current directory to
+    // the nearest .jyn/ (like git), so a subdirectory shares the
+    // workspace above it. Fall back to the current directory when none
+    // exists, so a first `jyn add` creates .jyn/ right here.
+    let cwd = std::env::current_dir().context("cannot read current directory")?;
+    let root = storage::find_workspace_root(&cwd).unwrap_or(cwd);
 
     match cli.command {
         Some(Commands::Add(args)) => run_add(&root, args, mode)?,
@@ -310,6 +319,8 @@ pub fn run() -> Result<()> {
         Some(Commands::Unarchive(args)) => run_unarchive(&root, &args.id)?,
         Some(Commands::Rm(args)) => run_rm(&root, &args.id)?,
         Some(Commands::Config(args)) => commands::config::run(args)?,
+        Some(Commands::Tutorial(args)) => commands::tutorial::run(args)?,
+        Some(Commands::Update(args)) => commands::update::run(args)?,
     }
 
     if std::io::stdout().is_terminal() {
@@ -671,11 +682,30 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         println!("{}", line.trim_end());
     }
 
+    // Footer: task count plus the resolved data location, so the active
+    // store is always visible (especially when the list is empty because
+    // you are in the wrong directory). Path dimmed, home abbreviated.
+    println!("{}", color::separator(frame_w));
     println!(
-        "{}",
-        color::footer(&color::plural(filtered.len(), "task"), frame_w)
+        "{}  {}",
+        color::label(&color::plural(filtered.len(), "task")),
+        color::inactive(&abbreviate_home(&storage::jyn_dir(root)))
     );
     Ok(())
+}
+
+/// Abbreviate a leading home-directory prefix to `~` for display.
+/// Falls back to the unmodified path when HOME is unset or unrelated.
+fn abbreviate_home(path: &Path) -> String {
+    let s = path.display().to_string();
+    if let Ok(home) = std::env::var("HOME") {
+        if !home.is_empty() {
+            if let Some(rest) = s.strip_prefix(&home) {
+                return format!("~{rest}");
+            }
+        }
+    }
+    s
 }
 
 fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {

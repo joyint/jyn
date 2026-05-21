@@ -1,0 +1,31 @@
+id: JYN-0007-61
+title: Resolve jyn data dir via upward search and show it in the list footer
+type: story
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- plan
+- implement
+- review
+effort: 4
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T17:38:10.631271Z
+updated: 2026-05-21T17:43:13.293083Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T17:38:18.583823Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:43:13.214162Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:43:13.293083Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: Today jyn stores tasks in .jyn/items/ in the current working directory only, with no parent-directory search and no home default, so running jyn from a subdirectory shows an empty list and the active store is invisible. Change workspace-root resolution to walk up from the current directory to the nearest .jyn/ (like git and joy), falling back to the current directory when none is found so a first jyn add still creates .jyn/ locally. Surface the resolved data location in the footer of jyn ls and the default listing so the active store is always visible, abbreviating the home prefix to a tilde. Document the storage model in the tutorial.
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:38:18.660104Z
+  text: 'Plan: Add storage::find_workspace_root(start) to jyn-core, walking up from start to the nearest dir containing .jyn/, returning None at the filesystem root. In jyn-cli run(), resolve root = find_workspace_root(cwd).unwrap_or(cwd) so every command shares the nearest workspace and a first add still creates .jyn/ in cwd. Append the resolved .jyn location (home abbreviated to ~) to the run_ls footer, dimmed, so it shows even on an empty list. Add a Where Jyn Stores Your Tasks chapter to the tutorial. Unit-test the upward search; verify build, fmt, clippy, drift test, and the footer in a nested dir.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:43:13.140263Z
+  text: '[x] Added storage::find_workspace_root walking up from cwd to the nearest .jyn/, unit-tested for both the found-in-parent and absent cases. jyn-cli run() now resolves root = find_workspace_root(cwd).unwrap_or(cwd), so any subdirectory shares the workspace above it and a first add still creates .jyn/ locally. The jyn ls and default footer now show the resolved .jyn location (home abbreviated to a tilde), dimmed. Added a Where Jyn Stores Your Tasks chapter to the tutorial. Verified manually: ls from a nested subdir finds the same workspace and prints its path; an unrelated directory falls back to the onboarding screen. build, fmt, clippy -D warnings, the tutorial drift test, and 41 unit tests pass.'
