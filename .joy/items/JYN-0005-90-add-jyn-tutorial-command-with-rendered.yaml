@@ -12,7 +12,7 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-21T14:11:34.087718Z
-updated: 2026-05-21T14:44:33.724759Z
+updated: 2026-05-21T18:01:30.744107Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T14:37:53.692564Z
@@ -20,6 +20,14 @@ history:
 - date: 2026-05-21T14:44:33.645137Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-21T14:44:33.724759Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:57:51.329Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:57:51.416928Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T18:01:30.663119Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T18:01:30.744107Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Mirror joy tutorial for jyn. Author docs/user/Tutorial.md, ship an in-crate include_str copy with a drift test that fails when the two diverge, and wire a jyn tutorial subcommand with an interactive -i chapter menu for TTYs. Render through the shared markdown renderer extracted into joy-core; this item depends on that extraction landing first.
 comments:
@@ -29,3 +37,9 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T14:44:33.569927Z
   text: '[x] Added jyn tutorial command rendering through joy_core::tutorial (feature tutorial enabled in jyn-cli). Authored docs/user/Tutorial.md as the canonical doc with a byte-identical in-crate copy at crates/jyn-cli/docs/user/Tutorial.md, wired via include_str with a drift unit test. Added a just sync-tutorial recipe wired into check and publish-crates. Supports jyn tutorial and jyn tutorial -i (interactive chapter menu). Verified: build, fmt, clippy -D warnings, and the drift test pass; piped output renders plain text; --help is correct. Tutorial content tracks the real CLI surface, not the partly-stale website copy.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:57:51.496592Z
+  text: 'Reopen: the authored Tutorial.md hard-wraps prose at ~76 columns, inconsistent with joy whose Tutorial.md uses one line per paragraph and lets termimad wrap to the terminal width. Reflowing jyn docs/user/Tutorial.md to soft-wrap (one line per paragraph, code blocks unchanged) and re-syncing the in-crate copy.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:01:30.587859Z
+  text: '[x] Reflowed docs/user/Tutorial.md to one line per paragraph (soft wrap), matching joy; termimad now wraps to the terminal width instead of relying on hard breaks. Re-synced the in-crate copy; drift test and the bats tutorial tests pass.'
