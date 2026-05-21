@@ -1,16 +1,24 @@
 id: JOT-000A
 title: 'jot done: complete todo, handle recurrence'
 type: story
-status: new
+status: in-progress
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0006
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.096709731Z
-updated: 2026-05-21T18:18:59.232148Z
+updated: 2026-05-21T22:07:35.821057Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T22:07:35.745493Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T18:18:59.232148Z
   text: 'Re-scope note (keeping open): the plain done/close transition already shipped via JOT-003D-7B (done). This item now covers only recurrence handling on completion, i.e. spawning the next occurrence when a recurring task is closed. Remains blocked by JOT-0006 (completion logic with next-occurrence).'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T22:07:35.821056Z
+  text: 'Plan (TDD): write bats integration tests first to fix the default recurring-completion CLI commands, then implement to green. Scope now: date-only recurrence (the common case, fits the current date-only due model and a forward-compatible completed_occurrences schema); time-bearing/sub-day and DST per JYN-000A-B1 are a follow-on, no edge cases yet. Default commands to specify: jyn done on a recurring task records the completed occurrence and advances (stays open); jyn ls --closed shows the occurrence as #1@DATE; jyn show lists completed occurrences; jyn reopen #1@DATE removes it and rolls due back; completing the final occurrence (exhausted RRULE) closes the series for real. Core advance+override logic is JOT-0006.'
