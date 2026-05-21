@@ -50,9 +50,7 @@ fn swap_binary() -> (String, String) {
     if updater.load_receipt().is_err() {
         return (
             color::inactive("-"),
-            color::inactive(&format!(
-                "managed by another installer ({CURRENT_VERSION})"
-            )),
+            color::inactive(&format!("managed by another installer ({CURRENT_VERSION})")),
         );
     }
     match updater.run_sync() {
@@ -72,10 +70,7 @@ fn swap_binary() -> (String, String) {
             color::success("ok"),
             color::inactive(&format!("up to date ({CURRENT_VERSION})")),
         ),
-        Err(e) => (
-            color::warning("!"),
-            color::warning(&format!("failed: {e}")),
-        ),
+        Err(e) => (color::warning("!"), color::warning(&format!("failed: {e}"))),
     }
 }
 
