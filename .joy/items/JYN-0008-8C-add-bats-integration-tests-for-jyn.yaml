@@ -1,0 +1,29 @@
+id: JYN-0008-8C
+title: Add bats integration tests for jyn tutorial, update, and workspace resolution
+type: task
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+effort: 3
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T17:46:53.899042Z
+updated: 2026-05-21T17:49:48.923293Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T17:47:16.555849Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:49:48.842337Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:49:48.923293Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'jyn ships the bats integration harness (just test-int plus the CI Integration job) but the new commands lack coverage. Add per-feature bats files matching the existing style: tutorial (renders, key chapters present, --help), update (managed-by-another-installer path and exit code on a non-cargo-dist build, --check, --help), and workspace resolution (add in root, list from a nested subdirectory finds the same workspace, footer shows the resolved .jyn path; an unrelated directory falls back to the onboarding screen). Covers JYN-0005-90, JYN-0004-E6, and JYN-0007-61.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:47:16.632013Z
+  text: 'Plan: Add three bats files under tests/integration matching the existing load setup style. tutorial.bats: jyn tutorial exits 0 and renders the H1 plus key chapters (Capturing Tasks, Where Jyn Stores Your Tasks, Configuration), and jyn tutorial --help mentions the command. update.bats: on a non-cargo-dist dev build jyn update and jyn update --check report managed by another installer and exit 0, and --help lists --check. workspace.bats: add a task in the root, then list from a nested subdirectory and confirm the same task and a .jyn path in the footer (upward search); a fresh unrelated dir shows the onboarding block. Run via bats tests/integration/*.bats.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:49:48.767539Z
+  text: '[x] Added three bats files matching the existing harness: tutorial.bats (renders, key chapters present, documents the upward .jyn search, --help), update.bats (managed-by-another-installer path and exit 0 on a non-cargo-dist build, --check, --help), and workspace.bats (upward search from a nested subdir finds the workspace and shows the .jyn path in the footer; an unrelated dir falls back to onboarding). The new update command also made the u subcommand prefix ambiguous (unarchive vs update); the existing prefix-shortcut test in user-journey.bats caught it, so it now uses un for unarchive and asserts u errors cleanly. Full suite: 67 bats tests pass.'

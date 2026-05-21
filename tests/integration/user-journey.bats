@@ -678,10 +678,15 @@ load setup
     [ "$status" -eq 0 ]
     [[ "$output" == *"archived"* ]]
 
-    # 'u' is unambiguous (only 'unarchive' starts with it).
-    run jyn u 1
+    # 'un' is unambiguous (only 'unarchive' starts with it; 'update'
+    # starts with 'up').
+    run jyn un 1
     [ "$status" -eq 0 ]
     [[ "$output" == *"unarchived"* ]]
+
+    # 'u' is now ambiguous (unarchive vs update) -- clap errors cleanly.
+    run jyn u 1
+    [ "$status" -ne 0 ]
 
     # 'r' is ambiguous (reopen vs rm) -- clap errors cleanly.
     run jyn r 1
