@@ -12,7 +12,7 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-21T17:38:10.631271Z
-updated: 2026-05-21T17:43:13.293083Z
+updated: 2026-05-21T18:01:30.983718Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T17:38:18.583823Z
@@ -20,6 +20,14 @@ history:
 - date: 2026-05-21T17:43:13.214162Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-21T17:43:13.293083Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:54:08.936475Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T17:54:09.015429Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T18:01:30.905369Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T18:01:30.983718Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: Today jyn stores tasks in .jyn/items/ in the current working directory only, with no parent-directory search and no home default, so running jyn from a subdirectory shows an empty list and the active store is invisible. Change workspace-root resolution to walk up from the current directory to the nearest .jyn/ (like git and joy), falling back to the current directory when none is found so a first jyn add still creates .jyn/ locally. Surface the resolved data location in the footer of jyn ls and the default listing so the active store is always visible, abbreviating the home prefix to a tilde. Document the storage model in the tutorial.
 comments:
@@ -29,3 +37,9 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T17:43:13.140263Z
   text: '[x] Added storage::find_workspace_root walking up from cwd to the nearest .jyn/, unit-tested for both the found-in-parent and absent cases. jyn-cli run() now resolves root = find_workspace_root(cwd).unwrap_or(cwd), so any subdirectory shares the workspace above it and a first add still creates .jyn/ locally. The jyn ls and default footer now show the resolved .jyn location (home abbreviated to a tilde), dimmed. Added a Where Jyn Stores Your Tasks chapter to the tutorial. Verified manually: ls from a nested subdir finds the same workspace and prints its path; an unrelated directory falls back to the onboarding screen. build, fmt, clippy -D warnings, the tutorial drift test, and 41 unit tests pass.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T17:54:09.092961Z
+  text: 'Reopen: the footer only surfaced the data location when at least one task existed. In the empty state, jyn and jyn ls print the onboarding welcome block with no location, so a new user cannot tell where tasks would be stored. Extending print_welcome to show the resolved .jyn location: Workspace: <path> when the dir already exists, otherwise New tasks go to: <path> (where the first add will create it). Adding a bats test for the empty-state location line.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-21T18:01:30.829037Z
+  text: '[x] print_welcome now shows the resolved .jyn location in the empty state too: Workspace: <path> when the directory already exists, otherwise New tasks go to: <path>. Added bats coverage for both the no-.jyn and empty-existing-workspace cases. fmt, clippy -D warnings, 41 cargo tests, and 68 bats tests pass.'

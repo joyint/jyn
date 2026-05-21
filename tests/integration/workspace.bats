@@ -35,4 +35,16 @@ load setup
     run jyn
     [ "$status" -eq 0 ]
     [[ "$output" == *"No tasks yet"* ]]
+    # The empty state still tells the user where tasks would be stored.
+    [[ "$output" == *"New tasks go to:"* ]]
+    [[ "$output" == *"/.jyn"* ]]
+}
+
+@test "empty existing workspace shows its location in the onboarding block" {
+    mkdir -p .jyn/items
+    run jyn ls
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"No tasks yet"* ]]
+    [[ "$output" == *"Workspace:"* ]]
+    [[ "$output" == *"/.jyn"* ]]
 }

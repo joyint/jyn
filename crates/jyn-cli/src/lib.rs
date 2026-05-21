@@ -271,7 +271,7 @@ struct RmArgs {
 /// Welcome block shown when no tasks exist yet. Keeps the jyn flavour
 /// (personal, minimal) - no wizard, just version plus a handful of
 /// example commands so a fresh user has something to copy.
-fn print_welcome() {
+fn print_welcome(root: &Path) {
     println!();
     println!(
         "  {}",
@@ -284,6 +284,18 @@ fn print_welcome() {
     println!("    jyn ls");
     println!("    jyn done 1");
     println!("    jyn --help");
+    println!();
+    // Tell a first-time user where their tasks will live, since the list
+    // footer (which normally shows this) is absent when there are none.
+    // The directory exists when an empty workspace was found above the
+    // cwd; otherwise the first `jyn add` will create it here.
+    let jyn = storage::jyn_dir(root);
+    let loc = color::inactive(&abbreviate_home(&jyn));
+    if jyn.is_dir() {
+        println!("  {} {loc}", color::label("Workspace:"));
+    } else {
+        println!("  {} {loc}", color::label("New tasks go to:"));
+    }
     println!();
     println!("  Docs: https://joyint.com/en/jyn/docs");
     println!();
@@ -413,7 +425,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     // the terse "No open tasks" line, so the user sees version and a
     // handful of useful next commands.
     if tasks.is_empty() {
-        print_welcome();
+        print_welcome(root);
         return Ok(());
     }
 
