@@ -1,12 +1,15 @@
 id: JOT-0006
 title: 'jot-core: completion logic with next-occurrence'
 type: task
-status: new
+status: open
 priority: medium
 parent: JOT-0002
 deps:
 - JOT-0005
 milestone: JOT-MS-01
-size: 3
 created: 2026-03-20T11:09:25.735248132Z
-updated: 2026-03-20T11:09:45.860776152Z
+updated: 2026-05-21T22:32:40.795536Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T22:32:40.795536Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com

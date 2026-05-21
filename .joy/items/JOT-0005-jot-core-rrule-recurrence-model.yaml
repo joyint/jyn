@@ -1,7 +1,7 @@
 id: JOT-0005
 title: 'jot-core: RRULE recurrence model'
 type: task
-status: closed
+status: open
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,12 +10,14 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:25.733718464Z
-updated: 2026-05-21T20:42:12.751690Z
+updated: 2026-05-21T22:32:40.875631Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T20:22:54.681139Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-21T20:42:12.751690Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-21T22:32:40.875631Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
