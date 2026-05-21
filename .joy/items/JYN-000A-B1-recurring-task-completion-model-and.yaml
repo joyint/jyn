@@ -1,0 +1,28 @@
+id: JYN-000A-B1
+title: Recurring task completion model and time-capable due dates
+type: decision
+status: closed
+priority: high
+capabilities:
+- conceive
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-21T22:05:07.262103Z
+updated: 2026-05-21T22:05:32.697194Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-05-21T22:05:32.697194Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: |-
+  Completion model (sync-native, verified against iCalendar VTODO and MS Graph To Do, and Apple/MS/Nextcloud behaviour): a recurring task is ONE stable item (its ID is the future VTODO UID) carrying the RRULE. Completing an occurrence does NOT mint a new item; it appends an override entry (the occurrence date or datetime + completed_at) to a completed_occurrences list inside the same task YAML (maps to iCal RECURRENCE-ID overrides) and advances due to the next occurrence. The series stays open until the RRULE is exhausted, then the task closes for real.
+
+  Time-capable due: model due as enum Due { Date(NaiveDate), DateTime(DateTime<Utc>) }, mirroring VTODO DATE vs DATE-TIME; the DateTime variant follows joy-cores UTC convention. Date-only is day-granular (current behaviour). A time-of-day enables sub-day frequencies (FREQ=HOURLY etc.); sub-day FREQ requires a time. Sub-day/hourly recurrence (e.g. dispatched AI jobs) is supported natively, not punted to the Dispatcher and not capped below sync-target capability.
+
+  Occurrence identity = RECURRENCE-ID: a date (date-only series) or a UTC datetime (time-bearing). A recurrence_tz (IANA name) on time-bearing series anchors the rule in a named zone for DST-correct local times (iCal DTSTART;TZID).
+
+  Display/UX: jyn ls shows the live series at its next due, marked recurring; jyn ls --closed and --all synthesise read-only occurrence rows addressed as #1@DATE or #1@DATETIME in display tz; the bare short/full ID always means the live series so reopen/edit never hit the wrong target. jyn reopen #1@<occurrence> removes that override (and rolls due back if it was the latest). jyn show lists completed occurrences.
+
+  Sync mapping: maps to iCalendar VTODO (master UID + RRULE + RECURRENCE-ID overrides, DUE as DATE/DATE-TIME, TZID) and MS To Do (todoTask + patternedRecurrence + dueDateTime). Interop is fragile: completing a recurring task in Nextcloud Tasks own UI destroys the recurrence (nextcloud/tasks#2276), so completion and reopen must be robust; the exact MS Graph completion semantics need hands-on verification at adapter build (MS-03).
+
+  Scope: revises JOT-0005 (generalise next_occurrence from NaiveDate to datetime + recurrence_tz), and guides JOT-000A (done handling), JOT-0006 (completion logic), JOT-0019 (VTODO mapping), JOT-001C (RRULE passthrough), and JOT-0034 (reminders hold the time-of-day alert). Build JOT-000A together with JOT-0019 to pin the YAML schema once. Sub-day AI-job recurrence relates to JYN-0006-F7. Depends on the ecosystem time-handling decision JOY-01A1-3A.
+
+  Sources: RFC 5545 RECURRENCE-ID and VTODO; MS Graph todoTask resource; Apple Reminders support docs; Nextcloud Tasks issue 2276; tasks.org CalDAV.
