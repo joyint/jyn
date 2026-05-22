@@ -1,15 +1,25 @@
 id: JOT-0006
 title: 'jot-core: completion logic with next-occurrence'
 type: task
-status: open
+status: closed
 priority: medium
 parent: JOT-0002
+assignees:
+- member: ai:claude@joy
 deps:
 - JOT-0005
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:25.735248132Z
-updated: 2026-05-21T22:32:40.795536Z
+updated: 2026-05-22T08:35:47.743432Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T22:32:40.795536Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-22T08:31:00.450584Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-22T08:35:47.743432Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-22T08:35:47.656084Z
+  text: '[x] Added recurrence completion logic to jyn-core: a CompletedOccurrence overlay (occurrence date + completed_at + a reserved comments field per JYN-000B-6B) on Task; Task::complete_occurrence records the current due as an override and advances to the next occurrence, or closes the series when the RRULE is exhausted; Task::reopen_occurrence drops an override and rolls the due back, reactivating the series. Date-only for now (datetime/sub-day arrives with the time-capable Due model). 51 jyn-core unit tests green; just check green (the recurrence_done spec stays skip-disarmed until the CLI wiring lands).'
