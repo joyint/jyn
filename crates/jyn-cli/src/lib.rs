@@ -388,7 +388,7 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
             capabilities: Vec::new(),
         });
     }
-    task.due_date = due_date;
+    task.due = due_date;
     if let Some(rule) = args.recur.as_deref() {
         jyn_core::recurrence::validate(rule).map_err(anyhow::Error::msg)?;
         task.recurrence = Some(rule.to_string());
@@ -418,7 +418,7 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
         ));
     }
     if let Some(d) = due_date {
-        let (label_due, sev) = due::render_due(d, today, mode);
+        let (label_due, sev) = due::render_due(d.date(), today, mode);
         line.push_str(&format!("  {}", colored_due(&label_due, sev)));
     }
     if let Some(rule) = task.recurrence.as_deref() {
@@ -471,8 +471,10 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         .filter(|t| match due_filter {
             None => true,
             // 'today' includes overdue, anything else is exact-match.
-            Some(d) if d == today => t.due_date.is_some_and(|td| td <= d),
-            Some(d) => t.due_date == Some(d),
+            // Compare on the date component so a time-bearing due still
+            // matches its calendar day.
+            Some(d) if d.date() == today => t.due.is_some_and(|td| td.date() <= today),
+            Some(d) => t.due.is_some_and(|td| td.date() == d.date()),
         })
         .filter(|t| {
             args.tags
@@ -510,7 +512,7 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     let show_prio = filtered
         .iter()
         .any(|t| priority_label(&t.item.priority, mode).is_some());
-    let show_due = filtered.iter().any(|t| t.due_date.is_some());
+    let show_due = filtered.iter().any(|t| t.due.is_some());
     let show_desc = filtered
         .iter()
         .any(|t| t.item.description.as_deref().is_some_and(|s| !s.is_empty()));
@@ -524,8 +526,10 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
 
     let due_labels: Vec<(String, DueSeverity)> = filtered
         .iter()
-        .map(|t| match t.due_date {
-            Some(d) => due::render_due(d, today, mode),
+        .map(|t| match t.due {
+            // Render at date-level for the table; time-bearing due is shown
+            // explicitly in `jyn show`.
+            Some(d) => due::render_due(d.date(), today, mode),
             None => (String::new(), DueSeverity::Later),
         })
         .collect();
@@ -745,8 +749,11 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
 /// recurring tasks for the --closed / --all views, most recent first.
 /// These are read-only history rows synthesised from each series'
 /// override list; the bare `#N` always addresses the live series.
-fn collect_occurrences(tasks: &[Task], args: &LsArgs) -> Vec<(String, chrono::NaiveDate, String)> {
-    let mut rows = Vec::new();
+fn collect_occurrences(
+    tasks: &[Task],
+    args: &LsArgs,
+) -> Vec<(String, jyn_core::model::Due, String)> {
+    let mut rows: Vec<(String, jyn_core::model::Due, String)> = Vec::new();
     for t in tasks {
         if t.archived && !args.all {
             continue;
@@ -767,12 +774,14 @@ fn collect_occurrences(tasks: &[Task], args: &LsArgs) -> Vec<(String, chrono::Na
             ));
         }
     }
-    rows.sort_by(|a, b| b.1.cmp(&a.1));
+    // Most recent first: compare by UTC instant so date-only and time-bearing
+    // occurrences order consistently.
+    rows.sort_by(|a, b| b.1.as_utc_instant().cmp(&a.1.as_utc_instant()));
     rows
 }
 
 /// Render the completed-occurrences section: header, rows, footer.
-fn print_occurrences_section(rows: &[(String, chrono::NaiveDate, String)], root: &Path) {
+fn print_occurrences_section(rows: &[(String, jyn_core::model::Due, String)], root: &Path) {
     let id_w = rows
         .iter()
         .map(|(id, _, _)| id.len())
@@ -900,13 +909,23 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
         task.item.title,
         w = label_w
     );
-    if let Some(d) = task.due_date {
-        let (label, sev) = due::render_due(d, today, mode);
-        let iso = d.format("%Y-%m-%d").to_string();
-        let value = if label == iso {
-            colored_due(&label, sev)
+    if let Some(d) = task.due {
+        let (label, sev) = due::render_due(d.date(), today, mode);
+        // Append time-of-day for time-bearing variants so the display matches
+        // the stored value (e.g. "today 14:00").
+        let label_with_time = match d {
+            jyn_core::model::Due::DateTime(dt) => format!("{label} {}", dt.format("%H:%M")),
+            jyn_core::model::Due::Date(_) => label,
+        };
+        let iso = d.to_string();
+        let value = if label_with_time == iso {
+            colored_due(&label_with_time, sev)
         } else {
-            format!("{} ({})", colored_due(&label, sev), color::label(&iso))
+            format!(
+                "{} ({})",
+                colored_due(&label_with_time, sev),
+                color::label(&iso)
+            )
         };
         println!("{:<w$} {value}", color::label("Due:"), w = label_w);
     }
@@ -942,7 +961,11 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
         println!("{}", color::separator(width));
         println!("{}", color::label("Completed occurrences:"));
         let mut occ: Vec<_> = task.completed_occurrences.iter().collect();
-        occ.sort_by(|a, b| b.occurrence.cmp(&a.occurrence));
+        occ.sort_by(|a, b| {
+            b.occurrence
+                .as_utc_instant()
+                .cmp(&a.occurrence.as_utc_instant())
+        });
         for o in occ {
             println!(
                 "  {}   {}",
@@ -982,10 +1005,10 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
         task.item.title = t;
     }
     if args.no_due {
-        task.due_date = None;
+        task.due = None;
     }
     if let Some(s) = args.due.as_deref() {
-        task.due_date = Some(due::parse_due(s, today).map_err(anyhow::Error::msg)?);
+        task.due = Some(due::parse_due(s, today).map_err(anyhow::Error::msg)?);
     }
     if let Some(p) = args.priority {
         task.item.priority = p.into_core();
@@ -1048,8 +1071,8 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
             colored_priority(&task.item.priority, p_label)
         ));
     }
-    if let Some(d) = task.due_date {
-        let (lbl, sev) = due::render_due(d, today, mode);
+    if let Some(d) = task.due {
+        let (lbl, sev) = due::render_due(d.date(), today, mode);
         line.push_str(&format!("  {}", colored_due(&lbl, sev)));
     }
     if !task.item.tags.is_empty() {
@@ -1109,17 +1132,36 @@ fn run_close(root: &Path, id: &str) -> Result<()> {
 }
 
 fn run_reopen(root: &Path, id: &str) -> Result<()> {
-    // Occurrence form `SERIES@YYYY-MM-DD`: reopen one completed occurrence
-    // of a recurring series rather than the series itself. See JOT-000A.
-    if let Some((series, date_str)) = id.split_once('@') {
-        let occ = chrono::NaiveDate::parse_from_str(date_str, "%Y-%m-%d").map_err(|_| {
-            anyhow::anyhow!("invalid occurrence in '{id}': expected SERIES@YYYY-MM-DD")
-        })?;
+    // Occurrence form `SERIES@YYYY-MM-DD` or `SERIES@YYYY-MM-DDTHH:MM`:
+    // reopen one completed occurrence of a recurring series rather than
+    // the series itself. See JOT-000A / JYN-000C-B5.
+    if let Some((series, occ_str)) = id.split_once('@') {
+        use chrono::TimeZone;
+        let occ = if occ_str.contains('T') {
+            let ndt = chrono::NaiveDateTime::parse_from_str(occ_str, "%Y-%m-%dT%H:%M")
+                .or_else(|_| chrono::NaiveDateTime::parse_from_str(occ_str, "%Y-%m-%dT%H:%M:%S"))
+                .map_err(|_| {
+                    anyhow::anyhow!(
+                        "invalid occurrence datetime in '{id}': expected SERIES@YYYY-MM-DDTHH:MM"
+                    )
+                })?;
+            let utc = chrono::Local
+                .from_local_datetime(&ndt)
+                .single()
+                .ok_or_else(|| anyhow::anyhow!("ambiguous local time in '{id}'"))?
+                .with_timezone(&chrono::Utc);
+            jyn_core::model::Due::DateTime(utc)
+        } else {
+            let d = chrono::NaiveDate::parse_from_str(occ_str, "%Y-%m-%d").map_err(|_| {
+                anyhow::anyhow!("invalid occurrence in '{id}': expected SERIES@YYYY-MM-DD")
+            })?;
+            jyn_core::model::Due::Date(d)
+        };
         let mut task = storage::load_task(root, series).context("loading task")?;
         let now = chrono::Utc::now();
         if !task.reopen_occurrence(occ, now) {
             let short = display::short_id(&task.item.id);
-            anyhow::bail!("no completed occurrence {date_str} on {short}");
+            anyhow::bail!("no completed occurrence {occ_str} on {short}");
         }
         storage::update_task(root, &task).context("saving task")?;
         let short = display::short_id(&task.item.id);
@@ -1127,7 +1169,7 @@ fn run_reopen(root: &Path, id: &str) -> Result<()> {
             "{} {}@{}  {}",
             color::success("reopened"),
             color::id(&short),
-            date_str,
+            occ_str,
             task.item.title
         );
         return Ok(());
@@ -1249,12 +1291,14 @@ fn apply_sort(tasks: &mut [&Task], mode: SortMode, reverse: bool, today: chrono:
         }
         SortMode::Due => {
             // No-date tasks always land at the end within their bucket.
+            // Compare on the UTC instant so date and datetime variants
+            // order consistently.
             tasks.sort_by_key(|t| {
                 (
                     t.archived,
                     is_closed(t),
-                    t.due_date.is_none(),
-                    t.due_date,
+                    t.due.is_none(),
+                    t.due.map(|d| d.as_utc_instant()),
                     t.item.created,
                 )
             });
@@ -1302,9 +1346,11 @@ fn sort_key(
     today: chrono::NaiveDate,
 ) -> (bool, bool, u8, u8, chrono::DateTime<chrono::Utc>) {
     let closed = matches!(task.item.status, joy_core::model::item::Status::Closed);
-    let urgency: u8 = match task.due_date {
+    let urgency: u8 = match task.due {
         Some(d) => {
-            let delta = (d - today).num_days();
+            // Urgency bucket on the calendar date; time-of-day does not
+            // change today/overdue semantics.
+            let delta = (d.date() - today).num_days();
             if delta < 0 {
                 0 // overdue
             } else if delta == 0 {

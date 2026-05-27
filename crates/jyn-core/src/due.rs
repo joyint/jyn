@@ -8,6 +8,8 @@
 //!   - weekday names: `fri`, `friday`, `next monday` (next future occurrence)
 //!   - relative offsets: `+3d`, `3d`, `+1w`, `2w` (added to today)
 //!   - `YYYY-MM-DD` (ISO 8601 calendar date)
+//!   - `YYYY-MM-DD HH:MM` or `YYYY-MM-DDTHH:MM` (date + time-of-day,
+//!     interpreted in the display tz and stored as UTC)
 //!   - `MM-DD`      (current year implied)
 //!   - `DD.MM`      (German short form, current year implied)
 //!   - `DD.MM.YYYY` (German long form)
@@ -16,12 +18,17 @@
 //! never today (so `friday` on a Friday means the following Friday); the
 //! optional `next ` prefix is accepted as a synonym. The parser returns a
 //! structured error for anything it does not recognise so the CLI can
-//! surface a useful hint. See JOT-0032-69.
+//! surface a useful hint. See JOT-0032-69 (weekdays/offsets) and
+//! JYN-000C-B5 (optional time-of-day).
 //!
 //! Rendering produces short human-readable labels for a list view,
 //! with a side-channel severity so the CLI can colorise consistently.
 
-use chrono::{Datelike, Duration, NaiveDate, Weekday};
+use chrono::{
+    DateTime, Datelike, Duration, Local, NaiveDate, NaiveDateTime, TimeZone, Utc, Weekday,
+};
+
+use crate::model::Due;
 
 #[derive(Debug, thiserror::Error)]
 #[error("cannot parse due date '{input}': expected 'today', 'tomorrow', a weekday (e.g. 'fri', 'next monday'), an offset (e.g. '+3d', '2w'), YYYY-MM-DD, MM-DD, DD.MM, or DD.MM.YYYY")]
@@ -30,39 +37,72 @@ pub struct ParseDueError {
 }
 
 /// Parse a `--due` argument against a reference 'today' date.
-pub fn parse_due(input: &str, today: NaiveDate) -> Result<NaiveDate, ParseDueError> {
+pub fn parse_due(input: &str, today: NaiveDate) -> Result<Due, ParseDueError> {
     let trimmed = input.trim();
     let lower = trimmed.to_lowercase();
     if lower == "today" {
-        return Ok(today);
+        return Ok(Due::Date(today));
     }
     if lower == "tomorrow" {
-        return Ok(today + Duration::days(1));
+        return Ok(Due::Date(today + Duration::days(1)));
     }
     if let Some(date) = parse_weekday(&lower, today) {
-        return Ok(date);
+        return Ok(Due::Date(date));
     }
     if let Some(date) = parse_offset(&lower, today) {
-        return Ok(date);
+        return Ok(Due::Date(date));
+    }
+    // Time-bearing forms (date + HH:MM, with or without 'T') before the
+    // bare-date attempts, so a substring like "2026-04-13" does not win
+    // over "2026-04-13 14:00".
+    if let Some(dt) = parse_datetime(trimmed, input)? {
+        return Ok(Due::DateTime(dt));
     }
 
     let year = today.year();
-    // Try the accepted explicit formats first, then the current-year shortcuts.
     if let Ok(d) = NaiveDate::parse_from_str(trimmed, "%Y-%m-%d") {
-        return Ok(d);
+        return Ok(Due::Date(d));
     }
     if let Ok(d) = NaiveDate::parse_from_str(trimmed, "%d.%m.%Y") {
-        return Ok(d);
+        return Ok(Due::Date(d));
     }
     if let Ok(d) = NaiveDate::parse_from_str(&format!("{year}-{trimmed}"), "%Y-%m-%d") {
-        return Ok(d);
+        return Ok(Due::Date(d));
     }
     if let Ok(d) = NaiveDate::parse_from_str(&format!("{trimmed}.{year}"), "%d.%m.%Y") {
-        return Ok(d);
+        return Ok(Due::Date(d));
     }
     Err(ParseDueError {
         input: input.to_string(),
     })
+}
+
+/// Try the time-bearing forms (`YYYY-MM-DD HH:MM[:SS]`, `YYYY-MM-DDTHH:MM[:SS]`,
+/// RFC 3339 with `Z`). A naive datetime is interpreted in `chrono::Local` and
+/// converted to UTC; an ambiguous local time (DST fold/gap) is rejected so the
+/// stored value is unambiguous.
+fn parse_datetime(trimmed: &str, original: &str) -> Result<Option<DateTime<Utc>>, ParseDueError> {
+    let local_forms = [
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%dT%H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+    ];
+    for fmt in local_forms {
+        if let Ok(ndt) = NaiveDateTime::parse_from_str(trimmed, fmt) {
+            return match Local.from_local_datetime(&ndt).single() {
+                Some(local) => Ok(Some(local.with_timezone(&Utc))),
+                None => Err(ParseDueError {
+                    input: original.to_string(),
+                }),
+            };
+        }
+    }
+    // Already-zoned (e.g. `2026-04-13T14:00:00Z` or with an offset).
+    if let Ok(dt) = DateTime::parse_from_rfc3339(trimmed) {
+        return Ok(Some(dt.with_timezone(&Utc)));
+    }
+    Ok(None)
 }
 
 /// Map a full or three-letter weekday name to a `chrono::Weekday`.
@@ -168,40 +208,64 @@ mod tests {
     #[test]
     fn parses_today_tomorrow_iso() {
         let today = d(2026, 4, 14);
-        assert_eq!(parse_due("today", today).unwrap(), today);
-        assert_eq!(parse_due("TOMORROW", today).unwrap(), d(2026, 4, 15));
-        assert_eq!(parse_due("2026-12-31", today).unwrap(), d(2026, 12, 31));
+        assert_eq!(parse_due("today", today).unwrap(), Due::Date(today));
+        assert_eq!(
+            parse_due("TOMORROW", today).unwrap(),
+            Due::Date(d(2026, 4, 15))
+        );
+        assert_eq!(
+            parse_due("2026-12-31", today).unwrap(),
+            Due::Date(d(2026, 12, 31))
+        );
     }
 
     #[test]
     fn parses_current_year_shortcuts() {
         let today = d(2026, 4, 14);
-        assert_eq!(parse_due("04-25", today).unwrap(), d(2026, 4, 25));
-        assert_eq!(parse_due("25.04", today).unwrap(), d(2026, 4, 25));
-        assert_eq!(parse_due("25.04.2027", today).unwrap(), d(2027, 4, 25));
+        assert_eq!(
+            parse_due("04-25", today).unwrap(),
+            Due::Date(d(2026, 4, 25))
+        );
+        assert_eq!(
+            parse_due("25.04", today).unwrap(),
+            Due::Date(d(2026, 4, 25))
+        );
+        assert_eq!(
+            parse_due("25.04.2027", today).unwrap(),
+            Due::Date(d(2027, 4, 25))
+        );
     }
 
     #[test]
     fn parses_weekday_names() {
         let today = d(2026, 4, 14); // Tuesday
                                     // Upcoming weekday within the week.
-        assert_eq!(parse_due("friday", today).unwrap(), d(2026, 4, 17));
-        assert_eq!(parse_due("fri", today).unwrap(), d(2026, 4, 17));
-        assert_eq!(parse_due("Sunday", today).unwrap(), d(2026, 4, 19));
+        assert_eq!(
+            parse_due("friday", today).unwrap(),
+            Due::Date(d(2026, 4, 17))
+        );
+        assert_eq!(parse_due("fri", today).unwrap(), Due::Date(d(2026, 4, 17)));
+        assert_eq!(
+            parse_due("Sunday", today).unwrap(),
+            Due::Date(d(2026, 4, 19))
+        );
         // Today's own weekday resolves to the following week, never today.
-        assert_eq!(parse_due("tue", today).unwrap(), d(2026, 4, 21));
+        assert_eq!(parse_due("tue", today).unwrap(), Due::Date(d(2026, 4, 21)));
         // The optional "next " prefix is accepted as a synonym.
-        assert_eq!(parse_due("next monday", today).unwrap(), d(2026, 4, 20));
-        assert_eq!(parse_due("mon", today).unwrap(), d(2026, 4, 20));
+        assert_eq!(
+            parse_due("next monday", today).unwrap(),
+            Due::Date(d(2026, 4, 20))
+        );
+        assert_eq!(parse_due("mon", today).unwrap(), Due::Date(d(2026, 4, 20)));
     }
 
     #[test]
     fn parses_relative_offsets() {
         let today = d(2026, 4, 14);
-        assert_eq!(parse_due("+3d", today).unwrap(), d(2026, 4, 17));
-        assert_eq!(parse_due("3d", today).unwrap(), d(2026, 4, 17));
-        assert_eq!(parse_due("+1w", today).unwrap(), d(2026, 4, 21));
-        assert_eq!(parse_due("2w", today).unwrap(), d(2026, 4, 28));
+        assert_eq!(parse_due("+3d", today).unwrap(), Due::Date(d(2026, 4, 17)));
+        assert_eq!(parse_due("3d", today).unwrap(), Due::Date(d(2026, 4, 17)));
+        assert_eq!(parse_due("+1w", today).unwrap(), Due::Date(d(2026, 4, 21)));
+        assert_eq!(parse_due("2w", today).unwrap(), Due::Date(d(2026, 4, 28)));
     }
 
     #[test]

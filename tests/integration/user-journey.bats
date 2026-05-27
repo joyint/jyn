@@ -151,10 +151,13 @@ load setup
     [ "$status" -eq 0 ]
     [[ "$output" == *"added"*"#1"*"Review PR 42"*"today"*"#work"* ]]
 
-    # YAML carries all fields.
+    # YAML carries all fields. The due key is `due` since JYN-000C-B5 (it
+    # may now carry a time-of-day, so the older `due_date` name is no
+    # longer accurate); old files using `due_date:` still load via serde
+    # alias.
     yaml=$(ls .jyn/items/TODO-0001-*.yaml)
     grep -q "priority: high" "$yaml"
-    grep -q "due_date:"      "$yaml"
+    grep -q "^due:"          "$yaml"
     grep -q "^tags:"         "$yaml"
     grep -qF -- "- work"     "$yaml"
 

@@ -12,7 +12,7 @@
 //! (`NaiveDate`), so the time-of-day and zone are irrelevant here and a
 //! fixed anchor keeps occurrences stable regardless of the user's clock.
 
-use chrono::{DateTime, NaiveDate, NaiveTime, TimeZone};
+use chrono::{DateTime, NaiveDate, NaiveTime, TimeZone, Utc};
 use rrule::{RRule, Tz, Unvalidated};
 
 #[derive(Debug, thiserror::Error)]
@@ -29,7 +29,7 @@ pub fn validate(rule: &str) -> Result<(), RecurrenceError> {
     // errors; the specific date does not affect whether a rule is valid.
     let reference =
         NaiveDate::from_ymd_opt(2000, 1, 1).ok_or_else(|| err(rule, "internal reference date"))?;
-    build_set(rule, reference).map(|_| ())
+    build_set_date(rule, reference).map(|_| ())
 }
 
 /// Compute the next occurrence strictly after `after`, for a rule whose
@@ -41,7 +41,7 @@ pub fn next_occurrence(
     anchor: NaiveDate,
     after: NaiveDate,
 ) -> Result<Option<NaiveDate>, RecurrenceError> {
-    let set = build_set(rule, anchor)?;
+    let set = build_set_date(rule, anchor)?;
     // `RRuleSet::after` is inclusive of an exact match, so ask for two and
     // take the first occurrence whose date is strictly greater than
     // `after`. Anchor occurrences are at a fixed midnight, so there is at
@@ -55,12 +55,42 @@ pub fn next_occurrence(
         .find(|d| *d > after))
 }
 
-/// Parse an RRULE body and build its set anchored at `anchor`.
-fn build_set(rule: &str, anchor: NaiveDate) -> Result<rrule::RRuleSet, RecurrenceError> {
+/// Datetime-aware variant for time-bearing series (e.g. `FREQ=HOURLY`).
+/// The anchor and bound are explicit UTC datetimes, so sub-day recurrence
+/// works without collapsing onto a calendar day.
+pub fn next_occurrence_at(
+    rule: &str,
+    anchor: DateTime<Utc>,
+    after: DateTime<Utc>,
+) -> Result<Option<DateTime<Utc>>, RecurrenceError> {
+    let set = build_set_at(rule, anchor)?;
+    let result = set.after(to_rrule_tz(after)).all(2);
+    Ok(result
+        .dates
+        .iter()
+        .map(|dt| dt.with_timezone(&Utc))
+        .find(|dt| *dt > after))
+}
+
+/// Parse an RRULE body and build its set anchored at `anchor` (date-only,
+/// UTC midnight).
+fn build_set_date(rule: &str, anchor: NaiveDate) -> Result<rrule::RRuleSet, RecurrenceError> {
     let parsed: RRule<Unvalidated> = rule.parse().map_err(|e| err(rule, e))?;
     parsed
         .build(at_utc_midnight(anchor))
         .map_err(|e| err(rule, e))
+}
+
+/// Parse an RRULE body and build its set anchored at a specific UTC datetime.
+fn build_set_at(rule: &str, anchor: DateTime<Utc>) -> Result<rrule::RRuleSet, RecurrenceError> {
+    let parsed: RRule<Unvalidated> = rule.parse().map_err(|e| err(rule, e))?;
+    parsed.build(to_rrule_tz(anchor)).map_err(|e| err(rule, e))
+}
+
+/// Convert a chrono `DateTime<Utc>` into the `rrule` crate's tz-wrapped
+/// `DateTime<Tz>` (UTC).
+fn to_rrule_tz(dt: DateTime<Utc>) -> DateTime<Tz> {
+    Tz::UTC.from_utc_datetime(&dt.naive_utc())
 }
 
 /// Anchor a calendar date at UTC midnight as an `rrule` datetime.

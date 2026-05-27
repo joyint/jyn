@@ -52,7 +52,6 @@ load setup
 }
 
 @test "hourly recurrence with an end advances by the hour, then closes" {
-    skip "arm when time-capable due + sub-day recurrence lands"
     # A time-of-day on --due makes the series sub-day (hourly); occurrences
     # are addressed with the time. TZ fixed so the displayed time is stable.
     export TZ=UTC

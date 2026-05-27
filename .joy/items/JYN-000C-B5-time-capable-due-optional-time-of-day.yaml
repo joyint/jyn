@@ -1,8 +1,10 @@
 id: JYN-000C-B5
 title: Time-capable due (optional time-of-day) + datetime-aware recurrence end-to-end
 type: story
-status: new
+status: closed
 priority: medium
+assignees:
+- member: ai:claude@joy
 capabilities:
 - plan
 - implement
@@ -10,7 +12,18 @@ capabilities:
 effort: 5
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-27T16:05:25.504449Z
-updated: 2026-05-27T16:05:25.504449Z
+updated: 2026-05-27T16:55:56.718490Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
-history: []
+history:
+- date: 2026-05-27T16:17:28.257865Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-27T16:55:56.718490Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Make jyn time-aware end-to-end so sub-day recurrence (e.g. hourly AI jobs) works natively, per the JYN-000A-B1 decision and JOY-01A1-3A (ecosystem time handling). Scope: replace due_date: Option<NaiveDate> with due: Option<Due> where Due is Date(NaiveDate) | DateTime(DateTime<Utc>) (mirrors VTODO DATE vs DATE-TIME), add a recurrence_tz: Option<String> field (IANA name) for DST-correct recurring local times, generalise jyn-core recurrence::next_occurrence and Task::complete_occurrence to datetime occurrences, extend the --due parser to accept a time (e.g. --due "2026-04-13 14:00"), render datetime due/occurrences in display tz via a shared joy-core helper, synthesise occurrence rows as #1@DATETIME, and accept reopen #1@DATETIME. Allow FREQ=HOURLY only when the task carries a time. Arms recurrence_done.bats test 5 (hourly recurrence with an end). Comments on occurrences land separately (JYN-000B-6B). Closes JOT-0005 (its datetime generalisation is part of this).'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-27T16:17:28.350584Z
+  text: 'Plan: introduce enum Due { Date(NaiveDate), DateTime(DateTime<Utc>) } on jyn-core Task as the time-capable due value. Keep the YAML key compatible via serde alias=due_date so existing files load (writes use due). Add Task.recurrence_tz (IANA name) for DST-correct local recurring times. CompletedOccurrence.occurrence becomes Due (date or UTC datetime). Generalise jyn-core recurrence::next_occurrence to a datetime form so HOURLY works when the task carries a time; validate rejects sub-day FREQ without a time anchor. Extend due::parse_due to accept date+time (e.g. ''2026-04-13 14:00''), interpreted in display tz and stored UTC. Update jyn-cli everywhere due_date was used (add/edit/ls/show/sort, render_due, --closed synthesis, run_reopen #1@DATETIME). Arms recurrence_done.bats test 5 at the end.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-27T16:55:56.634859Z
+  text: '[x] jyn is now time-capable end-to-end. Task.due is Due { Date | DateTime(UTC) } via untagged serde; YAML key renamed from due_date to due (the field can now carry a time, so due is accurate), with alias=due_date for back-compat reads. Added recurrence_tz (IANA, DST anchor) and recurrence_anchor (DTSTART, lazily captured) so COUNT/UNTIL count from the start, not the moving due. recurrence::next_occurrence_at handles sub-day FREQ. parse_due accepts YYYY-MM-DD HH:MM and YYYY-MM-DDTHH:MM (chrono::Local, stored UTC). CLI updated end-to-end: ls/show/sort/--closed/--due filter handle Due; show appends HH:MM for time-bearing; reopen #1@DATETIME. user-journey bats updated to grep for due: with a comment recording the rename rationale. Bats test 5 (FREQ=HOURLY;COUNT=3) armed and green; tests 1-4 unchanged. just check green (52 unit + 78 bats).'
