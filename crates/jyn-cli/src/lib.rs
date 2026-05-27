@@ -776,7 +776,7 @@ fn collect_occurrences(
     }
     // Most recent first: compare by UTC instant so date-only and time-bearing
     // occurrences order consistently.
-    rows.sort_by(|a, b| b.1.as_utc_instant().cmp(&a.1.as_utc_instant()));
+    rows.sort_by_key(|row| std::cmp::Reverse(row.1.as_utc_instant()));
     rows
 }
 
