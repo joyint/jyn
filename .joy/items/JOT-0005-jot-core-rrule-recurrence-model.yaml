@@ -1,7 +1,7 @@
 id: JOT-0005
 title: 'jot-core: RRULE recurrence model'
 type: task
-status: open
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,7 +10,7 @@ deps:
 - JOT-0004
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:25.733718464Z
-updated: 2026-05-21T22:32:40.875631Z
+updated: 2026-05-27T16:05:58.924759Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T20:22:54.681139Z
@@ -19,6 +19,8 @@ history:
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 - date: 2026-05-21T22:32:40.875631Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-27T16:05:58.924759Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T20:23:40.321110Z
@@ -26,3 +28,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T20:42:12.665202Z
   text: '[x] Added jyn-core recurrence module backed by rrule 0.14. validate(rule) parses and builds an RRULE body to reject invalid rules; next_occurrence(rule, anchor, after) returns the next date strictly after a given date (rrule after is inclusive of an exact match, so it takes two and filters > after). Dates anchored at UTC midnight. Unit tests cover daily/weekly/monthly/yearly, intervals, and an exhausted COUNT. just check green.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-27T16:05:58.804076Z
+  text: 'Superseded by JYN-000C-B5: the datetime/recurrence_tz generalisation of jyn-core recurrence is folded into the time-capable end-to-end work (Due enum, datetime occurrences, --due with time, ls/show datetime rendering). The date-only model delivered earlier remains in place.'

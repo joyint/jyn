@@ -1,0 +1,16 @@
+id: JYN-000C-B5
+title: Time-capable due (optional time-of-day) + datetime-aware recurrence end-to-end
+type: story
+status: new
+priority: medium
+capabilities:
+- plan
+- implement
+- review
+effort: 5
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-05-27T16:05:25.504449Z
+updated: 2026-05-27T16:05:25.504449Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history: []
+description: 'Make jyn time-aware end-to-end so sub-day recurrence (e.g. hourly AI jobs) works natively, per the JYN-000A-B1 decision and JOY-01A1-3A (ecosystem time handling). Scope: replace due_date: Option<NaiveDate> with due: Option<Due> where Due is Date(NaiveDate) | DateTime(DateTime<Utc>) (mirrors VTODO DATE vs DATE-TIME), add a recurrence_tz: Option<String> field (IANA name) for DST-correct recurring local times, generalise jyn-core recurrence::next_occurrence and Task::complete_occurrence to datetime occurrences, extend the --due parser to accept a time (e.g. --due "2026-04-13 14:00"), render datetime due/occurrences in display tz via a shared joy-core helper, synthesise occurrence rows as #1@DATETIME, and accept reopen #1@DATETIME. Allow FREQ=HOURLY only when the task carries a time. Arms recurrence_done.bats test 5 (hourly recurrence with an end). Comments on occurrences land separately (JYN-000B-6B). Closes JOT-0005 (its datetime generalisation is part of this).'

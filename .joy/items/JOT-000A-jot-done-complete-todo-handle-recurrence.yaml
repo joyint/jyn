@@ -1,7 +1,7 @@
 id: JOT-000A
 title: 'jot done: complete todo, handle recurrence'
 type: story
-status: in-progress
+status: closed
 priority: medium
 parent: JOT-0002
 assignees:
@@ -10,10 +10,12 @@ deps:
 - JOT-0006
 milestone: JOT-MS-01
 created: 2026-03-20T11:09:32.096709731Z
-updated: 2026-05-21T22:07:35.821057Z
+updated: 2026-05-27T16:05:25.422648Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-21T22:07:35.745493Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-27T16:05:25.422648Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
@@ -22,3 +24,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-21T22:07:35.821056Z
   text: 'Plan (TDD): write bats integration tests first to fix the default recurring-completion CLI commands, then implement to green. Scope now: date-only recurrence (the common case, fits the current date-only due model and a forward-compatible completed_occurrences schema); time-bearing/sub-day and DST per JYN-000A-B1 are a follow-on, no edge cases yet. Default commands to specify: jyn done on a recurring task records the completed occurrence and advances (stays open); jyn ls --closed shows the occurrence as #1@DATE; jyn show lists completed occurrences; jyn reopen #1@DATE removes it and rolls due back; completing the final occurrence (exhausted RRULE) closes the series for real. Core advance+override logic is JOT-0006.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-27T16:05:25.338474Z
+  text: '[x] Wired the CLI for date-only recurring completion: run_close calls Task::complete_occurrence; Advanced advances and prints done #1 ... next DATE, Ended prints closed #1 ... recurrence complete; close on an already-closed task fails. run_reopen #1@DATE removes that single override and reactivates the series. jyn ls --closed/--all synthesises read-only occurrence rows as #1@DATE; jyn show lists Completed occurrences. Armed bats tests 1-4. just check green. Hourly/sub-day (test 5) is the time-capable Due model in a follow-on item.'

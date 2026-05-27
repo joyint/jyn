@@ -1,2 +1,8 @@
 2026-05-27T15:58:32.223Z JOT-000A guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
 2026-05-27T15:58:32.290Z JOT-000A guard.denied "horst.schwarz@joydev.com must authenticate to perform this action. Run `joy auth`." [horst.schwarz@joydev.com]
+2026-05-27T16:04:53.419Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T16:05:25.352Z JOT-000A comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T16:05:25.433Z JOT-000A item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T16:05:25.515Z JYN-000C-B5 item.created [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T16:05:58.823Z JOT-0005 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T16:05:58.939Z JOT-0005 item.status_changed "open -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
