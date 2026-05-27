@@ -1,7 +1,7 @@
 id: JYN-000D-AB
 title: Human-friendly --recur syntax (translated to RRULE for storage)
 type: story
-status: in-progress
+status: closed
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -12,10 +12,12 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-27T17:04:58.501865Z
-updated: 2026-05-27T17:26:04.050679Z
+updated: 2026-05-27T17:28:43.559921Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-27T17:06:15.362320Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-05-27T17:28:43.559921Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Today --recur takes a raw RFC 5545 RRULE string (FREQ=WEEKLY;BYDAY=MO), which is the storage/sync format and not what a human types. Add a human-syntax parser as the default user input that translates common recurrence phrases to an RRULE for internal storage (so VTODO/Graph mapping stays lossless). Raw RRULE keeps working as a power-user fallback. Minimum default phrases to cover (TDD-first, new bats spec): daily / weekly / monthly / yearly / hourly; every <weekday> (every Monday, every Mon); weekdays; every N (days|weeks|months|years|hours); on a day-of-month (monthly on the 1st); count (... for N times) and until (... until 2026-12-31). After the parser lands, retire the raw-RRULE examples from the tutorial and document the human form; the existing raw-RRULE bats tests stay as advanced-path coverage.'
 comments:
