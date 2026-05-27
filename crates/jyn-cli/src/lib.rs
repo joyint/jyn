@@ -486,8 +486,21 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
     // a single dimension. --reverse flips the direction.
     apply_sort(&mut filtered, args.sort, args.reverse, today);
 
+    // Completed occurrences of recurring series, shown in the closed views.
+    // Collected from all tasks (the series itself stays open/advancing, so
+    // it is not in `filtered`). See JOT-000A / JYN-000A-B1.
+    let occurrences = if args.closed || args.all {
+        collect_occurrences(&tasks, args)
+    } else {
+        Vec::new()
+    };
+
     if filtered.is_empty() {
-        println!("No open tasks. Add one with: jyn add \"<title>\"");
+        if occurrences.is_empty() {
+            println!("No open tasks. Add one with: jyn add \"<title>\"");
+        } else {
+            print_occurrences_section(&occurrences, root);
+        }
         return Ok(());
     }
 
@@ -722,7 +735,74 @@ fn run_ls(root: &Path, args: &LsArgs, mode: LabelMode) -> Result<()> {
         color::label(&color::plural(filtered.len(), "task")),
         color::inactive(&abbreviate_home(&storage::jyn_dir(root)))
     );
+    if !occurrences.is_empty() {
+        print_occurrences_section(&occurrences, root);
+    }
     Ok(())
+}
+
+/// Collect completed-occurrence rows (`#N@DATE`, done date, title) from
+/// recurring tasks for the --closed / --all views, most recent first.
+/// These are read-only history rows synthesised from each series'
+/// override list; the bare `#N` always addresses the live series.
+fn collect_occurrences(tasks: &[Task], args: &LsArgs) -> Vec<(String, chrono::NaiveDate, String)> {
+    let mut rows = Vec::new();
+    for t in tasks {
+        if t.archived && !args.all {
+            continue;
+        }
+        if !args
+            .tags
+            .iter()
+            .all(|want| t.item.tags.iter().any(|h| h == want))
+        {
+            continue;
+        }
+        let short = display::short_id(&t.item.id);
+        for o in &t.completed_occurrences {
+            rows.push((
+                format!("{short}@{}", o.occurrence),
+                o.occurrence,
+                t.item.title.clone(),
+            ));
+        }
+    }
+    rows.sort_by(|a, b| b.1.cmp(&a.1));
+    rows
+}
+
+/// Render the completed-occurrences section: header, rows, footer.
+fn print_occurrences_section(rows: &[(String, chrono::NaiveDate, String)], root: &Path) {
+    let id_w = rows
+        .iter()
+        .map(|(id, _, _)| id.len())
+        .max()
+        .unwrap_or(2)
+        .max("ID".len());
+    let done_w = "DONE".len().max(10);
+    let title_w = rows
+        .iter()
+        .map(|(_, _, t)| t.len())
+        .max()
+        .unwrap_or(0)
+        .max("TITLE".len());
+    let frame_w = id_w + 1 + done_w + 1 + title_w;
+    let headers = [("ID", id_w), ("DONE", done_w), ("TITLE", title_w)];
+    println!("{}", color::header(&headers, frame_w));
+    for (id, done, title) in rows {
+        println!(
+            "{} {} {}",
+            color::id(&format!("{id:<id_w$}")),
+            color::inactive(&format!("{:<done_w$}", done.to_string())),
+            title,
+        );
+    }
+    println!("{}", color::separator(frame_w));
+    println!(
+        "{}  {}",
+        color::label(&color::plural(rows.len(), "occurrence")),
+        color::inactive(&abbreviate_home(&storage::jyn_dir(root))),
+    );
 }
 
 /// Abbreviate a leading home-directory prefix to `~` for display.
@@ -857,6 +937,21 @@ fn run_show(root: &Path, id: &str, mode: LabelMode) -> Result<()> {
         }
     }
 
+    // ---- Completed occurrences (recurring series history) ----
+    if !task.completed_occurrences.is_empty() {
+        println!("{}", color::separator(width));
+        println!("{}", color::label("Completed occurrences:"));
+        let mut occ: Vec<_> = task.completed_occurrences.iter().collect();
+        occ.sort_by(|a, b| b.occurrence.cmp(&a.occurrence));
+        for o in occ {
+            println!(
+                "  {}   {}",
+                o.occurrence,
+                color::inactive(&format!("done {}", o.completed_at.format("%Y-%m-%d %H:%M"))),
+            );
+        }
+    }
+
     // ---- Bottom band: record timestamps ----
     println!("{}", color::separator(width));
     // Whole footer line in label color - timestamps are record
@@ -966,22 +1061,78 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
 
 fn run_close(root: &Path, id: &str) -> Result<()> {
     let mut task = storage::load_task(root, id).context("loading task")?;
-    let now = chrono::Utc::now();
-    task.item.status = joy_core::model::item::Status::Closed;
-    task.closed_at = Some(now);
-    task.item.updated = now;
-    storage::update_task(root, &task).context("saving task")?;
     let short = display::short_id(&task.item.id);
-    println!(
-        "{} {}  {}",
-        color::success("closed"),
-        color::id(&short),
-        task.item.title
-    );
+    if matches!(task.item.status, joy_core::model::item::Status::Closed) {
+        anyhow::bail!("{short} is already closed");
+    }
+    let now = chrono::Utc::now();
+
+    // Recurring tasks complete the current occurrence and advance (or close
+    // the series when the rule is exhausted). See JOT-000A / JYN-000A-B1.
+    match task.complete_occurrence(now)? {
+        jyn_core::model::CompletionResult::Advanced { next } => {
+            task.item.updated = now;
+            storage::update_task(root, &task).context("saving task")?;
+            println!(
+                "{} {}  {}  {}",
+                color::success("done"),
+                color::id(&short),
+                task.item.title,
+                color::inactive(&format!("next {next}")),
+            );
+        }
+        jyn_core::model::CompletionResult::Ended => {
+            task.item.updated = now;
+            storage::update_task(root, &task).context("saving task")?;
+            println!(
+                "{} {}  {}  {}",
+                color::success("closed"),
+                color::id(&short),
+                task.item.title,
+                color::inactive("recurrence complete"),
+            );
+        }
+        jyn_core::model::CompletionResult::NotRecurring => {
+            task.item.status = joy_core::model::item::Status::Closed;
+            task.closed_at = Some(now);
+            task.item.updated = now;
+            storage::update_task(root, &task).context("saving task")?;
+            println!(
+                "{} {}  {}",
+                color::success("closed"),
+                color::id(&short),
+                task.item.title
+            );
+        }
+    }
     Ok(())
 }
 
 fn run_reopen(root: &Path, id: &str) -> Result<()> {
+    // Occurrence form `SERIES@YYYY-MM-DD`: reopen one completed occurrence
+    // of a recurring series rather than the series itself. See JOT-000A.
+    if let Some((series, date_str)) = id.split_once('@') {
+        let occ = chrono::NaiveDate::parse_from_str(date_str, "%Y-%m-%d").map_err(|_| {
+            anyhow::anyhow!("invalid occurrence in '{id}': expected SERIES@YYYY-MM-DD")
+        })?;
+        let mut task = storage::load_task(root, series).context("loading task")?;
+        let now = chrono::Utc::now();
+        if !task.reopen_occurrence(occ, now) {
+            let short = display::short_id(&task.item.id);
+            anyhow::bail!("no completed occurrence {date_str} on {short}");
+        }
+        storage::update_task(root, &task).context("saving task")?;
+        let short = display::short_id(&task.item.id);
+        println!(
+            "{} {}@{}  {}",
+            color::success("reopened"),
+            color::id(&short),
+            date_str,
+            task.item.title
+        );
+        return Ok(());
+    }
+
     let mut task = storage::load_task(root, id).context("loading task")?;
     task.item.status = joy_core::model::item::Status::New;
     task.closed_at = None;

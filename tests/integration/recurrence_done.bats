@@ -9,7 +9,6 @@
 load setup
 
 @test "done records each completed occurrence and the series keeps advancing" {
-    skip "arm when done advances and records occurrences (JOT-0006/JOT-000A)"
     jyn add "Water plants" --due 2026-04-13 --recur "FREQ=DAILY" >/dev/null
 
     jyn done "#1" >/dev/null   # completes 2026-04-13, advances to 2026-04-14
@@ -22,7 +21,6 @@ load setup
 }
 
 @test "show lists completed occurrences under a dedicated section" {
-    skip "arm when show lists completed occurrences"
     jyn add "Water plants" --due 2026-04-13 --recur "FREQ=DAILY" >/dev/null
     jyn done "#1" >/dev/null
 
@@ -32,7 +30,6 @@ load setup
 }
 
 @test "reopen addresses and removes a single occurrence by date" {
-    skip "arm when reopen addresses occurrences (#1@DATE)"
     jyn add "Water plants" --due 2026-04-13 --recur "FREQ=DAILY" >/dev/null
     jyn done "#1" >/dev/null
 
@@ -45,7 +42,6 @@ load setup
 }
 
 @test "completing the final occurrence closes the series; further done fails" {
-    skip "arm when series-end close lands"
     jyn add "One last time" --due 2026-04-13 --recur "FREQ=DAILY;COUNT=1" >/dev/null
 
     run jyn done "#1"
