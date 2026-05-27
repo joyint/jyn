@@ -389,9 +389,9 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
         });
     }
     task.due = due_date;
-    if let Some(rule) = args.recur.as_deref() {
-        jyn_core::recurrence::validate(rule).map_err(anyhow::Error::msg)?;
-        task.recurrence = Some(rule.to_string());
+    if let Some(input) = args.recur.as_deref() {
+        let rrule = jyn_core::recurrence::parse_input(input).map_err(anyhow::Error::msg)?;
+        task.recurrence = Some(rrule);
     }
 
     storage::save_task(root, &task).context("saving task")?;
@@ -1043,9 +1043,9 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
     if args.no_recur {
         task.recurrence = None;
     }
-    if let Some(rule) = args.recur.as_deref() {
-        jyn_core::recurrence::validate(rule).map_err(anyhow::Error::msg)?;
-        task.recurrence = Some(rule.to_string());
+    if let Some(input) = args.recur.as_deref() {
+        let rrule = jyn_core::recurrence::parse_input(input).map_err(anyhow::Error::msg)?;
+        task.recurrence = Some(rrule);
     }
 
     task.item.updated = chrono::Utc::now();

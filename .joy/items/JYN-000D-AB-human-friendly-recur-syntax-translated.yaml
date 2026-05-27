@@ -12,7 +12,7 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-27T17:04:58.501865Z
-updated: 2026-05-27T17:06:15.443819Z
+updated: 2026-05-27T17:26:04.050679Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-05-27T17:06:15.362320Z
@@ -22,3 +22,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-05-27T17:06:15.443819Z
   text: 'Plan (TDD): write a bats spec covering the human --recur phrases (skip-disarmed, armed as each lands). Implement a parse_recur_input layer that translates human input to RRULE and stores the RRULE, with raw RRULE strings passing through as the power-user fallback. Coverage: daily/weekly/monthly/yearly/hourly; every <weekday>; weekdays; every N <unit>; monthly on the Nth; for N <unit>/for N times; until DATE; raw RRULE fallback; error on gibberish. After green: retire the RRULE strings from the tutorial and replace with human examples.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-05-27T17:26:04.050678Z
+  text: Human --recur parser implemented in jyn-core::recurrence::parse_input. Supports bare frequencies (daily/weekly/monthly/yearly/hourly), every <weekday>, every N <unit>, weekdays, monthly on the Nth, and an optional 'for N times' / 'for N <unit>' COUNT suffix. Raw RRULE (FREQ=...) and RRULE:... pass through as a power-user fallback. Wired into jyn add and jyn edit via parse_input (validates internally). 10/10 bats in recurrence_human.bats armed and green, 60/60 jyn-core unit tests green, 87/87 overall bats green. Tutorial updated with human examples; raw RRULE only mentioned as fallback.

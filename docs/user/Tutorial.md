@@ -38,6 +38,31 @@ jyn add "Reply to the RFC" --due fri
 jyn add "Pay the invoice" --due +3d
 ```
 
+### Recurring tasks
+
+`--recur` turns a task into a recurring series. The flag takes a short, human-readable phrase that jyn translates into an iCalendar rule (RFC 5545) for storage and sync.
+
+```sh
+jyn add "Standup" --due 2026-04-13 --recur "every Monday"
+jyn add "Water plants" --due 2026-04-13 --recur daily
+jyn add "Pay rent" --due 2026-04-01 --recur "monthly on the 1st"
+jyn add "Quarterly review" --due 2026-04-01 --recur "every 3 months"
+jyn add "Health check" --due "2026-04-13 14:00" --recur "hourly for 3 times"
+```
+
+Phrases jyn understands:
+
+- bare frequency: `daily`, `weekly`, `monthly`, `yearly`, `hourly`
+- `every <weekday>`, e.g. `every Monday`, `every Fri`
+- `every N <unit>`, e.g. `every 2 weeks`, `every 6 hours`
+- `weekdays` (Monday to Friday)
+- `monthly on the Nth`, e.g. `monthly on the 1st`, `monthly on the 15th`
+- any of the above followed by `for N times` or `for N <unit>` to cap the series
+
+When you `jyn done` a recurring task, jyn records that occurrence as complete and rolls the due date forward to the next one. Once a capped series is exhausted, the next `done` simply closes the task. `jyn edit ... --recur "..."` changes the rule; `jyn edit ... --no-recur` removes it.
+
+If you are comfortable with RFC 5545, a raw RRULE body like `FREQ=WEEKLY;BYDAY=MO,WE,FR` is accepted as-is for cases the human phrases do not cover.
+
 ### Tags
 
 Tags are free-text labels for grouping and filtering. Repeat `--tag` (short `-t`) to attach several.

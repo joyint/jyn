@@ -8,7 +8,6 @@
 load setup
 
 @test "--recur daily is accepted and records the occurrence on done" {
-    skip "arm when the human parser lands (daily/weekly/monthly/yearly)"
     jyn add "Water plants" --due 2026-04-13 --recur daily >/dev/null
     jyn done "#1" >/dev/null
     run jyn show "#1"
@@ -19,14 +18,12 @@ load setup
 }
 
 @test "--recur weekly is accepted" {
-    skip "arm when the human parser lands (daily/weekly/monthly/yearly)"
     jyn add "Standup" --due 2026-04-13 --recur weekly >/dev/null
     run jyn show "#1"
     [[ "$output" == *"Recurs:"* ]]
 }
 
 @test "--recur 'every Monday' resolves to weekly on MO" {
-    skip "arm when 'every <weekday>' lands"
     # 2026-04-13 is a Monday; next Monday is 2026-04-20.
     jyn add "Standup" --due 2026-04-13 --recur "every Monday" >/dev/null
     jyn done "#1" >/dev/null
@@ -37,7 +34,6 @@ load setup
 }
 
 @test "--recur 'every 2 weeks' advances by two weeks" {
-    skip "arm when 'every N <unit>' lands"
     jyn add "Sync" --due 2026-04-13 --recur "every 2 weeks" >/dev/null
     jyn done "#1" >/dev/null
     # 2026-04-13 + 2 weeks = 2026-04-27.
@@ -46,7 +42,6 @@ load setup
 }
 
 @test "--recur weekdays advances from a weekday to the next weekday" {
-    skip "arm when 'weekdays' alias lands"
     # 2026-04-17 is a Friday; next weekday is Monday 2026-04-20.
     jyn add "Standup" --due 2026-04-17 --recur weekdays >/dev/null
     jyn done "#1" >/dev/null
@@ -55,7 +50,6 @@ load setup
 }
 
 @test "--recur 'monthly on the 1st' moves to the next month's first" {
-    skip "arm when 'on the Nth' / monthly-day lands"
     jyn add "Pay rent" --due 2026-04-01 --recur "monthly on the 1st" >/dev/null
     jyn done "#1" >/dev/null
     run jyn show "#1"
@@ -63,7 +57,6 @@ load setup
 }
 
 @test "--recur 'daily for 3 days' ends the series after three completions" {
-    skip "arm when 'for N <unit>' / 'for N times' (COUNT) lands"
     jyn add "Hydrate" --due 2026-04-13 --recur "daily for 3 days" >/dev/null
     jyn done "#1" >/dev/null
     jyn done "#1" >/dev/null
@@ -74,7 +67,6 @@ load setup
 }
 
 @test "--recur 'hourly for 3 times' with a time of day works end-to-end" {
-    skip "arm when 'hourly' + 'for N times' on a time-bearing due land"
     export TZ=UTC
     jyn add "Health check" --due "2026-04-13 14:00" --recur "hourly for 3 times" >/dev/null
     jyn done "#1" >/dev/null
@@ -83,7 +75,6 @@ load setup
 }
 
 @test "raw RRULE remains accepted as a power-user fallback" {
-    skip "arm alongside the human parser (regression guard)"
     jyn add "Power user" --due 2026-04-13 --recur "FREQ=DAILY" >/dev/null
     run jyn show "#1"
     [ "$status" -eq 0 ]
@@ -91,7 +82,6 @@ load setup
 }
 
 @test "--recur with an unparseable phrase fails with a clear error" {
-    skip "arm with the human parser"
     run jyn add "Bad" --due 2026-04-13 --recur "gibberish phrase"
     [ "$status" -ne 0 ]
     [[ "$output" == *"recur"* ]]
