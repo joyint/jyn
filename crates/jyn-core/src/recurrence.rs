@@ -66,41 +66,41 @@ fn parse_phrase(input: &str) -> Result<String, RecurrenceError> {
     let main_lower = main.to_lowercase();
     let tokens: Vec<&str> = main_lower.split_whitespace().collect();
 
-    let (freq, interval, byday, bymonthday): (&str, u32, Option<String>, Option<u32>) =
-        match tokens.as_slice() {
-            ["daily"] => ("DAILY", 1, None, None),
-            ["weekly"] => ("WEEKLY", 1, None, None),
-            ["monthly"] => ("MONTHLY", 1, None, None),
-            ["yearly"] => ("YEARLY", 1, None, None),
-            ["hourly"] => ("HOURLY", 1, None, None),
-            ["weekdays"] => ("WEEKLY", 1, Some("MO,TU,WE,TH,FR".to_string()), None),
-            ["every", weekday] if weekday_short(weekday).is_some() => (
-                "WEEKLY",
-                1,
-                Some(weekday_short(weekday).unwrap().to_string()),
-                None,
-            ),
-            ["every", n, unit] => {
-                let n: u32 = n
-                    .parse()
-                    .map_err(|_| err(input, format!("expected a number, got '{n}'")))?;
-                let f = unit_to_freq(unit)
-                    .ok_or_else(|| err(input, format!("unknown unit '{unit}'")))?;
-                (f, n, None, None)
-            }
-            ["monthly", "on", "the", day] | ["monthly", "on", day] => {
-                let d = parse_day_of_month(day).ok_or_else(|| {
-                    err(input, format!("expected a day of the month, got '{day}'"))
-                })?;
-                ("MONTHLY", 1, None, Some(d))
-            }
-            _ => {
-                return Err(err(
-                    input,
-                    format!("not a recognised recurrence phrase: '{trimmed}'"),
-                ))
-            }
-        };
+    let (freq, interval, byday, bymonthday): (&str, u32, Option<String>, Option<u32>) = match tokens
+        .as_slice()
+    {
+        ["daily"] => ("DAILY", 1, None, None),
+        ["weekly"] => ("WEEKLY", 1, None, None),
+        ["monthly"] => ("MONTHLY", 1, None, None),
+        ["yearly"] => ("YEARLY", 1, None, None),
+        ["hourly"] => ("HOURLY", 1, None, None),
+        ["weekdays"] => ("WEEKLY", 1, Some("MO,TU,WE,TH,FR".to_string()), None),
+        ["every", weekday] if weekday_short(weekday).is_some() => (
+            "WEEKLY",
+            1,
+            Some(weekday_short(weekday).unwrap().to_string()),
+            None,
+        ),
+        ["every", n, unit] => {
+            let n: u32 = n
+                .parse()
+                .map_err(|_| err(input, format!("expected a number, got '{n}'")))?;
+            let f =
+                unit_to_freq(unit).ok_or_else(|| err(input, format!("unknown unit '{unit}'")))?;
+            (f, n, None, None)
+        }
+        ["monthly", "on", "the", day] | ["monthly", "on", day] => {
+            let d = parse_day_of_month(day)
+                .ok_or_else(|| err(input, format!("expected a day of the month, got '{day}'")))?;
+            ("MONTHLY", 1, None, Some(d))
+        }
+        _ => {
+            return Err(err(
+                input,
+                format!("not a recognised recurrence phrase: '{trimmed}'"),
+            ))
+        }
+    };
 
     let mut rule = format!("FREQ={freq}");
     if interval > 1 {
@@ -316,10 +316,7 @@ mod tests {
 
     #[test]
     fn parse_input_every_weekday() {
-        assert_eq!(
-            parse_input("every Monday").unwrap(),
-            "FREQ=WEEKLY;BYDAY=MO"
-        );
+        assert_eq!(parse_input("every Monday").unwrap(), "FREQ=WEEKLY;BYDAY=MO");
         assert_eq!(parse_input("every fri").unwrap(), "FREQ=WEEKLY;BYDAY=FR");
     }
 
