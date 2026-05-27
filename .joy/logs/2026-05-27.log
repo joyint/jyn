@@ -17,3 +17,4 @@
 2026-05-27T17:25:44.915Z auth auth.session_created "session created for ai:claude@joy via delegation token" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-27T17:26:04.061Z JYN-000D-AB comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-05-27T17:28:43.572Z JYN-000D-AB item.status_changed "in-progress -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-05-27T17:45:33.007Z v0.6.5 release.created [horst.schwarz@joydev.com]

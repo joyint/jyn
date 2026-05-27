@@ -1,0 +1,20 @@
+version: v0.6.5
+date: 2026-05-27
+previous: v0.6.4
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 26
+  items: 5
+items:
+  stories:
+  - id: JOT-000A
+    title: 'jot done: complete todo, handle recurrence'
+  - id: JYN-000C-B5
+    title: Time-capable due (optional time-of-day) + datetime-aware recurrence end-to-end
+  - id: JYN-000D-AB
+    title: Human-friendly --recur syntax (translated to RRULE for storage)
+  tasks:
+  - id: JOT-0006
+    title: 'jot-core: completion logic with next-occurrence'
+  - id: JOT-0005
+    title: 'jot-core: RRULE recurrence model'
