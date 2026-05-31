@@ -1315,7 +1315,7 @@ dependencies = [
 
 [[package]]
 name = "joy-core"
-version = "0.15.7"
+version = "0.15.8"
 dependencies = [
  "argon2",
  "base64ct",
