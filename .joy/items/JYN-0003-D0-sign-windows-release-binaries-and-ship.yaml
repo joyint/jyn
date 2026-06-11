@@ -12,7 +12,7 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T15:19:53.406845567Z
-updated: 2026-06-11T21:36:04.209679209Z
+updated: 2026-06-11T21:40:10.870774346Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-06-11T21:36:04.176294627Z
@@ -22,3 +22,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-06-11T21:36:04.209678679Z
   text: 'Plan: Mirror joy''s Windows signing into jyn using the same shared signing identity (account joydevsign, cert profile joydevPublicTrust). Steps: copy the composite action .github/actions/sign-windows-exe; add id-token: write + environment: release + the sign-then-re-archive steps to release.yml; add winget-submit.yml (identifier joyint.jyn, PackageName jyn, fork-user joyint). Azure already prepared: federated credential repo:joyint/jyn:environment:release on the shared Entra app, signer role is account-wide, jyn repo secrets set. First joyint.jyn WinGet entry happens at jyn''s first signed release. Mirrors JOY-0190-D0; epic JI-00F4-20.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-06-11T21:40:10.870772934Z
+  text: '[x] Code committed (c3c836d) and pushed to jyn main: composite action, release.yml (id-token + environment: release + sign-then-re-archive), winget-submit.yml (joyint.jyn). Azure already prepared: federated credential repo:joyint/jyn:environment:release on the shared Entra app, account-wide signer role, jyn repo secrets set. The signing path is identical to joy''s verified one; the jyn-specific federated credential is not yet exercised, so it stays in-progress until confirmed at jyn''s first signed release (or a smoke test). First joyint.jyn WinGet entry happens at that first signed release.'
