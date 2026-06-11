@@ -1,0 +1,11 @@
+version: v0.6.6
+date: 2026-06-11
+previous: v0.6.5
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 7
+  items: 1
+items:
+  stories:
+  - id: JYN-0003-D0
+    title: Sign Windows release binaries and ship WinGet manifest
