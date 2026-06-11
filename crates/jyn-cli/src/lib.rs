@@ -1028,7 +1028,12 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
         task.item.description = Some(desc);
     }
     for member in &args.assign {
-        if !task.item.assignees.iter().any(|a| a.member == member.as_str()) {
+        if !task
+            .item
+            .assignees
+            .iter()
+            .any(|a| a.member == member.as_str())
+        {
             task.item.assignees.push(joy_core::model::item::Assignee {
                 member: member.clone().into(),
                 capabilities: Vec::new(),
