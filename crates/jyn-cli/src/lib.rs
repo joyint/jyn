@@ -384,7 +384,7 @@ fn run_add(root: &Path, args: AddArgs, mode: LabelMode) -> Result<()> {
     task.item.description = args.description.clone();
     if let Some(member) = args.assign.clone() {
         task.item.assignees.push(joy_core::model::item::Assignee {
-            member,
+            member: member.into(),
             capabilities: Vec::new(),
         });
     }
@@ -1028,9 +1028,9 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
         task.item.description = Some(desc);
     }
     for member in &args.assign {
-        if !task.item.assignees.iter().any(|a| &a.member == member) {
+        if !task.item.assignees.iter().any(|a| a.member == member.as_str()) {
             task.item.assignees.push(joy_core::model::item::Assignee {
-                member: member.clone(),
+                member: member.clone().into(),
                 capabilities: Vec::new(),
             });
         }
@@ -1038,7 +1038,7 @@ fn run_edit(root: &Path, args: EditArgs, mode: LabelMode) -> Result<()> {
     if !args.unassign.is_empty() {
         task.item
             .assignees
-            .retain(|a| !args.unassign.contains(&a.member));
+            .retain(|a| !args.unassign.iter().any(|m| a.member == m.as_str()));
     }
     if args.no_recur {
         task.recurrence = None;
@@ -1227,7 +1227,7 @@ fn run_assign(root: &Path, id: &str, member: &str) -> Result<()> {
     let mut task = storage::load_task(root, id).context("loading task")?;
     if !task.item.assignees.iter().any(|a| a.member == member) {
         task.item.assignees.push(joy_core::model::item::Assignee {
-            member: member.to_string(),
+            member: member.to_string().into(),
             capabilities: Vec::new(),
         });
     }
