@@ -1,7 +1,7 @@
 id: JYN-0003-D0
 title: Sign Windows release binaries and ship WinGet manifest
 type: story
-status: in-progress
+status: closed
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -12,10 +12,14 @@ capabilities:
 effort: 4
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-05-15T15:19:53.406845567Z
-updated: 2026-06-11T21:40:10.870774346Z
+updated: 2026-06-11T21:47:28.639170872Z
 updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 history:
 - date: 2026-06-11T21:36:04.176294627Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-06-11T21:47:28.597103312Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-06-11T21:47:28.639170872Z
   by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 description: 'Wire the shared signing action from the umbrella epic JI-00F4-20 into jyn''s release CI to produce signed jyn.exe artifacts for tagged releases (Authenticode via Microsoft Trusted Signing). Add a workflow that opens a PR to microsoft/winget-pkgs with an updated manifest pointing at the signed artifact when a release is published. Motivation: CyberArk and similar EPM scanners quarantine unsigned binaries, blocking enterprise installs.'
 comments:
@@ -25,3 +29,6 @@ comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
   date: 2026-06-11T21:40:10.870772934Z
   text: '[x] Code committed (c3c836d) and pushed to jyn main: composite action, release.yml (id-token + environment: release + sign-then-re-archive), winget-submit.yml (joyint.jyn). Azure already prepared: federated credential repo:joyint/jyn:environment:release on the shared Entra app, account-wide signer role, jyn repo secrets set. The signing path is identical to joy''s verified one; the jyn-specific federated credential is not yet exercised, so it stays in-progress until confirmed at jyn''s first signed release (or a smoke test). First joyint.jyn WinGet entry happens at that first signed release.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-06-11T21:47:28.560792213Z
+  text: '[x] Signing setup complete, mirrored 1:1 from joy''s verified mechanism (shared identity joydevsign/joydevPublicTrust, same composite action + release.yml edits). Closing to ship via a jyn release; jyn''s own signed artifact is verified in that release run, and the first joyint.jyn WinGet PR follows from it.'

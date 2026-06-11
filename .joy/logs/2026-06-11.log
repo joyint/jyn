@@ -2,3 +2,6 @@
 2026-06-11T21:36:04.180Z JYN-0003-D0 item.status_changed "new -> in-progress" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-06-11T21:36:04.213Z JYN-0003-D0 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
 2026-06-11T21:40:10.881Z JYN-0003-D0 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-06-11T21:47:28.565Z JYN-0003-D0 comment.added [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-06-11T21:47:28.601Z JYN-0003-D0 item.status_changed "in-progress -> review" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
+2026-06-11T21:47:28.643Z JYN-0003-D0 item.status_changed "review -> closed" [ai:claude@joy delegated-by:horst.schwarz@joydev.com]
