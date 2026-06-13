@@ -2,6 +2,9 @@ name: jyn
 acronym: JYN
 language: en
 forge: github
+docs:
+  architecture: ARCHITECTURE.md
+  vision: VISION.md
 members:
   ai:claude@joy:
     capabilities:
