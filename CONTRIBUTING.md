@@ -2,7 +2,7 @@
 
 This document covers the coding conventions, testing strategy, CI/CD pipeline, and commit message format for the Jyn repository.
 
-For product vision and CLI design see [docs/dev/Vision.md](docs/dev/Vision.md). For technology choices and architecture see [docs/dev/Architecture.md](docs/dev/Architecture.md).
+For product vision and CLI design see [VISION.md](VISION.md). For technology choices and architecture see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 The product backlog lives in `.joy/` and is managed with the `joy` CLI. Run `joy` for a board overview, `joy ls` to list items, `joy show <ID>` for details.
 

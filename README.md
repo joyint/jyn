@@ -15,7 +15,7 @@ Alternative: `cargo install jyn-cli`.
 
 ## Status
 
-Pre-development. See [Vision](docs/dev/vision/README.md) for details.
+Pre-development. See [Vision](VISION.md) for details.
 
 ## License
 

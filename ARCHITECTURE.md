@@ -2,7 +2,7 @@
 
 This document defines the technical foundation for the Jyn repository. It covers technology choices, repository structure, crate layout, and key design decisions.
 
-For product vision and CLI design see [Vision.md](./Vision.md). For coding conventions, testing, and CI/CD see [CONTRIBUTING.md](../../CONTRIBUTING.md).
+For product vision and CLI design see [VISION.md](./VISION.md). For coding conventions, testing, and CI/CD see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
