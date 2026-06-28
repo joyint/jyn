@@ -372,3 +372,31 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/joyint/joy.git ../joy
           git clone --depth 1 https://github.com/joyint/crypt.git ../crypt
+
+  # Submit the new version to WinGet. `needs: host` is the ordering guarantee:
+  # the host job uploads the signed Windows zip and creates/updates the GitHub
+  # Release, so the asset exists before winget-releaser reads it. Replaces the
+  # old standalone winget-submit.yml, which triggered on `release: [released]`
+  # and could race the asset upload (empty --urls -> komac failure).
+  winget:
+    needs:
+      - plan
+      - host
+    if: ${{ always() && needs.host.result == 'success' && !fromJson(needs.host.outputs.val).announcement_is_prerelease }}
+    runs-on: "ubuntu-22.04"
+    permissions:
+      contents: read
+    steps:
+      - name: Submit jyn to winget-pkgs
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: joyint.jyn
+          # Read assets from the release this run just published.
+          release-tag: ${{ needs.plan.outputs.tag }}
+          # Match the signed Windows zip produced by the release workflow.
+          installers-regex: 'x86_64-pc-windows-msvc\.zip$'
+          # The fork of microsoft/winget-pkgs lives under the joyint org, not
+          # under the token owner's personal account.
+          fork-user: joyint
+          # Classic PAT (public_repo) with write access to joyint/winget-pkgs.
+          token: ${{ secrets.WINGET_TOKEN }}
