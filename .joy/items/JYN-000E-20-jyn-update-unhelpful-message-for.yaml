@@ -1,0 +1,28 @@
+id: JYN-000E-20
+title: 'jyn update: unhelpful message for package-manager installs; give the upgrade command'
+type: bug
+status: closed
+priority: medium
+assignees:
+- member: ai:claude@joy
+capabilities:
+- implement
+- review
+effort: 2
+created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+created: 2026-06-28T14:40:40.393573078Z
+updated: 2026-06-28T14:46:11.316166853Z
+updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+history:
+- date: 2026-06-28T14:40:54.495075795Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+- date: 2026-06-28T14:46:11.316166853Z
+  by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+description: 'Mirror of the joy fix: when jyn has no axoupdater receipt (foreign install, e.g. winget) ''jyn update'' only says ''managed by another installer''. Infer the manager from the binary path and print the exact upgrade command (winget: ''winget upgrade -s winget joyint.jyn''; cargo: ''cargo install jyn-cli''). jyn update is binary-only (no managed-files sync), so the message omits the re-sync line. Inform-only; jyn never runs the foreign manager.'
+comments:
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-06-28T14:40:54.534765636Z
+  text: 'Plan: add foreign_install() (winget/cargo/other, joyint.jyn, jyn-cli) gated on missing receipt; in run + run_check print ''managed by <mgr>'' plus ''upgrade with: <cmd>''. jyn update is binary-only, so no managed-files line. Update bats to also assert the upgrade command.'
+- author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  date: 2026-06-28T14:46:11.261140219Z
+  text: '[x] Done. foreign_install() infers the manager from current_exe (winget/cargo/other) when no receipt; ''jyn update'' and ''--check'' print ''managed by <mgr>'' + ''upgrade with: winget upgrade -s winget joyint.jyn''. Binary-only, so no managed-files line (unlike joy). Inform-only. bats updated; fmt + clippy clean, 87 bats green.'

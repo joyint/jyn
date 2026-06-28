@@ -8,16 +8,18 @@
 
 load setup
 
-@test "jyn update reports managed-by-another-installer on a non-cargo-dist build" {
+@test "jyn update reports managed-by-another-installer and the upgrade command" {
     run jyn update
     [ "$status" -eq 0 ]
     [[ "$output" == *"managed by another installer"* ]]
+    [[ "$output" == *"upgrade with: winget upgrade -s winget joyint.jyn"* ]]
 }
 
-@test "jyn update --check is clean and exits 0 without a receipt" {
+@test "jyn update --check is clean, exits 0, and shows the upgrade command" {
     run jyn update --check
     [ "$status" -eq 0 ]
     [[ "$output" == *"managed by another installer"* ]]
+    [[ "$output" == *"upgrade with: winget upgrade -s winget joyint.jyn"* ]]
 }
 
 @test "jyn update --help lists the --check flag" {

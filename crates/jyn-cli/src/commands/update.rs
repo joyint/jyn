@@ -38,9 +38,50 @@ pub fn run(args: UpdateArgs) -> Result<()> {
     }
 
     println!("{}", color::label("jyn update"));
-    let (mark, detail) = swap_binary();
-    println!("  {mark} {:<8} {detail}", "binary");
+    if let Some((manager, cmd)) = foreign_install() {
+        // Foreign-managed binary (e.g. winget): never touch it, point the user
+        // at the right command instead. jyn update is binary-only, so there is
+        // nothing else to do once the upgrade runs.
+        println!(
+            "  {} {:<8} {}",
+            color::inactive("-"),
+            "binary",
+            color::inactive(&format!("managed by {manager} ({CURRENT_VERSION})"))
+        );
+        println!("             upgrade with: {cmd}");
+    } else {
+        let (mark, detail) = swap_binary();
+        println!("  {mark} {:<8} {detail}", "binary");
+    }
     Ok(())
+}
+
+/// When the running binary has no axoupdater receipt it was installed by a
+/// foreign package manager, so `jyn update` must not touch it. Infer that
+/// manager from the binary's own path and return `(display name, upgrade
+/// command)` for an actionable hint. `None` when a receipt is present.
+/// jyn never runs the command itself (a failing foreign upgrade must not
+/// entangle jyn).
+fn foreign_install() -> Option<(&'static str, String)> {
+    let mut updater = AxoUpdater::new_for(PKG_NAME);
+    if updater.load_receipt().is_ok() {
+        return None;
+    }
+    let path = std::env::current_exe()
+        .map(|p| p.to_string_lossy().to_lowercase())
+        .unwrap_or_default();
+    let info = if path.contains("microsoft\\winget") || path.contains("microsoft/winget") {
+        ("winget", "winget upgrade -s winget joyint.jyn".to_string())
+    } else if path.contains("/.cargo/") || path.contains("\\.cargo\\") {
+        ("cargo", "cargo install jyn-cli".to_string())
+    } else {
+        // Unknown manager; winget is by far the most common foreign install.
+        (
+            "another installer",
+            "winget upgrade -s winget joyint.jyn".to_string(),
+        )
+    };
+    Some(info)
 }
 
 /// Run the receipt-gated binary self-update and return a status mark plus
@@ -81,13 +122,14 @@ fn run_check() -> Result<()> {
     println!("{}", color::label("jyn update check"));
 
     let mut updater = AxoUpdater::new_for(PKG_NAME);
-    if updater.load_receipt().is_err() {
+    if let Some((manager, cmd)) = foreign_install() {
         println!(
             "  {} {:<8} {}",
             color::inactive("-"),
             "binary",
-            color::inactive("managed by another installer")
+            color::inactive(&format!("managed by {manager} ({CURRENT_VERSION})"))
         );
+        println!("             upgrade with: {cmd}");
         return Ok(());
     }
 
