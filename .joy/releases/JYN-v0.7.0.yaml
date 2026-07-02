@@ -1,0 +1,11 @@
+version: v0.7.0
+date: 2026-07-02
+previous: v0.6.6
+contributors:
+- id: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+  events: 5
+  items: 1
+items:
+  bugs:
+  - id: JYN-000E-20
+    title: 'jyn update: unhelpful message for package-manager installs; give the upgrade command'

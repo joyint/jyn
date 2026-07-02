@@ -1345,7 +1345,7 @@ dependencies = [
 
 [[package]]
 name = "jyn"
-version = "0.6.6"
+version = "0.7.0"
 dependencies = [
  "anyhow",
  "jyn-cli",
@@ -1353,7 +1353,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-cli"
-version = "0.6.6"
+version = "0.7.0"
 dependencies = [
  "anyhow",
  "axoupdater",
@@ -1368,7 +1368,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-core"
-version = "0.6.6"
+version = "0.7.0"
 dependencies = [
  "chrono",
  "joy-core",
