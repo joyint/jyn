@@ -7,7 +7,12 @@ members = [
 ]
 
 [workspace.dependencies]
-joy-core = "0.17.0"
+# Cross-project dependency, handled like joy's own joy-crypt: the path wins
+# for local builds inside the umbrella (always the sibling submodule's
+# latest), and the widened "0" tracks whatever joy-core release is on
+# crates.io for `cargo install jyn-cli` — no manual bump when joy-core
+# releases on its own cycle (jyn's version-files only bump jyn's crates).
+joy-core = { version = "0", path = "../joy/crates/joy-core" }
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml_ng = "0.10"
 serde_json = "1.0"
@@ -20,13 +25,3 @@ chrono = { version = "0.4", features = ["serde"] }
 [profile.dist]
 inherits = "release"
 lto = "thin"
-
-# Local development override: when building inside the umbrella checkout,
-# resolve `joy-core` from the sibling `joy` submodule instead of crates.io.
-# `cargo publish` strips this section automatically, so external users
-# running `cargo install jyn-cli` continue to fetch joy-core from the
-# registry. Replaces the `paths = [...]` override that used to live in
-# umbrella/.cargo/config.toml; see Cargo's recommendation against `paths`
-# overrides that change transitive dependencies.
-[patch.crates-io]
-joy-core = { path = "../joy/crates/joy-core" }
