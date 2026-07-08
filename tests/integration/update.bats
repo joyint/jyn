@@ -12,14 +12,14 @@ load setup
     run jyn update
     [ "$status" -eq 0 ]
     [[ "$output" == *"managed by another installer"* ]]
-    [[ "$output" == *"upgrade with: winget upgrade -s winget joyint.jyn"* ]]
+    [[ "$output" == *"upgrade with: curl -fsSL get.joyint.com/jyn | sh"* ]]
 }
 
 @test "jyn update --check is clean, exits 0, and shows the upgrade command" {
     run jyn update --check
     [ "$status" -eq 0 ]
     [[ "$output" == *"managed by another installer"* ]]
-    [[ "$output" == *"upgrade with: winget upgrade -s winget joyint.jyn"* ]]
+    [[ "$output" == *"upgrade with: curl -fsSL get.joyint.com/jyn | sh"* ]]
 }
 
 @test "jyn update --help lists the --check flag" {

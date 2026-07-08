@@ -53,10 +53,16 @@ pub fn run(args: UpdateArgs) -> Result<()> {
     Ok(())
 }
 
-/// winget- and cargo-managed binaries are upgraded by their own package
-/// manager; infer which one from the running binary's path. `None` means jyn
-/// manages the binary itself (the cargo-dist install dir, e.g. `~/.local/bin`),
-/// so we update it in place.
+/// True when the running binary carries a cargo-dist install receipt.
+fn has_receipt() -> bool {
+    let mut updater = AxoUpdater::new_for(PKG_NAME);
+    updater.load_receipt().is_ok()
+}
+
+/// `Some((manager, cmd))` means the binary is managed elsewhere and jyn must
+/// not touch it (no network) -- just show the upgrade command. `None` means jyn
+/// updates it in place: either it carries a cargo-dist receipt, or it sits in
+/// the install dir (~/.local/bin, e.g. a `just install` build).
 fn package_manager_hint() -> Option<(&'static str, String)> {
     let path = std::env::current_exe()
         .map(|p| p.to_string_lossy().to_lowercase())
@@ -65,8 +71,15 @@ fn package_manager_hint() -> Option<(&'static str, String)> {
         Some(("winget", "winget upgrade -s winget joyint.jyn".to_string()))
     } else if path.contains("/.cargo/") || path.contains("\\.cargo\\") {
         Some(("cargo", "cargo install jyn-cli".to_string()))
-    } else {
+    } else if has_receipt() || path.contains("/.local/bin/") {
         None
+    } else {
+        // A build tree or a manual copy elsewhere: advise via the canonical
+        // installer, without touching the network.
+        Some((
+            "another installer",
+            "curl -fsSL get.joyint.com/jyn | sh".to_string(),
+        ))
     }
 }
 
