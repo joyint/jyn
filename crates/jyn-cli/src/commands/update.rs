@@ -1,21 +1,19 @@
 // Copyright (c) 2026 Joydev GmbH (joydev.com)
 // SPDX-License-Identifier: MIT
 
-//! `jyn update` -- swap the binary when this build was distributed via
-//! cargo-dist. Mirrors the binary self-update half of `joy update`
+//! `jyn update` -- swap the binary in place, downloading a newer release when
+//! one is available. Mirrors the binary self-update half of `joy update`
 //! (JYN-0004-E6).
 //!
-//! Unlike Joy, jyn keeps no managed in-repo state (no embedded files,
-//! git hooks, auth artefacts, or AI tool files), so there is no in-repo
-//! sync step: this command is purely the binary swap.
-//!
-//! The swap is receipt-gated by `axoupdater`: only cargo-dist
-//! installer-managed binaries carry the install receipt, so brew /
-//! cargo-install / distro-package builds skip the swap with a clear
-//! message instead of clobbering a foreign-managed binary.
+//! Binaries installed via the cargo-dist installer carry an axoupdater
+//! receipt. A `just install` or otherwise manually placed build in the install
+//! dir (e.g. `~/.local/bin`) has no receipt, so we point the updater at the
+//! release source and the running binary's directory and swap in place anyway
+//! (overwriting an older local build). Only winget- and cargo-managed binaries
+//! are left to their own package manager, with a hint.
 
 use anyhow::Result;
-use axoupdater::AxoUpdater;
+use axoupdater::{AxoUpdater, AxoupdateError, ReleaseSource, ReleaseSourceType, Version};
 use clap::Args;
 
 use crate::color;
@@ -38,10 +36,9 @@ pub fn run(args: UpdateArgs) -> Result<()> {
     }
 
     println!("{}", color::label("jyn update"));
-    if let Some((manager, cmd)) = foreign_install() {
-        // Foreign-managed binary (e.g. winget): never touch it, point the user
-        // at the right command instead. jyn update is binary-only, so there is
-        // nothing else to do once the upgrade runs.
+    if let Some((manager, cmd)) = package_manager_hint() {
+        // winget / cargo manage the binary: never touch it, just point the
+        // user at the right upgrade command.
         println!(
             "  {} {:<8} {}",
             color::inactive("-"),
@@ -50,50 +47,60 @@ pub fn run(args: UpdateArgs) -> Result<()> {
         );
         println!("             upgrade with: {cmd}");
     } else {
-        let (mark, detail) = swap_binary();
+        let (mark, detail) = update_in_place();
         println!("  {mark} {:<8} {detail}", "binary");
     }
     Ok(())
 }
 
-/// When the running binary has no axoupdater receipt it was installed by a
-/// foreign package manager, so `jyn update` must not touch it. Infer that
-/// manager from the binary's own path and return `(display name, upgrade
-/// command)` for an actionable hint. `None` when a receipt is present.
-/// jyn never runs the command itself (a failing foreign upgrade must not
-/// entangle jyn).
-fn foreign_install() -> Option<(&'static str, String)> {
-    let mut updater = AxoUpdater::new_for(PKG_NAME);
-    if updater.load_receipt().is_ok() {
-        return None;
-    }
+/// winget- and cargo-managed binaries are upgraded by their own package
+/// manager; infer which one from the running binary's path. `None` means jyn
+/// manages the binary itself (the cargo-dist install dir, e.g. `~/.local/bin`),
+/// so we update it in place.
+fn package_manager_hint() -> Option<(&'static str, String)> {
     let path = std::env::current_exe()
         .map(|p| p.to_string_lossy().to_lowercase())
         .unwrap_or_default();
-    let info = if path.contains("microsoft\\winget") || path.contains("microsoft/winget") {
-        ("winget", "winget upgrade -s winget joyint.jyn".to_string())
+    if path.contains("microsoft\\winget") || path.contains("microsoft/winget") {
+        Some(("winget", "winget upgrade -s winget joyint.jyn".to_string()))
     } else if path.contains("/.cargo/") || path.contains("\\.cargo\\") {
-        ("cargo", "cargo install jyn-cli".to_string())
+        Some(("cargo", "cargo install jyn-cli".to_string()))
     } else {
-        // Unknown manager; winget is by far the most common foreign install.
-        (
-            "another installer",
-            "winget upgrade -s winget joyint.jyn".to_string(),
-        )
-    };
-    Some(info)
+        None
+    }
 }
 
-/// Run the receipt-gated binary self-update and return a status mark plus
-/// a human-readable detail string.
-fn swap_binary() -> (String, String) {
+/// An updater ready to run. Uses the cargo-dist install receipt when present;
+/// otherwise points at the GitHub release source and the running binary's
+/// directory, so a receipt-less build (e.g. `just install` into `~/.local/bin`)
+/// still checks-and-swaps, overwriting an older local build.
+fn configured_updater() -> AxoUpdater {
     let mut updater = AxoUpdater::new_for(PKG_NAME);
     if updater.load_receipt().is_err() {
-        return (
-            color::inactive("-"),
-            color::inactive(&format!("managed by another installer ({CURRENT_VERSION})")),
-        );
+        updater.set_release_source(ReleaseSource {
+            release_type: ReleaseSourceType::GitHub,
+            owner: "joyint".to_string(),
+            // repo is joyint/jyn, but cargo-dist publishes artifacts under the
+            // crate/app name jyn-cli (jyn-cli-installer.sh, jyn-cli-*.tar.xz).
+            name: "jyn".to_string(),
+            app_name: "jyn-cli".to_string(),
+        });
+        if let Ok(version) = CURRENT_VERSION.parse::<Version>() {
+            let _ = updater.set_current_version(version);
+        }
+        if let Some(dir) = std::env::current_exe()
+            .ok()
+            .and_then(|exe| exe.parent().map(|d| d.to_string_lossy().into_owned()))
+        {
+            updater.set_install_dir(dir);
+        }
     }
+    updater
+}
+
+/// Download-and-swap when a newer release exists; a no-op when up to date.
+fn update_in_place() -> (String, String) {
+    let mut updater = configured_updater();
     match updater.run_sync() {
         Ok(Some(result)) => {
             let old = result
@@ -111,7 +118,21 @@ fn swap_binary() -> (String, String) {
             color::success("ok"),
             color::inactive(&format!("up to date ({CURRENT_VERSION})")),
         ),
-        Err(e) => (color::warning("!"), color::warning(&format!("failed: {e}"))),
+        // No newer (or no) release to install is not a failure: we already
+        // have the latest. Only genuine problems (network, download, install)
+        // are reported as failures, and never with axoupdater's raw wording.
+        Err(
+            AxoupdateError::NoStableReleases { .. }
+            | AxoupdateError::ReleaseNotFound { .. }
+            | AxoupdateError::VersionNotFound { .. },
+        ) => (
+            color::success("ok"),
+            color::inactive(&format!("up to date ({CURRENT_VERSION})")),
+        ),
+        Err(e) => (
+            color::warning("!"),
+            color::warning(&format!("update failed: {e}")),
+        ),
     }
 }
 
@@ -121,8 +142,7 @@ fn swap_binary() -> (String, String) {
 fn run_check() -> Result<()> {
     println!("{}", color::label("jyn update check"));
 
-    let mut updater = AxoUpdater::new_for(PKG_NAME);
-    if let Some((manager, cmd)) = foreign_install() {
+    if let Some((manager, cmd)) = package_manager_hint() {
         println!(
             "  {} {:<8} {}",
             color::inactive("-"),
@@ -133,6 +153,7 @@ fn run_check() -> Result<()> {
         return Ok(());
     }
 
+    let mut updater = configured_updater();
     if updater.is_update_needed_sync().unwrap_or(false) {
         println!(
             "  {} {:<8} {}",
