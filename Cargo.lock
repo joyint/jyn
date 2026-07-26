@@ -1313,6 +1313,7 @@ dependencies = [
  "hex",
  "inquire",
  "joy-crypt",
+ "joy-token",
  "libc",
  "minijinja",
  "rand 0.8.6",
@@ -1345,6 +1346,21 @@ dependencies = [
  "thiserror",
  "x25519-dalek",
  "zeroize",
+]
+
+[[package]]
+name = "joy-token"
+version = "0.1.0"
+dependencies = [
+ "base64ct",
+ "chrono",
+ "getrandom 0.2.17",
+ "hex",
+ "joy-crypt",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "uuid",
 ]
 
 [[package]]
