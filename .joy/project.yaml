@@ -17,6 +17,7 @@ members:
       document: {}
       create: {}
       assign: {}
+    adapter: claude-code
     attestation:
       attester: horst.schwarz@joydev.com
       signed_fields:
