@@ -18,8 +18,11 @@ permissions:
 # so local builds resolve joy-core from the umbrella checkout. For the
 # standalone CI run, we clone joyint/joy and joyint/crypt into sibling
 # directories so the patch path resolves and joy-core's transitive
-# joy-crypt path dependency is satisfied. Both repos are public; no
-# PAT or deploy key is required.
+# joy-crypt path dependency is satisfied. On GitHub both repos are
+# public and no PAT is needed; on a private mirror (internal Gitea)
+# the siblings are private too, so the checkouts use the
+# ORG_READ_TOKEN org secret when present and fall back to the
+# default token otherwise.
 
 jobs:
   fmt:
@@ -32,11 +35,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: joyint/joy
+          ref: main
           path: joy
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: actions/checkout@v4
         with:
           repository: joyint/crypt
+          ref: main
           path: crypt
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
@@ -54,11 +61,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: joyint/joy
+          ref: main
           path: joy
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: actions/checkout@v4
         with:
           repository: joyint/crypt
+          ref: main
           path: crypt
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
@@ -79,11 +90,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: joyint/joy
+          ref: main
           path: joy
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: actions/checkout@v4
         with:
           repository: joyint/crypt
+          ref: main
           path: crypt
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
@@ -102,11 +117,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: joyint/joy
+          ref: main
           path: joy
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: actions/checkout@v4
         with:
           repository: joyint/crypt
+          ref: main
           path: crypt
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
@@ -128,11 +147,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: joyint/joy
+          ref: main
           path: joy
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: actions/checkout@v4
         with:
           repository: joyint/crypt
+          ref: main
           path: crypt
+          token: ${{ secrets.ORG_READ_TOKEN || github.token }}
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
