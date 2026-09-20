@@ -383,6 +383,12 @@ jobs:
       - plan
       - host
     if: ${{ always() && needs.host.result == 'success' && !fromJson(needs.host.outputs.val).announcement_is_prerelease }}
+    # The release is complete once host uploaded the signed artifacts and
+    # created/updated the GitHub Release. WinGet submission depends on a
+    # cross-repository PAT being able to create branches in joyint/winget-pkgs;
+    # let that downstream packaging request fail loudly in its own job without
+    # turning the release red.
+    continue-on-error: true
     runs-on: "ubuntu-22.04"
     permissions:
       contents: read
