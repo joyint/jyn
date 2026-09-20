@@ -129,8 +129,9 @@ release bump="patch":
     echo "Tagged ${tag} locally. Run 'just publish' to ship."
 
 # Upload crates to crates.io only. Idempotent: already-uploaded
-# versions are skipped. CI's publish.yml calls this directly; the
-# forge release is handled separately by `joy release publish`.
+# versions are skipped. The local-first path calls this via
+# `just publish`; publish.yml is manual-only for recovery runs.
+# The forge release is handled separately by `joy release publish`.
 publish-crates: sync-tutorial
     #!/usr/bin/env bash
     set -euo pipefail
