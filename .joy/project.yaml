@@ -35,6 +35,91 @@ members:
           assign: {}
       signed_at: 2026-04-20T19:04:20.194901689Z
       signature: d5edf75d8ec7d2f5422f478e081d68ecb7685f5a18a7a76fb5a4972a454e51c3f8f928d6d4bd778df8b2816bb423b157eaa6a2497959bff0a3dec8be4938d601
+  ai:copilot@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    adapter: copilot
+    verify_key: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:copilot@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-09-20T10:21:36.444700Z
+      signature: 6bcb5b4180811285ed7406f9805748fd61965c60f523fbd075f67662e56e771436e40c9e93d9d32d4a90322e49b5091ec766826c8f9aa8664f53877093280000
+  ai:qwen@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    adapter: qwen
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:qwen@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-09-20T10:21:35.099941Z
+      signature: e9cb055f4ac931906f92d2934a0faa62eb04173fcf53f15b8f56fc373929cc49cd63ff1769619b9ba99ba3e7d31ffddeac568fc4968c54dc20e0f92916d2870e
+  ai:vibe@joy:
+    capabilities:
+      conceive: {}
+      plan: {}
+      design: {}
+      implement: {}
+      test: {}
+      review: {}
+      document: {}
+      create: {}
+      assign: {}
+    adapter: vibe
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: ai:vibe@joy
+        capabilities:
+          conceive: {}
+          plan: {}
+          design: {}
+          implement: {}
+          test: {}
+          review: {}
+          document: {}
+          create: {}
+          assign: {}
+      signed_at: 2026-09-20T10:21:35.100509Z
+      signature: 1fb4b6772a3f0a013485051e9af721e35e5d9a3a5e20781113139456ad845921f2cb9c74411007ce4d702102015828daceaa2e4882caf27cd9fae51c1f3dee03
   horst.schwarz@joydev.com:
     capabilities: all
     verify_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
@@ -47,6 +132,10 @@ members:
         delegation_salt: f053d4856c77f1f939484ddf8f620c6d4242ebf34686a587f8b4fb1aae5fe4e8
         created: 2026-04-18T10:22:40.963904117Z
         rotated: 2026-05-15T15:14:13.498659409Z
+      ai:copilot@joy:
+        delegation_verifier: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
+        delegation_salt: b26993660f234094bfe95d73b033c82e42506baa2de245bdc2f2d8cd7dbcbd82
+        created: 2026-09-20T10:21:48.905847Z
   philipp@joyint.com:
     capabilities: all
     enrollment_verifier: 9ee53f55f221e1b0cc73e9eaf1784c89db8436d8e74f7aacd8249d6082ca0662:d38ad0c0faf6ee2b26997736e4910174d9cb9dbaac0c66b1de83893f7b740c55
