@@ -1407,6 +1407,7 @@ dependencies = [
  "libc",
  "minijinja",
  "rand 0.8.8",
+ "semver",
  "serde",
  "serde_json",
  "serde_yaml_ng",
@@ -1484,7 +1485,7 @@ dependencies = [
 
 [[package]]
 name = "jyn"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "anyhow",
  "jyn-cli",
@@ -1492,7 +1493,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-cli"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "anyhow",
  "axoupdater",
@@ -1508,7 +1509,7 @@ dependencies = [
 
 [[package]]
 name = "jyn-core"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "chrono",
  "joy-core",
