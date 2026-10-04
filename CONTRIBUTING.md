@@ -110,6 +110,8 @@ Every push and pull request triggers:
 
 Releases are triggered by Git tags (`v0.1.0`, `v1.0.0`, etc.).
 
+Between releases, `.github/workflows/nightly.yml` builds the current `main` for the same targets every night (and on demand) and replaces the archives of one rolling prerelease with the tag `nightly`. It is for a machine that needs the current state and cannot build it. `jyn update`, winget and the installer scripts never install a nightly: it is a prerelease, its tag carries no version, and it holds no installer script; the workflow checks all three after every run.
+
 **Build matrix:**
 
 | Target | OS | Arch |
