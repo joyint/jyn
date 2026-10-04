@@ -1,7 +1,7 @@
 id: JYN-0011-08
 title: 'Help and tutorial show unquoted #ID forms that shells swallow'
 type: bug
-status: review
+status: closed
 priority: high
 assignees:
 - member: ai:claude@joy
@@ -11,8 +11,8 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-08-24T10:35:34.360819324Z
-updated: 2026-08-24T10:37:06.439253796Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-10-04T17:42:53.337458666Z
+updated_by: horst.schwarz@joydev.com
 description: 'jyn show #1 fails in PowerShell, bash, and zsh scripts: an unquoted # at the start of a word begins a shell comment, so jyn receives no argument at all and clap errors with ''required arguments were not provided''. Reported from PowerShell v7 on Windows. The parser is fine - per JOT-002F-4D it accepts #A1 (quoted), bare A1, and full TODO-00A1-EA, and bare occurrence addressing 1@DATE also works. But jyn show --help and the tutorial exclusively showcase the unquoted # form, documenting an invocation most shells never deliver. Fix: use the bare form in all help texts and tutorial examples, and explain in the tutorial''s ''Referring to Tasks'' section that the leading # in listings is display decoration which must be quoted (''#A1'') if typed.'
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
