@@ -1,7 +1,7 @@
 id: JYN-0012-8E
 title: Accept 'help' as trailing subcommand at every level
 type: task
-status: review
+status: closed
 priority: medium
 assignees:
 - member: ai:claude@joy
@@ -10,8 +10,8 @@ capabilities:
 effort: 2
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-08-24T10:51:36.850651893Z
-updated: 2026-08-24T10:54:25.654103925Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-10-04T17:42:51.572673624Z
+updated_by: horst.schwarz@joydev.com
 description: 'Match joy''s UX: ''jyn ls help'', ''jyn add help'', ''jyn config help'' should print the subcommand''s help. Today only ''jyn <cmd> --help'' works, because subcommands without their own subcommands do not get an auto-inserted ''help''. Port joy''s argv rewriter (crates/joy-cli/src/lib.rs rewrite_trailing_help): if the last arg is literally ''help'' and every preceding arg is a valid clap subcommand at its level, rewrite the trailing ''help'' to ''--help'' before clap parses. Conservative: ''jyn add task help'' (where ''help'' would be part of the title) is not stolen because ''task'' is not a subcommand of ''add''.'
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
