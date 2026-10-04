@@ -1,7 +1,7 @@
 id: JYN-0013-2D
 title: Shell completions with dynamic task-ID and tag completers
 type: task
-status: review
+status: closed
 priority: medium
 assignees:
 - member: ai:claude@joy
@@ -10,8 +10,8 @@ capabilities:
 effort: 3
 created_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
 created: 2026-08-24T11:06:59.239527027Z
-updated: 2026-08-24T11:11:29.287691526Z
-updated_by: ai:claude@joy delegated-by:horst.schwarz@joydev.com
+updated: 2026-10-04T17:42:48.996136790Z
+updated_by: horst.schwarz@joydev.com
 description: 'Match the completions surface of joy: ''jyn completions <shell>'' emits static scripts for bash/zsh/fish/powershell/elvish, and the clap_complete_env dynamic protocol (''COMPLETE=zsh jyn'') completes task IDs, occurrence addresses (#N@DATE), and existing tags at the shell prompt. Setup snippet in --after_help. No colon-aware bash wrapper needed (jyn has no ai:...@joy values). Refines JOT-000D for jyn.'
 comments:
 - author: ai:claude@joy delegated-by:horst.schwarz@joydev.com
