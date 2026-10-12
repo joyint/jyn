@@ -6,7 +6,7 @@ docs:
   architecture: ARCHITECTURE.md
   vision: VISION.md
 members:
-  ai:claude@joy:
+  claude:
     capabilities:
       conceive: {}
       plan: {}
@@ -35,7 +35,7 @@ members:
           assign: {}
       signed_at: 2026-04-20T19:04:20.194901689Z
       signature: d5edf75d8ec7d2f5422f478e081d68ecb7685f5a18a7a76fb5a4972a454e51c3f8f928d6d4bd778df8b2816bb423b157eaa6a2497959bff0a3dec8be4938d601
-  ai:copilot@joy:
+  copilot:
     capabilities:
       conceive: {}
       plan: {}
@@ -64,7 +64,34 @@ members:
           assign: {}
       signed_at: 2026-09-20T10:21:36.444700Z
       signature: 6bcb5b4180811285ed7406f9805748fd61965c60f523fbd075f67662e56e771436e40c9e93d9d32d4a90322e49b5091ec766826c8f9aa8664f53877093280000
-  ai:qwen@joy:
+  horst.schwarz@joydev.com:
+    capabilities: all
+    verify_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
+    kdf_nonce: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
+    seed_wrap_passphrase: 0cd49bff630d5607e60e09844a2aa644c8835719ba5a5f40cf74f2f50e64b3152942640bd22b1cfb020cb6823f9b99a1f9d8cf7bdeae78e5efcf4a44
+    seed_wrap_recovery: 234f5f9824de2393695f3a24ca1ee26cc545681cd1add7ffef84c4a02088b43886588ae8ea83cfd209ffe4064f4bebbeb4c8a5396b7d5eb7576fa0cd
+    ai_delegations:
+      claude:
+        delegation_verifier: aab5068719d5d18a17d72a54b30b81d01103e499e8bf527bff160094a1ad989b
+        delegation_salt: f053d4856c77f1f939484ddf8f620c6d4242ebf34686a587f8b4fb1aae5fe4e8
+        created: 2026-04-18T10:22:40.963904117Z
+        rotated: 2026-05-15T15:14:13.498659409Z
+      copilot:
+        delegation_verifier: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
+        delegation_salt: b26993660f234094bfe95d73b033c82e42506baa2de245bdc2f2d8cd7dbcbd82
+        created: 2026-09-20T10:21:48.905847Z
+  philipp@joyint.com:
+    capabilities: all
+    enrollment_verifier: 9ee53f55f221e1b0cc73e9eaf1784c89db8436d8e74f7aacd8249d6082ca0662:d38ad0c0faf6ee2b26997736e4910174d9cb9dbaac0c66b1de83893f7b740c55
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: philipp@joyint.com
+        capabilities: all
+        otp_hash: 9ee53f55f221e1b0cc73e9eaf1784c89db8436d8e74f7aacd8249d6082ca0662:d38ad0c0faf6ee2b26997736e4910174d9cb9dbaac0c66b1de83893f7b740c55
+      signed_at: 2026-08-23T16:48:50.358243109Z
+      signature: c4f3eb78cbbd0eb1d4126a4c1088b99f92c335ec4a19cd0e228b48435c7647ed99df35d4d68d66c5e222364d15fb3ced0e8560e4d204a4b8cb71aa8e51df5c06
+  qwen:
     capabilities:
       conceive: {}
       plan: {}
@@ -92,7 +119,18 @@ members:
           assign: {}
       signed_at: 2026-09-20T10:21:35.099941Z
       signature: e9cb055f4ac931906f92d2934a0faa62eb04173fcf53f15b8f56fc373929cc49cd63ff1769619b9ba99ba3e7d31ffddeac568fc4968c54dc20e0f92916d2870e
-  ai:vibe@joy:
+  roland@joyint.com:
+    capabilities: all
+    enrollment_verifier: 8599227acb5cef303f49eb96a2f2d184c98cc00a4d968b0bacc86982d903e266:da473dd84816ad6b502a428d900192b0dee885223e91cedc26a6d345b942aaac
+    attestation:
+      attester: horst.schwarz@joydev.com
+      signed_fields:
+        email: roland@joyint.com
+        capabilities: all
+        otp_hash: 8599227acb5cef303f49eb96a2f2d184c98cc00a4d968b0bacc86982d903e266:da473dd84816ad6b502a428d900192b0dee885223e91cedc26a6d345b942aaac
+      signed_at: 2026-08-23T16:48:29.051343441Z
+      signature: 4e5124a5d55564ec1b6b7652a650abcb12ef3977de9de1e50e179aad61ef1018e4e1ab47dbe0eee241d0f0785df9f7f923b25333795df4691953d9f32ec45e0a
+  vibe:
     capabilities:
       conceive: {}
       plan: {}
@@ -120,44 +158,6 @@ members:
           assign: {}
       signed_at: 2026-09-20T10:21:35.100509Z
       signature: 1fb4b6772a3f0a013485051e9af721e35e5d9a3a5e20781113139456ad845921f2cb9c74411007ce4d702102015828daceaa2e4882caf27cd9fae51c1f3dee03
-  horst.schwarz@joydev.com:
-    capabilities: all
-    verify_key: 4671edfbfff3d404b47211988f9381d2f75a66e0eea11252fe224e5209b44930
-    kdf_nonce: 652a4bce18eac64065ff69636a54ce4d0adad7c1efac82c2c6ea8cf7dc4d3408
-    seed_wrap_passphrase: 0cd49bff630d5607e60e09844a2aa644c8835719ba5a5f40cf74f2f50e64b3152942640bd22b1cfb020cb6823f9b99a1f9d8cf7bdeae78e5efcf4a44
-    seed_wrap_recovery: 234f5f9824de2393695f3a24ca1ee26cc545681cd1add7ffef84c4a02088b43886588ae8ea83cfd209ffe4064f4bebbeb4c8a5396b7d5eb7576fa0cd
-    ai_delegations:
-      ai:claude@joy:
-        delegation_verifier: aab5068719d5d18a17d72a54b30b81d01103e499e8bf527bff160094a1ad989b
-        delegation_salt: f053d4856c77f1f939484ddf8f620c6d4242ebf34686a587f8b4fb1aae5fe4e8
-        created: 2026-04-18T10:22:40.963904117Z
-        rotated: 2026-05-15T15:14:13.498659409Z
-      ai:copilot@joy:
-        delegation_verifier: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
-        delegation_salt: b26993660f234094bfe95d73b033c82e42506baa2de245bdc2f2d8cd7dbcbd82
-        created: 2026-09-20T10:21:48.905847Z
-  philipp@joyint.com:
-    capabilities: all
-    enrollment_verifier: 9ee53f55f221e1b0cc73e9eaf1784c89db8436d8e74f7aacd8249d6082ca0662:d38ad0c0faf6ee2b26997736e4910174d9cb9dbaac0c66b1de83893f7b740c55
-    attestation:
-      attester: horst.schwarz@joydev.com
-      signed_fields:
-        email: philipp@joyint.com
-        capabilities: all
-        otp_hash: 9ee53f55f221e1b0cc73e9eaf1784c89db8436d8e74f7aacd8249d6082ca0662:d38ad0c0faf6ee2b26997736e4910174d9cb9dbaac0c66b1de83893f7b740c55
-      signed_at: 2026-08-23T16:48:50.358243109Z
-      signature: c4f3eb78cbbd0eb1d4126a4c1088b99f92c335ec4a19cd0e228b48435c7647ed99df35d4d68d66c5e222364d15fb3ced0e8560e4d204a4b8cb71aa8e51df5c06
-  roland@joyint.com:
-    capabilities: all
-    enrollment_verifier: 8599227acb5cef303f49eb96a2f2d184c98cc00a4d968b0bacc86982d903e266:da473dd84816ad6b502a428d900192b0dee885223e91cedc26a6d345b942aaac
-    attestation:
-      attester: horst.schwarz@joydev.com
-      signed_fields:
-        email: roland@joyint.com
-        capabilities: all
-        otp_hash: 8599227acb5cef303f49eb96a2f2d184c98cc00a4d968b0bacc86982d903e266:da473dd84816ad6b502a428d900192b0dee885223e91cedc26a6d345b942aaac
-      signed_at: 2026-08-23T16:48:29.051343441Z
-      signature: 4e5124a5d55564ec1b6b7652a650abcb12ef3977de9de1e50e179aad61ef1018e4e1ab47dbe0eee241d0f0785df9f7f923b25333795df4691953d9f32ec45e0a
 created: 2026-03-20T10:51:52.574885092Z
 release:
   version-files:
