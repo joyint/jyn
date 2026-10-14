@@ -55,6 +55,12 @@ Windows:
 winget install -s winget joyint.jyn
 ```
 
+Arch Linux (AUR):
+
+```sh
+yay -S joyint-jyn-bin
+```
+
 From source:
 
 ```sh
