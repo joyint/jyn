@@ -1,0 +1,18 @@
+name: qwen
+adapter: qwen
+capabilities:
+- conceive
+- plan
+- design
+- implement
+- test
+- review
+- document
+- create
+- assign
+level: autonomous
+granted:
+  by: horst.schwarz@joydev.com
+  at: 2026-10-16T19:24:52.504584620Z
+  signature: 992b71bbeaf1273dddc0e190df84f25365529ea7dd4c77eb824de50f5ef94513702f961d6eca37def0c2936345da4861c2ad616bfe161fb127d6e26029c7fa04
+updated: 2026-10-16T19:24:52.506243607Z
