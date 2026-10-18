@@ -39,3 +39,10 @@ targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu", "x86_64-apple-da
 # Windows with LNK1104 'cannot open file'. Combined with
 # 'dist = false' in crates/jyn/Cargo.toml, only jyn-cli gets packaged.
 precise-builds = true
+
+# Runners that replace dist's defaults. dist 0.31.0 puts
+# aarch64-apple-darwin on macos-14, a hosted image GitHub is retiring;
+# release.yml and nightly.yml take their matrix from `dist plan`, so this
+# table is all a runner change needs.
+[dist.github-custom-runners]
+aarch64-apple-darwin = "macos-15"
