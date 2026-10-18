@@ -1,4 +1,7 @@
-name: claude
+type: ai
+identity:
+  claude:
+    verify_key: aab5068719d5d18a17d72a54b30b81d01103e499e8bf527bff160094a1ad989b
 adapter: claude
 capabilities:
 - conceive
@@ -15,5 +18,4 @@ granted:
   by: horst.schwarz@joydev.com
   at: 2026-10-16T19:24:52.504155613Z
   signature: 16a971dc2ab3d9699fe304a2fd2d97774fe17202c5d86e90f883e2f371c818c594b330f65ae82fde84d0851e5052b04ac721bf9c0c653d8cd8259912c884e901
-verify_key: aab5068719d5d18a17d72a54b30b81d01103e499e8bf527bff160094a1ad989b
 updated: 2026-10-16T19:24:52.506243607Z

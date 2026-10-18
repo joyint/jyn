@@ -1,4 +1,6 @@
-name: vibe
+type: ai
+identity:
+  vibe: {}
 adapter: vibe
 capabilities:
 - conceive

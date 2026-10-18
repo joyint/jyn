@@ -1,4 +1,7 @@
-name: copilot
+type: ai
+identity:
+  copilot:
+    verify_key: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
 adapter: copilot
 capabilities:
 - conceive
@@ -15,5 +18,4 @@ granted:
   by: horst.schwarz@joydev.com
   at: 2026-10-16T19:24:52.504365859Z
   signature: c712b79eeac24081f02915ff9085d4b9f5783e27fa998a2accb3e11598a9c58175f23bf1c77af71ac175f3eda50002df6349fd1568cb8bd45d641d65ebbaef07
-verify_key: 357cc55b54cd9fe11000a32e5ab8214b6981f4afc91e0ae1be46376dbea6de19
 updated: 2026-10-16T19:24:52.506243607Z
